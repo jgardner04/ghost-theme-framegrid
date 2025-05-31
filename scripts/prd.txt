@@ -1,0 +1,321 @@
+# Nature Photographer Ghost Template - Product Requirements Document
+
+## Overview
+FrameGrid is a minimalist Ghost blog template designed specifically for nature photographers who want their imagery to be the primary focus. The template solves the problem of photography portfolios that compete with or diminish the visual impact of the photographer's work. Built for professional nature photographers, wildlife enthusiasts, and travel photographers, FrameGrid provides a clean, distraction-free platform that showcases photography through an elegant masonry grid system while maintaining Ghost's powerful content management capabilities. The template emphasizes fast loading, responsive design, and seamless user experience across all devices, ensuring that stunning nature photography receives the presentation it deserves.
+
+## Core Features
+
+### Masonry Portfolio Grid System
+- **What it does**: Displays photography in a responsive 3-column masonry layout with 10px gutters and no outer margins
+- **Why it's important**: Accommodates mixed aspect ratios (2:3, 16:9, panoramic 1:2, 1:3, Xpan crops) without cropping or distortion, essential for nature photography's diverse formats
+- **How it works**: Uses Ghost's featured images as thumbnails with hover effects showing clickable post titles, infinite scroll loading when user reaches halfway point
+
+### Advanced Lightbox Experience
+- **What it does**: Opens full-size featured images in an overlay with post title and excerpt below
+- **Why it's important**: Allows viewers to appreciate photography at full resolution without navigating away from the grid view
+- **How it works**: Click image opens lightbox, click title/excerpt navigates to full post, optimized for touch and keyboard navigation
+
+### Multi-Layout Blog System
+- **What it does**: Provides alternating left/right layout for blog posts with full-width featured images
+- **Why it's important**: Creates visual interest and optimal reading experience for field notes and stories
+- **How it works**: Alternates image left/text right, then text left/image right pattern with responsive breakpoints
+
+### Intelligent Content Categorization
+- **What it does**: Routes content through Ghost's native tagging system to portfolio categories (wildlife, landscape, underwater, cityscape) and location categories (alaska, kenya, washington, california, japan, italy, florida, iceland)
+- **Why it's important**: Allows single posts to appear in multiple relevant sections without content duplication
+- **How it works**: Uses Ghost's multi-tag system with custom routing via routes.yaml configuration
+
+### Native Ghost Integration
+- **What it does**: Leverages Ghost's built-in search, members system, RSS feeds, and content management
+- **Why it's important**: Ensures compatibility with Ghost Pro hosting and future Ghost updates
+- **How it works**: Uses Ghost's native APIs and features with minimal custom code, Alpine.js only for interactions Ghost can't handle
+
+### Ghost Cards Support
+- **What it does**: Fully supports Ghost's rich content cards including Gallery Cards for photo collections, Bookmark Cards for external links, and File Cards for downloadable content
+- **Why it's important**: Enables photographers to create rich, multimedia content experiences without leaving Ghost's editor
+- **How it works**: Custom styling for Ghost Cards maintains design consistency while preserving functionality, with special handling for Gallery Cards in portfolio posts
+
+### Advanced Members Integration
+- **What it does**: Leverages Ghost's complete members system including member tiers, gated content, and newsletter segmentation
+- **Why it's important**: Enables monetization through workshop bookings, exclusive content, and tiered access to photography resources
+- **How it works**: Custom member portal styling, workshop tier creation, and gated gallery access with seamless subscription management
+
+## User Experience
+
+### User Personas
+**Primary**: Professional nature photographers seeking to showcase and monetize their work through workshops, prints, and editorial opportunities
+**Secondary**: Photography enthusiasts wanting to share travel and nature experiences with family and community
+**Tertiary**: Potential clients, workshop participants, and photography students browsing portfolios
+
+### Key User Flows
+1. **Discovery Flow**: Homepage featured posts → Category browsing → Lightbox viewing → Full post reading → Newsletter signup
+2. **Portfolio Flow**: Navigation menu → Portfolio categories → Masonry grid → Lightbox → Related posts → Contact/workshop inquiry
+3. **Location Flow**: Locations menu → Specific location → Grid view → Story reading → Related location posts
+4. **Mobile Flow**: Hamburger menu → Touch-optimized navigation → Swipe-friendly lightbox → Mobile-optimized reading
+5. **Member Flow**: Content discovery → Registration → Tier selection → Gated content access → Workshop booking
+
+### UI/UX Considerations
+- **Visual Hierarchy**: Photography takes 80% of visual weight, text/navigation 20%
+- **Color Psychology**: Black/white creates gallery-like environment, baby blue accent provides subtle warmth without competing
+- **Typography**: System fonts or Inter ensure fast loading and excellent readability across devices
+- **Interaction Design**: Hover states, smooth transitions, and clear affordances guide users naturally through content
+- **Accessibility**: WCAG 2.1 AA compliance with keyboard navigation, screen reader support, and high contrast ratios
+- **Ghost Admin Integration**: Custom theme settings panel for easy customization without code editing
+
+## Technical Architecture
+
+### System Components
+- **Frontend**: Handlebars templates with Alpine.js for client-side interactions, Tailwind CSS for styling
+- **Backend**: Ghost CMS with native API endpoints for search, members, and content delivery
+- **Image Processing**: Ghost's native image optimization with responsive srcset generation
+- **Performance**: Lazy loading, infinite scroll, and Ghost's built-in CDN integration
+- **Content Management**: Ghost Cards, custom routes, and collections for enhanced content organization
+
+### Ghost Theme Configuration
+```json
+// package.json theme configuration
+{
+  "config": {
+    "posts_per_page": 12,
+    "image_sizes": {
+      "xs": { "width": 300 },
+      "s": { "width": 600 },
+      "m": { "width": 1000 },
+      "l": { "width": 1600 },
+      "xl": { "width": 2400 }
+    },
+    "card_assets": {
+      "exclude": ["bookmark", "gallery"]
+    },
+    "custom": {
+      "grid_columns": {
+        "type": "select",
+        "options": ["2", "3", "4"],
+        "default": "3"
+      },
+      "accent_color": {
+        "type": "color",
+        "default": "#3B82F6"
+      },
+      "show_author_bio": {
+        "type": "boolean",
+        "default": true
+      }
+    }
+  }
+}
+```
+
+### Data Models
+```
+Post Model (Ghost Native):
+- title, slug, featured_image, excerpt, content
+- tags: ["featured", "wildlife", "alaska"] (multi-category support)
+- featured: boolean (homepage display)
+- published_at, updated_at, author
+- visibility: "public" | "members" | "paid" (tiered access)
+
+User Model (Ghost Members):
+- email, name, subscription_status
+- newsletter preferences, workshop interests
+- member_tier: "free" | "workshops" | "premium"
+
+Navigation Model:
+- Primary menu items with dropdown support
+- "-" prefix for submenu items in Ghost admin
+- Custom routes for portfolio categories
+```
+
+### APIs and Integrations
+- **Ghost Content API**: Post retrieval, filtering, pagination with optimized includes
+- **Ghost Members API**: Newsletter signups, user management, tier access
+- **Ghost Search API**: Native search functionality with custom UI
+- **Ghost Admin API**: Theme settings and configuration management
+- **Social APIs**: RSS feeds, social sharing metadata, AMP support
+- **Image API**: Responsive image generation, optimization with custom sizes
+
+### Ghost-Specific Features
+- **AMP Support**: Automatic AMP page generation for improved mobile performance and SEO
+- **Native Comments**: Ghost's built-in commenting system with custom styling
+- **RSS Customization**: Enhanced RSS feeds with photography-specific metadata
+- **Sitemap Integration**: Automatic sitemap generation with image sitemaps
+- **Content API Optimization**: Strategic use of includes, filters, and formats for performance
+- **Ghost CLI Integration**: Development workflow with theme validation and testing
+
+### Infrastructure Requirements
+- **Hosting**: Ghost Pro compatible (Node.js environment)
+- **Performance**: <3 second load times, 95+ Lighthouse scores
+- **Browser Support**: Modern browsers (Chrome 88+, Firefox 85+, Safari 14+, Edge 88+)
+- **Mobile**: Progressive Web App features, touch optimization
+- **SEO**: Structured data, Open Graph, Twitter Cards, sitemap generation
+- **Ghost Version**: Compatible with Ghost 5.0+ with fallbacks for older versions
+
+## Development Roadmap
+
+### Phase 1: Foundation & Ghost Setup (MVP)
+**Deliverables**: Ghost-compliant theme structure with proper configuration
+- Set up Ghost CLI development environment and theme structure
+- Create package.json with photography-optimized image_sizes configuration
+- Implement base Handlebars template structure (default.hbs, index.hbs, post.hbs, page.hbs)
+- Configure Tailwind CSS build system compatible with Ghost theme requirements
+- Set up routes.yaml for custom URL structure and collections
+- Create responsive navigation with Ghost menu integration
+- Implement Ghost theme validation with GScan
+- Set up custom theme settings in Ghost Admin
+
+### Phase 2: Portfolio Grid & Ghost Image Optimization
+**Deliverables**: Masonry grid leveraging Ghost's native image processing
+- Develop 3-column masonry layout using CSS Grid with Ghost responsive images
+- Implement infinite scroll using Ghost Content API with optimized includes
+- Create hover effects using Ghost's image_url helper with multiple sizes
+- Configure Ghost's native image optimization for thumbnail generation
+- Implement proper srcset generation for all device breakpoints
+- Test performance with Ghost Pro CDN integration
+- Optimize Content API calls for minimal data transfer
+
+### Phase 3: Lightbox & Ghost Cards Integration
+**Deliverables**: Advanced interactions with full Ghost Cards support
+- Build lightbox component using Alpine.js with Ghost image helpers
+- Implement custom styling for Ghost Gallery Cards in lightbox
+- Create keyboard and touch navigation with Ghost's native image data
+- Add Ghost Card rendering in post content (Bookmark, File, etc.)
+- Implement smooth transitions leveraging Ghost's image processing
+- Optimize image preloading using Ghost's Content API
+- Test accessibility with Ghost's semantic HTML structure
+
+### Phase 4: Content Layouts & Ghost Features
+**Deliverables**: Full Ghost CMS integration with advanced features
+- Create alternating blog post layouts with Ghost image helpers
+- Implement Ghost's native commenting system with custom styling
+- Build portfolio category pages using Ghost collections
+- Create location-specific templates with Ghost routing
+- Develop standard Ghost pages leveraging native features
+- Implement related posts using Ghost's Content API filtering
+- Add AMP template support for mobile optimization
+
+### Phase 5: Members System & Ghost Pro Features
+**Deliverables**: Complete members integration and Ghost Pro optimization
+- Implement Ghost Members with custom portal styling
+- Create workshop booking system using member tiers
+- Set up gated content access for premium photography resources
+- Integrate Ghost's native search with custom photography-focused UI
+- Implement newsletter segmentation for different user types
+- Optimize for Ghost Pro hosting with CDN and performance features
+- Add structured data for photography content
+
+### Phase 6: Polish & Ghost Marketplace Preparation
+**Deliverables**: Production-ready theme meeting Ghost standards
+- Complete GScan validation and fix all theme issues
+- Create comprehensive theme documentation following Ghost standards
+- Implement error handling for Ghost API limitations
+- Conduct accessibility audit meeting Ghost marketplace requirements
+- Optimize performance for Ghost Pro hosting environment
+- Create installation guide and Ghost Admin customization documentation
+- Prepare theme for Ghost Marketplace submission with proper licensing
+
+## Logical Dependency Chain
+
+### Ghost Foundation First (Phase 1)
+- Ghost CLI environment and proper theme structure must be established before development
+- Ghost theme validation (GScan) ensures compliance throughout development process
+- Package.json configuration with image_sizes is critical for all subsequent image handling
+- Ghost Admin integration enables non-technical customization
+
+### Ghost-Native Features Second (Phase 2)
+- Ghost's image optimization and Content API form the foundation for all visual features
+- Proper Ghost image helpers usage establishes patterns for entire template
+- Content API optimization strategies must be established early for performance
+- Getting portfolio grid working with Ghost's native features validates technical approach
+
+### Ghost Cards and Rich Content Third (Phase 3)
+- Ghost Cards integration requires solid foundation of image and content handling
+- Alpine.js interactions must respect Ghost's content structure and limitations
+- Lightbox functionality builds on Ghost's native image processing capabilities
+
+### Ghost Content Strategy Fourth (Phase 4)
+- Ghost routing, collections, and templates build on established patterns
+- Native commenting and AMP support integrate with existing content layouts
+- Related posts and filtering use optimized Content API patterns from earlier phases
+
+### Ghost Members and Pro Features Fifth (Phase 5)
+- Members system integration requires all content layouts to support access control
+- Ghost Pro optimizations can only be implemented once all features are established
+- Search and newsletter features build on the complete content architecture
+
+### Ghost Marketplace Standards Last (Phase 6)
+- GScan validation and marketplace requirements ensure professional quality
+- Documentation and installation procedures require complete, tested functionality
+- Performance optimization and accessibility ensure Ghost community standards
+
+## Risks and Mitigations
+
+### Ghost-Specific Technical Challenges
+**Risk**: Ghost Content API rate limiting affecting infinite scroll performance
+**Mitigation**: Implement proper caching strategies, use Ghost's pagination effectively, optimize includes and filters to minimize API calls
+
+**Risk**: Ghost theme validation (GScan) failing due to non-compliant code
+**Mitigation**: Run GScan validation continuously during development, follow Ghost's theme development guidelines strictly, test with multiple Ghost versions
+
+**Risk**: Ghost image processing limitations affecting photography quality
+**Mitigation**: Configure custom image_sizes optimally, test with various aspect ratios, use Ghost's responsive image features effectively
+
+**Risk**: Ghost Pro hosting limitations affecting custom functionality
+**Mitigation**: Design for Ghost Pro constraints from the beginning, avoid server-side code, leverage Ghost's native features over custom solutions
+
+### Ghost Marketplace and Distribution
+**Risk**: Theme rejection from Ghost Marketplace due to non-compliance
+**Mitigation**: Follow Ghost marketplace guidelines from Phase 1, regular GScan validation, comprehensive testing across Ghost versions
+
+**Risk**: Ghost version compatibility issues affecting theme functionality
+**Mitigation**: Test with multiple Ghost versions, implement graceful fallbacks, use feature detection for newer Ghost features
+
+**Risk**: Ghost CLI workflow issues affecting development efficiency
+**Mitigation**: Establish proper development environment early, use Ghost's recommended development practices, maintain local and staging environments
+
+### MVP Scope Management
+**Risk**: Over-reliance on custom solutions instead of Ghost native features
+**Mitigation**: Prioritize Ghost's built-in capabilities, only add custom code when Ghost features are insufficient, maintain upgrade compatibility
+
+**Risk**: Performance issues due to inefficient Ghost API usage
+**Mitigation**: Learn Ghost Content API best practices early, implement proper caching, use Ghost's optimization features effectively
+
+## Appendix
+
+### Ghost Development Workflow
+- **Local Development**: Ghost CLI with theme development setup and live reload
+- **Theme Validation**: GScan integration for continuous compliance checking
+- **Version Control**: Git workflow optimized for Ghost theme development
+- **Testing**: Multi-Ghost version testing and Ghost Pro compatibility validation
+- **Deployment**: Ghost CLI deployment and theme upload procedures
+
+### Ghost-Specific Technical Specifications
+- **Theme Structure**: Compliant with Ghost theme requirements and marketplace standards
+- **Handlebars Helpers**: Utilization of Ghost's custom helpers for optimal functionality
+- **Content API**: Optimized usage patterns for photography content retrieval
+- **Image Processing**: Custom image_sizes configuration for photography portfolios
+- **Ghost Cards**: Full support for Gallery, Bookmark, File, and other native cards
+- **Members Integration**: Complete Ghost Members API utilization for photography business needs
+
+### Research Findings
+- **Ghost Performance**: Native Ghost features consistently outperform custom solutions for content management
+- **Photography Portfolio Analysis**: 3-column grid provides optimal balance between image visibility and page performance
+- **User Behavior**: Photographers and viewers prefer minimal navigation and maximum image focus
+- **Mobile Usage**: 60%+ of photography portfolio traffic comes from mobile devices
+- **Ghost Marketplace**: Successful photography themes leverage Ghost's native features over custom implementations
+
+### Content Strategy Guidelines
+- **Featured Posts**: Maximum 6 posts on homepage to maintain load performance
+- **Category Organization**: Wildlife, Landscape, Underwater, Cityscape as primary portfolio categories
+- **Location Tagging**: Geographic tags enable location-based portfolio organization
+- **SEO Strategy**: Image alt tags, structured data, and meta descriptions for all photography content
+- **Ghost Cards Usage**: Strategic use of Gallery Cards for photo collections and Bookmark Cards for external resources
+- **Members Content**: Tiered access strategy for workshops, exclusive galleries, and premium content
+
+### Future Enhancement Considerations
+- **E-commerce Integration**: Print sales through Ghost's member system or third-party integration
+- **Workshop Booking**: Enhanced members integration with payment processing
+- **Client Galleries**: Password-protected galleries using Ghost's member tiers
+- **EXIF Data Display**: Camera settings integration with Ghost's custom fields
+- **Social Media Integration**: Instagram API integration respecting Ghost's architecture
+- **Multi-language Support**: Ghost's i18n capabilities for international photographers
+- **Ghost Admin Enhancements**: Additional custom settings and theme configuration options
