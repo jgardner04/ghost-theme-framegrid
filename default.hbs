@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="{{@site.locale}}"{{#match @custom.color_scheme "Dark"}} class="dark-mode"{{else match @custom.color_scheme "Auto"}} class="auto-color"{{/match}}>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{meta_title}}</title>
+    <meta name="description" content="{{meta_description}}">
+    <link rel="canonical" href="{{url absolute="true"}}">
+
+    {{!-- Optimized meta tags for photography content sharing --}}
+    <meta property="og:site_name" content="{{@site.title}}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{meta_title}}">
+    <meta property="og:description" content="{{meta_description}}">
+    <meta property="og:url" content="{{url absolute="true"}}">
+    <meta property="og:image" content="{{#if feature_image}}{{img_url feature_image size="l"}}{{else}}{{@site.cover_image}}{{/if}}">
+
+    {{!-- Twitter Card meta tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{meta_title}}">
+    <meta name="twitter:description" content="{{meta_description}}">
+    <meta name="twitter:image" content="{{#if feature_image}}{{img_url feature_image size="l"}}{{else}}{{@site.cover_image}}{{/if}}">
+    {{#if @site.twitter}}
+    <meta name="twitter:site" content="@{{@site.twitter}}">
+    <meta name="twitter:creator" content="@{{@site.twitter}}">
+    {{/if}}
+
+    {{!-- Theme color and favicon --}}
+    <meta name="theme-color" content="{{#if @custom.accent_color}}{{@custom.accent_color}}{{else}}#3B82F6{{/if}}">
+    <link rel="icon" href="{{@site.icon}}" type="image/png">
+
+    {{!-- Preconnect to external domains for performance --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {{!-- Stylesheets --}}
+    <link rel="stylesheet" type="text/css" href="{{asset "built/main.css"}}" media="screen">
+
+    {{!-- Custom CSS variables for theme settings --}}
+    <style>
+        :root {
+            --accent-color: {{#if @custom.accent_color}}{{@custom.accent_color}}{{else}}#3B82F6{{/if}};
+            --grid-columns: {{#if @custom.grid_columns}}{{@custom.grid_columns}}{{else}}3{{/if}};
+        }
+    </style>
+
+    {{!-- Alpine.js for interactive components --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{!-- JSON-LD structured data for photography portfolio --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "{{@site.title}}",
+        "description": "{{@site.description}}",
+        "url": "{{@site.url}}",
+        "sameAs": [
+            {{#if @site.facebook}}"https://www.facebook.com/{{@site.facebook}}"{{/if}}{{#if @site.twitter}},{{/if}}
+            {{#if @site.twitter}}"https://twitter.com/{{@site.twitter}}"{{/if}}
+        ],
+        "serviceType": "Photography",
+        "areaServed": {
+            "@type": "Place",
+            "name": "Worldwide"
+        }
+    }
+    </script>
+
+    {{!-- Ghost head helper - must be included --}}
+    {{ghost_head}}
+</head>
+
+<body class="{{body_class}}{{#match @custom.color_scheme "Dark"}} dark{{/match}}">
+    <div class="site-wrapper" id="site-wrapper">
+
+        {{!-- Skip to main content link for accessibility --}}
+        <a class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-accent-color text-white px-4 py-2 rounded" href="#main-content">
+            Skip to main content
+        </a>
+
+        {{!-- Site header --}}
+        <header class="site-header" role="banner">
+            {{> header}}
+        </header>
+
+        {{!-- Main content area --}}
+        <main id="main-content" class="site-main" role="main">
+            {{!-- Ghost body helper - this is where page content gets injected --}}
+            {{{body}}}
+        </main>
+
+        {{!-- Site footer --}}
+        <footer class="site-footer" role="contentinfo">
+            {{> footer}}
+        </footer>
+
+    </div>
+
+    {{!-- Scripts --}}
+    <script src="{{asset "built/main.js"}}" defer></script>
+
+    {{!-- Ghost foot helper - must be included --}}
+    {{ghost_foot}}
+</body>
+</html>
