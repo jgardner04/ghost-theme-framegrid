@@ -31,9 +31,9 @@
             <div class="page-meta">
                 {{!-- Updated date --}}
                 <time class="page-date"
-                      datetime="{{updated_at format="YYYY-MM-DD"}}"
+                      datetime="{{date modified_at format="YYYY-MM-DD"}}"
                       itemprop="dateModified">
-                    Last updated {{updated_at format="MMM DD, YYYY"}}
+                    Last updated {{date modified_at format="MMM DD, YYYY"}}
                 </time>
 
                 {{!-- Reading time --}}
@@ -136,7 +136,7 @@
 </article>
 
 {{!-- Related pages or featured content --}}
-{{#unless #has tag="contact"}}
+{{#unless has tag="contact"}}
     {{#get "posts" filter="featured:true" limit="3" as |featured_posts|}}
         {{#if featured_posts}}
             <section class="featured-content">
@@ -208,9 +208,9 @@ document.addEventListener('alpine:init', () => {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "{{title}}",
-    "description": "{{meta_description}}",
+    "description": "{{excerpt}}",
     "url": "{{url absolute="true"}}",
-    "dateModified": "{{updated_at format="YYYY-MM-DD"}}",
+    "dateModified": "{{date modified_at format="YYYY-MM-DD"}}",
     "publisher": {
         "@type": "Organization",
         "name": "{{@site.title}}",

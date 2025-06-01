@@ -242,16 +242,16 @@ document.addEventListener('alpine:init', () => {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "{{title}}",
-    "description": "{{meta_description}}",
+    "description": "{{excerpt}}",
     "image": "{{#if feature_image}}{{img_url feature_image size="xl"}}{{/if}}",
     "url": "{{url absolute="true"}}",
     "datePublished": "{{date format="YYYY-MM-DD"}}",
-    "dateModified": "{{updated_at format="YYYY-MM-DD"}}",
+    "dateModified": "{{date modified_at format="YYYY-MM-DD"}}",
     "author": {
         "@type": "Person",
-        "name": "{{authors.[0].name}}",
-        "image": "{{#if authors.[0].profile_image}}{{img_url authors.[0].profile_image size="s"}}{{/if}}",
-        "url": "{{authors.[0].url absolute="true"}}"
+        "name": "{{primary_author.name}}",
+        "image": "{{#if primary_author.profile_image}}{{img_url primary_author.profile_image size="s"}}{{/if}}",
+        "url": "{{url primary_author absolute="true"}}"
     },
     "publisher": {
         "@type": "Organization",
