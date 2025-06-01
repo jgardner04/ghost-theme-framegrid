@@ -1,0 +1,269 @@
+{{!-- Individual post template --}}
+
+<article class="post-article" itemscope itemtype="http://schema.org/Article">
+    {{!-- Featured image section --}}
+    {{#if feature_image}}
+        <div class="post-hero-image">
+            <img src="{{img_url feature_image size="xl"}}"
+                 alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}"
+                 class="post-featured-image"
+                 itemprop="image">
+
+            {{!-- Image caption if available --}}
+            {{#if feature_image_caption}}
+                <figcaption class="post-image-caption">{{feature_image_caption}}</figcaption>
+            {{/if}}
+        </div>
+    {{/if}}
+
+    {{!-- Post header --}}
+    <header class="post-header">
+        <div class="post-header-content">
+            {{!-- Post meta --}}
+            <div class="post-meta">
+                {{!-- Primary tag --}}
+                {{#if primary_tag}}
+                    <a href="{{primary_tag.url}}" class="post-tag post-tag-primary">{{primary_tag.name}}</a>
+                {{/if}}
+
+                {{!-- Published date --}}
+                <time class="post-date"
+                      datetime="{{date format="YYYY-MM-DD"}}"
+                      itemprop="datePublished">
+                    {{date format="MMM DD, YYYY"}}
+                </time>
+
+                {{!-- Reading time --}}
+                <span class="post-reading-time">{{reading_time}}</span>
+            </div>
+
+            {{!-- Post title --}}
+            <h1 class="post-title" itemprop="headline">{{title}}</h1>
+
+            {{!-- Post excerpt --}}
+            {{#if excerpt}}
+                <p class="post-excerpt" itemprop="description">{{excerpt}}</p>
+            {{/if}}
+
+            {{!-- Author info --}}
+            <div class="post-byline">
+                {{#foreach authors}}
+                    <div class="author-info" itemscope itemtype="http://schema.org/Person">
+                        {{#if profile_image}}
+                            <img src="{{img_url profile_image size="s"}}"
+                                 alt="{{name}}"
+                                 class="author-avatar"
+                                 itemprop="image">
+                        {{/if}}
+                        <div class="author-details">
+                            <span class="author-name" itemprop="name">
+                                <a href="{{url}}" rel="author">{{name}}</a>
+                            </span>
+                            {{#if bio}}
+                                <p class="author-bio" itemprop="description">{{bio}}</p>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/foreach}}
+            </div>
+        </div>
+    </header>
+
+    {{!-- Post content --}}
+    <div class="post-content" itemprop="articleBody">
+        <div class="post-content-inner">
+            {{content}}
+        </div>
+    </div>
+
+    {{!-- Post footer --}}
+    <footer class="post-footer">
+        {{!-- Tags --}}
+        {{#if tags}}
+            <div class="post-tags">
+                <h3 class="tags-title">Tags</h3>
+                <div class="tags-list">
+                    {{#foreach tags}}
+                        <a href="{{url}}" class="post-tag" rel="tag">{{name}}</a>
+                    {{/foreach}}
+                </div>
+            </div>
+        {{/if}}
+
+        {{!-- Social sharing --}}
+        <div class="post-share" x-data="{ shareOpen: false }">
+            <h3 class="share-title">Share this story</h3>
+            <div class="share-buttons">
+                <a href="https://twitter.com/intent/tweet?text={{encode title}}&url={{url absolute="true"}}"
+                   class="share-btn share-twitter"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Share on Twitter">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                    Twitter
+                </a>
+
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{url absolute="true"}}"
+                   class="share-btn share-facebook"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Share on Facebook">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook
+                </a>
+
+                <button class="share-btn share-copy"
+                        @click="copyToClipboard('{{url absolute="true"}}')"
+                        aria-label="Copy link">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    Copy Link
+                </button>
+            </div>
+        </div>
+
+        {{!-- Author bio section --}}
+        {{#foreach authors}}
+            <div class="author-card" itemscope itemtype="http://schema.org/Person">
+                <div class="author-card-content">
+                    {{#if profile_image}}
+                        <img src="{{img_url profile_image size="m"}}"
+                             alt="{{name}}"
+                             class="author-card-avatar"
+                             itemprop="image">
+                    {{/if}}
+                    <div class="author-card-info">
+                        <h3 class="author-card-name" itemprop="name">
+                            <a href="{{url}}" rel="author">{{name}}</a>
+                        </h3>
+                        {{#if bio}}
+                            <p class="author-card-bio" itemprop="description">{{bio}}</p>
+                        {{/if}}
+                        <div class="author-card-meta">
+                            <a href="{{url}}" class="author-card-link">More posts by {{name}}</a>
+                            {{#if website}}
+                                <a href="{{website}}"
+                                   class="author-card-website"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   itemprop="url">
+                                    Website
+                                </a>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/foreach}}
+    </footer>
+</article>
+
+{{!-- Related posts section --}}
+{{#get "posts" filter="tags:[{{primary_tag.slug}}]+id:-{{id}}" limit="3" as |related_posts|}}
+    {{#if related_posts}}
+        <section class="related-posts">
+            <div class="related-posts-container">
+                <h2 class="related-posts-title">Related Stories</h2>
+                <div class="related-posts-grid">
+                    {{#foreach related_posts}}
+                        <article class="related-post">
+                            {{#if feature_image}}
+                                <a href="{{url}}" class="related-post-image-link">
+                                    <img src="{{img_url feature_image size="m"}}"
+                                         alt="{{title}}"
+                                         class="related-post-image"
+                                         loading="lazy">
+                                </a>
+                            {{/if}}
+                            <div class="related-post-content">
+                                <h3 class="related-post-title">
+                                    <a href="{{url}}">{{title}}</a>
+                                </h3>
+                                {{#if excerpt}}
+                                    <p class="related-post-excerpt">{{excerpt words="20"}}</p>
+                                {{/if}}
+                                <div class="related-post-meta">
+                                    <time datetime="{{date format="YYYY-MM-DD"}}">
+                                        {{date format="MMM DD, YYYY"}}
+                                    </time>
+                                    {{#if primary_tag}}
+                                        <span class="related-post-tag">{{primary_tag.name}}</span>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </article>
+                    {{/foreach}}
+                </div>
+            </div>
+        </section>
+    {{/if}}
+{{/get}}
+
+{{!-- Comments section (if enabled) --}}
+{{#if @site.comments_enabled}}
+    <section class="post-comments">
+        <div class="comments-container">
+            <h2 class="comments-title">Comments</h2>
+            <div id="ghost-comments" data-ghost-comments="{{post.id}}" data-api="{{api.url}}" data-admin="{{admin.url}}" data-key="{{api.key}}"></div>
+        </div>
+    </section>
+{{/if}}
+
+{{!-- Alpine.js functionality for sharing --}}
+<script>
+document.addEventListener('alpine:init', () => {
+    window.copyToClipboard = function(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success message (could be enhanced with a toast notification)
+                console.log('Link copied to clipboard');
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+    };
+});
+</script>
+
+{{!-- Structured data for article --}}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{title}}",
+    "description": "{{meta_description}}",
+    "image": "{{#if feature_image}}{{img_url feature_image size="xl"}}{{/if}}",
+    "url": "{{url absolute="true"}}",
+    "datePublished": "{{date format="YYYY-MM-DD"}}",
+    "dateModified": "{{updated_at format="YYYY-MM-DD"}}",
+    "author": {
+        "@type": "Person",
+        "name": "{{authors.[0].name}}",
+        "image": "{{#if authors.[0].profile_image}}{{img_url authors.[0].profile_image size="s"}}{{/if}}",
+        "url": "{{authors.[0].url absolute="true"}}"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "{{@site.title}}",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{{@site.logo}}"
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{url absolute="true"}}"
+    }
+}
+</script>

@@ -1,0 +1,104 @@
+{{!-- Site header with navigation --}}
+<div class="header-container">
+    {{!-- Logo/Site title --}}
+    <div class="site-logo">
+        {{#if @site.logo}}
+            <a href="{{@site.url}}" aria-label="{{@site.title}} home">
+                <img src="{{@site.logo}}" alt="{{@site.title}}" class="logo-image">
+            </a>
+        {{else}}
+            <a href="{{@site.url}}" class="site-title">{{@site.title}}</a>
+        {{/if}}
+    </div>
+
+    {{!-- Navigation menu --}}
+    <nav class="site-nav" role="navigation" aria-label="Main navigation">
+        {{!-- Mobile menu toggle button --}}
+        <button
+            class="menu-toggle md:hidden"
+            x-data="{ open: false }"
+            @click="open = !open"
+            :aria-expanded="open"
+            aria-controls="mobile-menu"
+            aria-label="Toggle menu"
+        >
+            <span class="hamburger-line" :class="{ 'rotate-45 translate-y-1': open }"></span>
+            <span class="hamburger-line" :class="{ 'opacity-0': open }"></span>
+            <span class="hamburger-line" :class="{ '-rotate-45 -translate-y-1': open }"></span>
+        </button>
+
+        {{!-- Desktop navigation --}}
+        <ul class="nav-menu hidden md:flex">
+            <li class="nav-item">
+                <a href="{{@site.url}}" class="nav-link {{#is "home"}}current{{/is}}">Home</a>
+            </li>
+            {{#if @site.navigation}}
+                {{#foreach @site.navigation}}
+                    <li class="nav-item">
+                        <a href="{{url}}" class="nav-link {{#if current}}current{{/if}}">{{label}}</a>
+                    </li>
+                {{/foreach}}
+            {{/if}}
+            <li class="nav-item">
+                <a href="/portfolio/" class="nav-link">Portfolio</a>
+            </li>
+            <li class="nav-item">
+                <a href="/locations/" class="nav-link">Locations</a>
+            </li>
+            {{!-- Members integration --}}
+            {{#unless @member}}
+                <li class="nav-item">
+                    <a href="#/portal/" class="nav-link btn-signin" data-portal="signin">Sign In</a>
+                </li>
+            {{else}}
+                <li class="nav-item">
+                    <a href="#/portal/" class="nav-link" data-portal="account">Account</a>
+                </li>
+            {{/unless}}
+        </ul>
+
+        {{!-- Mobile navigation menu --}}
+        <div
+            class="mobile-menu md:hidden"
+            id="mobile-menu"
+            x-data="{ open: false }"
+            x-show="open"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-95"
+            @click.away="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <ul class="mobile-nav-menu">
+                <li class="mobile-nav-item">
+                    <a href="{{@site.url}}" class="mobile-nav-link {{#is "home"}}current{{/is}}">Home</a>
+                </li>
+                {{#if @site.navigation}}
+                    {{#foreach @site.navigation}}
+                        <li class="mobile-nav-item">
+                            <a href="{{url}}" class="mobile-nav-link {{#if current}}current{{/if}}">{{label}}</a>
+                        </li>
+                    {{/foreach}}
+                {{/if}}
+                <li class="mobile-nav-item">
+                    <a href="/portfolio/" class="mobile-nav-link">Portfolio</a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/locations/" class="mobile-nav-link">Locations</a>
+                </li>
+                {{#unless @member}}
+                    <li class="mobile-nav-item">
+                        <a href="#/portal/" class="mobile-nav-link btn-signin" data-portal="signin">Sign In</a>
+                    </li>
+                {{else}}
+                    <li class="mobile-nav-item">
+                        <a href="#/portal/" class="mobile-nav-link" data-portal="account">Account</a>
+                    </li>
+                {{/unless}}
+            </ul>
+        </div>
+    </nav>
+</div>
