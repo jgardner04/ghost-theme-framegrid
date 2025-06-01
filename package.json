@@ -1,0 +1,112 @@
+{
+  "name": "framegrid",
+  "version": "1.0.0",
+  "description": "A minimalist Ghost blog template designed specifically for nature photographers who want their imagery to be the primary focus",
+  "main": "index.hbs",
+  "engines": {
+    "ghost": ">=4.0.0",
+    "node": ">=16.0.0"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Jonathan Gardner",
+    "email": "jonathang@jonathangardner.io",
+    "url": "https://github.com/jgardner04"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jgardner04/ghost-theme-framegrid.git"
+  },
+  "homepage": "https://github.com/jgardner04/ghost-theme-framegrid#readme",
+  "bugs": {
+    "url": "https://github.com/jgardner04/ghost-theme-framegrid/issues"
+  },
+  "keywords": [
+    "ghost-theme",
+    "photography",
+    "portfolio",
+    "nature",
+    "masonry",
+    "responsive",
+    "alpine",
+    "tailwind"
+  ],
+  "config": {
+    "posts_per_page": 6,
+    "image_sizes": {
+      "xs": 300,
+      "s": 600,
+      "m": 1000,
+      "l": 1600,
+      "xl": 2400
+    }
+  },
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build",
+    "zip": "gulp zip",
+    "test": "gscan .",
+    "lint": "gulp lint",
+    "start": "npm run dev",
+    "prezip": "npm run build",
+    "postinstall": "echo 'FrameGrid theme dependencies installed successfully'"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1",
+    "gscan": "^4.40.0",
+    "gulp": "^4.0.2",
+    "gulp-livereload": "^4.0.2",
+    "gulp-postcss": "^9.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-zip": "^5.1.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "files": [
+    "assets/**/*",
+    "partials/**/*",
+    "locales/**/*",
+    "*.hbs",
+    "routes.yaml",
+    "README.md",
+    "LICENSE"
+  ],
+  "ghost": {
+    "config": {
+      "custom": {
+        "grid_columns": {
+          "type": "select",
+          "options": [
+            "2",
+            "3",
+            "4"
+          ],
+          "default": "3",
+          "description": "Choose the number of columns for the portfolio grid"
+        },
+        "accent_color": {
+          "type": "color",
+          "default": "#3B82F6",
+          "description": "Customize the theme accent color"
+        },
+        "show_author_bio": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show/hide author biography on posts"
+        },
+        "featured_posts_count": {
+          "type": "number",
+          "default": 6,
+          "description": "Number of featured posts to display on homepage"
+        }
+      }
+    }
+  }
+}
