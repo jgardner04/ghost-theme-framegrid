@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-31T21:27:20.397Z",
+    "tasksAnalyzed": 25,
+    "totalTasks": 25,
+    "analysisCount": 25,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Set up Ghost CLI development environment",
+      "complexityScore": 3,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the process of setting up the Ghost CLI development environment into subtasks such as installing prerequisites (Node.js), installing Ghost CLI globally, creating the project directory, installing Ghost locally, and verifying the installation.",
+      "reasoning": "This task is straightforward and well-documented, involving a series of command-line steps. However, it requires prerequisite checks and verification, making it slightly more than trivial. Subtasks should cover each installation and verification step.[1][2][3][5]"
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Create Ghost theme structure",
+      "complexityScore": 4,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "List the steps to create the theme directory, add essential files (package.json, index.hbs, post.hbs, page.hbs, default.hbs), and ensure compatibility with the latest Ghost theme API.",
+      "reasoning": "Setting up the theme structure is a foundational but routine task, requiring knowledge of Ghost's file conventions and basic file operations. Each file and configuration step can be a subtask."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Configure package.json for Ghost theme",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Detail the steps to create and configure package.json, including adding required fields, custom configurations, and validating the file.",
+      "reasoning": "This is a configuration task with moderate complexity, involving JSON editing and validation. Each configuration aspect can be a subtask."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement base Handlebars template structure",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand into subtasks for creating each Handlebars template file, implementing Ghost helpers, and testing template rendering.",
+      "reasoning": "Requires understanding of Handlebars, Ghost helpers, and template structure. Each template and helper integration can be a subtask."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Set up Tailwind CSS build system",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into installing dependencies, configuring Tailwind, setting up PostCSS, linking generated CSS, and verifying the build process.",
+      "reasoning": "Involves multiple tools and configuration files, but follows standard procedures. Each setup and verification step can be a subtask."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Configure routes.yaml for custom URL structure",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "List subtasks for creating routes.yaml, defining portfolio and location routes, configuring collections, and testing routing.",
+      "reasoning": "Requires understanding Ghost routing and collections, but is a contained configuration task. Each route and test can be a subtask."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement responsive navigation with Ghost menu integration",
+      "complexityScore": 6,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand into subtasks for implementing the navigation helper, responsive layout, mobile menu with Alpine.js, dropdown support, accessibility, and testing.",
+      "reasoning": "Combines template logic, responsive design, JavaScript interactivity, and accessibility, making it moderately complex."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Develop 3-column masonry layout",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into subtasks for setting up CSS Grid, implementing gutters, integrating responsive images, considering masonry library usage, and testing responsiveness.",
+      "reasoning": "Involves advanced CSS, responsive design, and possible library integration. Each aspect can be a subtask."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Implement infinite scroll using Ghost Content API",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "List subtasks for integrating the Content API, implementing scroll detection, fetching and rendering posts, optimizing API calls, and testing performance.",
+      "reasoning": "Requires API integration, JavaScript logic, and performance considerations, making it moderately complex."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Create hover effects for portfolio grid items",
+      "complexityScore": 3,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into subtasks for implementing hover overlay, adding transitions, and ensuring accessibility.",
+      "reasoning": "A focused UI task with limited scope, mainly involving CSS and accessibility checks."
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "Optimize Ghost's native image processing for thumbnails",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down into configuring image helpers, implementing srcset, enabling lazy loading, and testing image quality and performance.",
+      "reasoning": "Involves Ghost-specific helpers, responsive images, and performance optimization."
+    },
+    {
+      "taskId": 12,
+      "taskTitle": "Build lightbox component using Alpine.js",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "List subtasks for setting up Alpine.js, implementing lightbox UI, loading images, adding navigation, ensuring accessibility, and testing.",
+      "reasoning": "Requires custom JavaScript, UI/UX design, accessibility, and integration with Ghost data, making it more complex."
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "Implement custom styling for Ghost Gallery Cards",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Expand into subtasks for creating custom CSS, ensuring layout consistency, integrating lightbox, and testing responsiveness.",
+      "reasoning": "Involves CSS, component integration, and responsive design."
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "Develop alternating blog post layouts",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down into implementing alternating layouts, adding responsive breakpoints, integrating Ghost helpers, and testing.",
+      "reasoning": "Requires template logic, CSS, and responsive design."
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "Integrate Ghost's native commenting system",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "List subtasks for adding the comments helper, styling the comment section, implementing collapsible UI, and testing functionality.",
+      "reasoning": "Mostly involves template integration and styling, with some UI logic."
+    },
+    {
+      "taskId": 16,
+      "taskTitle": "Create portfolio category pages",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand into subtasks for creating category templates, fetching posts, integrating the masonry grid, adding descriptions, and testing filtering and pagination.",
+      "reasoning": "Combines template creation, data fetching, layout integration, and testing."
+    },
+    {
+      "taskId": 17,
+      "taskTitle": "Implement location-specific templates",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into creating the location template, integrating tag-based filtering, adding map functionality, ensuring responsiveness, and testing.",
+      "reasoning": "Involves template logic, third-party map integration, and responsive design."
+    },
+    {
+      "taskId": 18,
+      "taskTitle": "Develop standard Ghost pages with native features",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "List subtasks for enhancing page.hbs, supporting Ghost Cards, adding custom layout options, and testing.",
+      "reasoning": "Involves template enhancement and supporting multiple content types."
+    },
+    {
+      "taskId": 19,
+      "taskTitle": "Implement related posts functionality",
+      "complexityScore": 4,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Expand into subtasks for fetching related posts, implementing card layout, limiting results, and testing relevance and performance.",
+      "reasoning": "Requires data fetching, template logic, and UI layout."
+    },
+    {
+      "taskId": 20,
+      "taskTitle": "Add AMP template support",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into creating amp.hbs, implementing AMP components, adding AMP-specific styles, validating AMP pages, and testing on devices.",
+      "reasoning": "Requires knowledge of AMP standards, template creation, and validation."
+    },
+    {
+      "taskId": 21,
+      "taskTitle": "Implement Ghost Members with custom portal styling",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "List subtasks for integrating member helpers, styling the portal, implementing tiered access, personalizing content, and testing member flows.",
+      "reasoning": "Involves authentication, access control, custom UI, and integration with Ghost's Members API."
+    },
+    {
+      "taskId": 22,
+      "taskTitle": "Create workshop booking system using member tiers",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand into subtasks for creating the workshop template, restricting access by tier, implementing the booking form, integrating payment, and testing the booking flow.",
+      "reasoning": "Combines access control, form integration, payment processing, and custom templates."
+    },
+    {
+      "taskId": 23,
+      "taskTitle": "Implement Ghost's native search with custom UI",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down into integrating the search API, creating the search results page, implementing real-time suggestions, ensuring mobile support, and testing.",
+      "reasoning": "Involves API integration, UI development, and performance considerations."
+    },
+    {
+      "taskId": 24,
+      "taskTitle": "Optimize for Ghost Pro hosting",
+      "complexityScore": 8,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "List subtasks for reviewing theme compatibility, removing server-side code, configuring CDN usage, implementing caching, updating API usage, deploying to Ghost Pro, and testing all features.",
+      "reasoning": "Requires a comprehensive review and optimization across the entire theme, ensuring compatibility and performance in a managed environment."
+    },
+    {
+      "taskId": 25,
+      "taskTitle": "Prepare theme for Ghost Marketplace submission",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand into subtasks for ensuring GScan compliance, writing documentation, preparing demo content, creating promotional assets, verifying licensing, and testing installation.",
+      "reasoning": "Involves compliance checks, documentation, marketing materials, and final testing, requiring attention to detail and thoroughness."
+    }
+  ]
+}
