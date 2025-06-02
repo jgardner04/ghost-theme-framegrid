@@ -1,23 +1,258 @@
-<header id="gh-navigation" class="gh-navigation is-{{#match navigationLayout "Logo on the left"}}left-logo{{else match navigationLayout "Stacked"}}stacked{{else}}middle-logo{{/match}}{{#match @custom.header_and_footer_color "Accent color"}} has-accent-color{{/match}} gh-outer">
-    <div class="gh-navigation-inner gh-inner">
+{{!-- Skip to content link for screen readers --}}
+<a href="#gh-main" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:px-4 focus:py-2 focus:bg-gray-900 focus:text-white focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 focus:rounded-md transition-all duration-200">Skip to content</a>
 
-        <div class="gh-navigation-brand">
-            <a class="gh-navigation-logo is-title" href="{{@site.url}}">
+<header id="gh-navigation" class="gh-navigation h-[100px] text-2xl font-semibold bg-white text-gray-900 is-{{#match navigationLayout "Logo on the left"}}left-logo{{else match navigationLayout "Stacked"}}stacked{{else}}middle-logo{{/match}}{{#match @custom.header_and_footer_color "Accent color"}} has-accent-color{{/match}} max-w-none mx-auto px-8 relative md:h-[100px] sm:h-[64px]" role="banner" x-data="{ open: false }" :class="{ 'is-open': open }">
+    <div class="gh-navigation-inner h-full items-center gap-6 grid grid-flow-row-dense {{#match navigationLayout "Logo on the left"}}grid-cols-[auto_1fr_auto] md:gap-6{{else match navigationLayout "Stacked"}}grid-cols-[1fr_auto_1fr] lg:grid-rows-2 lg:p-0{{else}}grid-cols-[1fr_auto_1fr]{{/match}} sm:grid-rows-[auto_1fr_auto] sm:grid-cols-1 sm:gap-12">
+
+        {{!-- Brand section with logo and mobile controls --}}
+        <div class="gh-navigation-brand leading-none {{#match navigationLayout "Stacked"}}flex items-center grid-row-1 grid-col-start-2 min-h-[80px] sm:min-h-auto{{else match navigationLayout "Logo on the left"}}{{else}}grid-col-start-2{{/match}} sm:grid sm:grid-cols-[1fr_auto_auto] sm:grid-col-start-1 sm:items-center sm:h-16">
+            <a class="gh-navigation-logo is-title relative font-bold text-[calc(2.4rem*var(--factor,1))] font-heading tracking-tight whitespace-nowrap no-underline hover:opacity-80 transition-opacity duration-200 md:top-[-2px] sm:text-[2.2rem]" href="{{@site.url}}" aria-label="{{@site.title}} - Home">
                 {{#if @site.logo}}
-                    <img src="{{@site.logo}}" alt="{{@site.title}}">
+                    <img src="{{@site.logo}}" alt="{{@site.title}}" loading="eager" class="max-h-10">
                 {{else}}
                     {{@site.title}}
                 {{/if}}
             </a>
             {{> "search-toggle"}}
-            <button class="gh-burger gh-icon-button" aria-label="Menu">
-                {{> "icons/burger"}}
-                {{> "icons/close"}}
+            <button class="gh-burger gh-icon-button flex md:hidden items-center justify-center w-10 h-10 p-2 -mr-2 -ml-2 text-gray-900 hover:bg-gray-100 rounded-md focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 transition-colors duration-200"
+                @click="open = !open"
+                :aria-expanded="open"
+                aria-controls="gh-navigation-menu"
+                aria-label="Toggle navigation menu">
+                <span :class="{ 'rotate-45 translate-y-1': open, 'opacity-0': open }" class="transition-all duration-300">
+                    {{> "icons/burger"}}
+                </span>
+                <span :class="{ '-rotate-45 -translate-y-1': open, 'opacity-0': !open }" class="absolute transition-all duration-300">
+                    {{> "icons/close"}}
+                </span>
             </button>
         </div>
 
-        <nav class="gh-navigation-menu">
-            {{navigation}}
+        {{!-- Main navigation menu --}}
+        <nav class="gh-navigation-menu flex gap-6 items-center {{#match navigationLayout "Logo on the left"}}mr-[100px] ml-4 lg:mr-[100px] lg:ml-4{{else match navigationLayout "Stacked"}}grid-row-2 grid-col-span-full justify-center h-15 mx-12 lg:grid-row-2 lg:grid-col-span-full lg:justify-center lg:h-15 lg:mx-12{{else match navigationLayout "Middle Logo"}}mr-16 lg:mr-16{{/match}} sm:fixed sm:justify-center sm:transition-all sm:duration-300"
+            :class="{
+                'sm:visible sm:opacity-100': open,
+                'sm:invisible sm:opacity-0': !open
+            }"
+            id="gh-navigation-menu"
+            role="navigation"
+            aria-label="Main navigation"
+            x-transition:enter="sm:transition sm:ease-out sm:duration-300"
+            x-transition:enter-start="sm:opacity-0 sm:scale-95"
+            x-transition:enter-end="sm:opacity-100 sm:scale-100"
+            x-transition:leave="sm:transition sm:ease-in sm:duration-200"
+            x-transition:leave-start="sm:opacity-100 sm:scale-100"
+            x-transition:leave-end="sm:opacity-0 sm:scale-95">
+            {{#navigation}}
+                <ul class="nav inline-flex gap-7 items-center p-0 m-0 whitespace-nowrap list-none sm:flex sm:flex-col sm:gap-5 sm:items-center sm:leading-relaxed" role="menubar"
+                    x-data="{
+                        init() {
+                            // Process navigation items to build dropdown structure
+                            this.processNavigation();
+                        },
+                        processNavigation() {
+                            const navItems = {{json navigation}};
+                            this.structuredNav = [];
+
+                            for (let i = 0; i < navItems.length; i++) {
+                                const item = navItems[i];
+
+                                // Skip items that start with '-' as they're dropdown children
+                                if (item.label.startsWith('-')) {
+                                    continue;
+                                }
+
+                                // Check if next items are dropdown children
+                                const children = [];
+                                for (let j = i + 1; j < navItems.length; j++) {
+                                    if (navItems[j].label.startsWith('-')) {
+                                        children.push({
+                                            ...navItems[j],
+                                            label: navItems[j].label.substring(1).trim()
+                                        });
+                                    } else {
+                                        break;
+                                    }
+                                }
+
+                                this.structuredNav.push({
+                                    ...item,
+                                    children: children,
+                                    hasDropdown: children.length > 0,
+                                    dropdownOpen: false
+                                });
+                            }
+                        },
+                        structuredNav: [],
+                        focusedDropdownIndex: -1,
+                        handleDropdownKeydown(event, parentIndex) {
+                            const dropdown = this.structuredNav[parentIndex];
+                            if (!dropdown || !dropdown.hasDropdown || !dropdown.dropdownOpen) return;
+
+                            switch(event.key) {
+                                case 'ArrowDown':
+                                    event.preventDefault();
+                                    this.focusedDropdownIndex = (this.focusedDropdownIndex + 1) % dropdown.children.length;
+                                    this.focusDropdownItem(parentIndex, this.focusedDropdownIndex);
+                                    break;
+                                case 'ArrowUp':
+                                    event.preventDefault();
+                                    this.focusedDropdownIndex = this.focusedDropdownIndex <= 0 ? dropdown.children.length - 1 : this.focusedDropdownIndex - 1;
+                                    this.focusDropdownItem(parentIndex, this.focusedDropdownIndex);
+                                    break;
+                                case 'Escape':
+                                    event.preventDefault();
+                                    dropdown.dropdownOpen = false;
+                                    this.focusedDropdownIndex = -1;
+                                    // Focus the parent button
+                                    this.$nextTick(() => {
+                                        const parentButton = this.$el.querySelector(`[data-parent-index='${parentIndex}']`);
+                                        if (parentButton) parentButton.focus();
+                                    });
+                                    break;
+                                case 'Tab':
+                                    // Allow normal tab behavior
+                                    dropdown.dropdownOpen = false;
+                                    this.focusedDropdownIndex = -1;
+                                    break;
+                            }
+                        },
+                        focusDropdownItem(parentIndex, itemIndex) {
+                            this.$nextTick(() => {
+                                const dropdownItem = this.$el.querySelector(`[data-parent-index='${parentIndex}'] [data-dropdown-item='${itemIndex}']`);
+                                if (dropdownItem) dropdownItem.focus();
+                            });
+                        },
+                        openDropdown(parentIndex) {
+                            this.structuredNav[parentIndex].dropdownOpen = true;
+                            this.focusedDropdownIndex = -1;
+                            // Announce dropdown opened to screen readers
+                            this.$nextTick(() => {
+                                const dropdown = this.$el.querySelector(`[data-parent-index='${parentIndex}'] [role='menu']`);
+                                if (dropdown) {
+                                    dropdown.setAttribute('aria-live', 'polite');
+                                    dropdown.setAttribute('aria-label', this.structuredNav[parentIndex].label + ' submenu opened');
+                                }
+                            });
+                        },
+                        closeDropdown(parentIndex) {
+                            this.structuredNav[parentIndex].dropdownOpen = false;
+                            this.focusedDropdownIndex = -1;
+                        }
+                    }"
+                    @keydown="handleDropdownKeydown($event, $event.target.closest('[data-parent-index]')?.dataset.parentIndex)">
+
+                    <template x-for="(item, index) in structuredNav" :key="index">
+                        <li class="nav-item transition-all duration-200 sm:opacity-0 sm:transform sm:translate-y-[-4px]"
+                            :class="{ 'nav-current': item.current, 'relative': item.hasDropdown }"
+                            role="none"
+                            x-data="{ dropdownOpen: false }"
+                            :data-parent-index="index"
+                            @mouseenter="!window.matchMedia('(max-width: 640px)').matches && item.hasDropdown && openDropdown(index)"
+                            @mouseleave="!window.matchMedia('(max-width: 640px)').matches && item.hasDropdown && closeDropdown(index)"
+                            @focusout="
+                                if (item.hasDropdown && !$el.contains($event.relatedTarget)) {
+                                    setTimeout(() => {
+                                        if (!$el.contains(document.activeElement)) {
+                                            closeDropdown(index);
+                                        }
+                                    }, 100);
+                                }
+                            "
+                            x-show="true"
+                            x-transition:enter="sm:transition sm:ease-out sm:duration-300"
+                            x-transition:enter-start="sm:opacity-0 sm:translate-y-[-8px]"
+                            x-transition:enter-end="sm:opacity-100 sm:translate-y-0"
+                            :style="`transition-delay: ${30 * index}ms`">
+
+                            <!-- Parent navigation item -->
+                            <template x-if="item.hasDropdown">
+                                <button class="nav-link text-inherit font-semibold no-underline hover:opacity-80 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 focus:rounded-sm transition-all duration-200 sm:text-[1.75rem] sm:font-semibold sm:normal-case flex items-center gap-1"
+                                        :data-parent-index="index"
+                                        @click="
+                                            if (window.matchMedia('(max-width: 640px)').matches) {
+                                                item.dropdownOpen ? closeDropdown(index) : openDropdown(index);
+                                            }
+                                        "
+                                        @keydown.down.prevent="
+                                            if (!item.dropdownOpen) {
+                                                openDropdown(index);
+                                            }
+                                            focusedDropdownIndex = 0;
+                                            focusDropdownItem(index, 0);
+                                        "
+                                        @keydown.enter.prevent="
+                                            item.dropdownOpen ? closeDropdown(index) : openDropdown(index);
+                                        "
+                                        @keydown.space.prevent="
+                                            item.dropdownOpen ? closeDropdown(index) : openDropdown(index);
+                                        "
+                                        :aria-expanded="item.dropdownOpen"
+                                        aria-haspopup="true"
+                                        role="menuitem"
+                                        :aria-current="item.current ? 'page' : null"
+                                        :aria-describedby="'submenu-' + index">
+                                    <span x-text="item.label"></span>
+                                    <svg class="w-4 h-4 transition-transform duration-200"
+                                         :class="{ 'rotate-180': item.dropdownOpen }"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         viewBox="0 0 24 24"
+                                         aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </template>
+
+                            <template x-if="!item.hasDropdown">
+                                <a class="nav-link text-inherit font-semibold no-underline hover:opacity-80 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 focus:rounded-sm transition-all duration-200 sm:text-[1.75rem] sm:font-semibold sm:normal-case"
+                                   :href="item.url"
+                                   role="menuitem"
+                                   @click="open = false"
+                                   :aria-current="item.current ? 'page' : null"
+                                   x-text="item.label">
+                                </a>
+                            </template>
+
+                            <!-- Dropdown menu -->
+                            <template x-if="item.hasDropdown">
+                                <ul class="absolute top-full left-0 mt-2 py-2 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px] z-50 sm:relative sm:mt-0 sm:bg-transparent sm:border-0 sm:shadow-none sm:rounded-none"
+                                    x-show="item.dropdownOpen"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 translate-y-[-8px]"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 translate-y-0"
+                                    x-transition:leave-end="opacity-0 translate-y-[-8px]"
+                                    role="menu"
+                                    :id="'submenu-' + index"
+                                    :aria-labelledby="'submenu-' + index"
+                                    aria-orientation="vertical">
+
+                                    <template x-for="(child, childIndex) in item.children" :key="child.url">
+                                        <li role="none">
+                                            <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 transition-colors duration-150 sm:text-base sm:py-1 sm:px-0 sm:bg-transparent sm:hover:bg-transparent sm:text-gray-900 sm:hover:opacity-80"
+                                               :href="child.url"
+                                               :data-dropdown-item="childIndex"
+                                               role="menuitem"
+                                               tabindex="-1"
+                                               @click="open = false; closeDropdown(index)"
+                                               @keydown.enter.prevent="
+                                                   window.location.href = child.url;
+                                                   open = false;
+                                                   closeDropdown(index);
+                                               "
+                                               @focus="focusedDropdownIndex = childIndex"
+                                               x-text="child.label">
+                                            </a>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            {{/navigation}}
             {{#unless @site.members_enabled}}
                 {{#match navigationLayout "Stacked"}}
                     {{> "search-toggle"}}
@@ -25,25 +260,41 @@
             {{/unless}}
         </nav>
 
-        <div class="gh-navigation-actions">
+        {{!-- Actions section with search and member controls --}}
+        <div class="gh-navigation-actions flex gap-6 items-center justify-end bg-white {{#match navigationLayout "Stacked"}}grid-row-1 grid-col-span-full justify-between{{else match navigationLayout "Middle Logo"}}gap-7{{/match}} sm:text-center sm:fixed sm:right-0 sm:bottom-0 sm:left-0 sm:inline-flex sm:flex-col sm:gap-3 sm:items-center sm:py-8"
+            x-show="true"
+            x-transition:enter="sm:transition sm:ease-out sm:duration-400 sm:delay-100"
+            x-transition:enter-start="sm:opacity-0 sm:translate-y-4"
+            x-transition:enter-end="sm:opacity-100 sm:translate-y-0">
             {{#unless @site.members_enabled}}
                 {{^match navigationLayout "Stacked"}}
                     {{> "search-toggle"}}
                 {{/match}}
             {{else}}
                 {{> "search-toggle"}}
-                <div class="gh-navigation-members">
+                <div class="gh-navigation-members flex gap-5 items-center whitespace-nowrap sm:flex-col-reverse sm:gap-4 sm:w-full">
                     {{#unless @member}}
                         {{#unless @site.members_invite_only}}
-                            <a href="#/portal/signin" data-portal="signin">Sign in</a>
+                            <a href="#/portal/signin" data-portal="signin"
+                               class="gh-navigation-signin text-inherit font-semibold no-underline hover:opacity-80 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 focus:rounded-sm transition-all duration-200 sm:text-[1.75rem] sm:opacity-0 sm:transform sm:translate-y-2 sm:transition-all sm:duration-400 sm:delay-200"
+                               @click="open = false">Sign in</a>
                             {{#unless hideSubscribeButton}}
-                                <a class="gh-button" href="#/portal/signup" data-portal="signup">Subscribe</a>
+                                <a class="gh-button inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white font-semibold text-inherit rounded-md hover:bg-blue-700 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 transition-colors duration-200 sm:w-full sm:text-[1.75rem] sm:normal-case sm:opacity-0 sm:transform sm:translate-y-2 sm:transition-all sm:duration-400"
+                                   href="#/portal/signup"
+                                   data-portal="signup"
+                                   @click="open = false">Subscribe</a>
                             {{/unless}}
                         {{else}}
-                            <a class="gh-button" href="#/portal/signin" data-portal="signin">Sign in</a>
+                            <a class="gh-button inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white font-semibold text-inherit rounded-md hover:bg-blue-700 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 transition-colors duration-200 sm:w-full sm:text-[1.75rem] sm:normal-case"
+                               href="#/portal/signin"
+                               data-portal="signin"
+                               @click="open = false">Sign in</a>
                         {{/unless}}
                     {{else}}
-                        <a class="gh-button" href="#/portal/account" data-portal="account">Account</a>
+                        <a class="gh-button inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white font-semibold text-inherit rounded-md hover:bg-blue-700 focus:outline-none focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 transition-colors duration-200"
+                           href="#/portal/account"
+                           data-portal="account"
+                           @click="open = false">Account</a>
                     {{/unless}}
                 </div>
             {{/unless}}
