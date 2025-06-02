@@ -1,0 +1,227 @@
+{{!-- Static page template --}}
+
+<article class="page-article" itemscope itemtype="http://schema.org/WebPage">
+    {{!-- Featured image section --}}
+    {{#if feature_image}}
+        <div class="page-hero-image">
+            <img src="{{img_url feature_image size="xl"}}"
+                 alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}"
+                 class="page-featured-image"
+                 itemprop="image">
+
+            {{!-- Image caption if available --}}
+            {{#if feature_image_caption}}
+                <figcaption class="page-image-caption">{{feature_image_caption}}</figcaption>
+            {{/if}}
+        </div>
+    {{/if}}
+
+    {{!-- Page header --}}
+    <header class="page-header">
+        <div class="page-header-content">
+            {{!-- Page title --}}
+            <h1 class="page-title" itemprop="name">{{title}}</h1>
+
+            {{!-- Page excerpt --}}
+            {{#if excerpt}}
+                <p class="page-excerpt" itemprop="description">{{excerpt}}</p>
+            {{/if}}
+
+            {{!-- Page meta --}}
+            <div class="page-meta">
+                {{!-- Updated date --}}
+                <time class="page-date"
+                      datetime="{{date modified_at format="YYYY-MM-DD"}}"
+                      itemprop="dateModified">
+                    Last updated {{date modified_at format="MMM DD, YYYY"}}
+                </time>
+
+                {{!-- Reading time --}}
+                {{#if reading_time}}
+                    <span class="page-reading-time">{{reading_time}}</span>
+                {{/if}}
+            </div>
+        </div>
+    </header>
+
+    {{!-- Page content --}}
+    <div class="page-content" itemprop="mainContentOfPage">
+        <div class="page-content-inner">
+            {{content}}
+        </div>
+    </div>
+
+    {{!-- Page footer --}}
+    <footer class="page-footer">
+        {{!-- Tags (if any) --}}
+        {{#if tags}}
+            <div class="page-tags">
+                <h3 class="tags-title">Related Topics</h3>
+                <div class="tags-list">
+                    {{#foreach tags}}
+                        <a href="{{url}}" class="page-tag" rel="tag">{{name}}</a>
+                    {{/foreach}}
+                </div>
+            </div>
+        {{/if}}
+
+        {{!-- Social sharing --}}
+        <div class="page-share" x-data="{ shareOpen: false }">
+            <h3 class="share-title">Share this page</h3>
+            <div class="share-buttons">
+                <a href="https://twitter.com/intent/tweet?text={{encode title}}&url={{url absolute="true"}}"
+                   class="share-btn share-twitter"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Share on Twitter">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                    Twitter
+                </a>
+
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{url absolute="true"}}"
+                   class="share-btn share-facebook"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Share on Facebook">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook
+                </a>
+
+                <button class="share-btn share-copy"
+                        @click="copyToClipboard('{{url absolute="true"}}')"
+                        aria-label="Copy link">
+                    <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    Copy Link
+                </button>
+            </div>
+        </div>
+
+        {{!-- Contact section for relevant pages --}}
+        {{#has tag="contact"}}
+            <div class="contact-section">
+                <h3>Get in Touch</h3>
+                <p>Ready to book a photography session or have questions about my work?</p>
+                <div class="contact-methods">
+                    {{#if @site.facebook}}
+                        <a href="https://www.facebook.com/{{@site.facebook}}"
+                           class="contact-link"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Facebook
+                        </a>
+                    {{/if}}
+                    {{#if @site.twitter}}
+                        <a href="https://twitter.com/{{@site.twitter}}"
+                           class="contact-link"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Twitter
+                        </a>
+                    {{/if}}
+                    <a href="#/portal/"
+                       class="contact-link btn-primary"
+                       data-portal="signup">
+                        Subscribe for Updates
+                    </a>
+                </div>
+            </div>
+        {{/has}}
+    </footer>
+</article>
+
+{{!-- Related pages or featured content --}}
+{{#unless has tag="contact"}}
+    {{#get "posts" filter="featured:true" limit="3" as |featured_posts|}}
+        {{#if featured_posts}}
+            <section class="featured-content">
+                <div class="featured-content-container">
+                    <h2 class="featured-content-title">Featured Work</h2>
+                    <div class="featured-content-grid">
+                        {{#foreach featured_posts}}
+                            <article class="featured-item">
+                                {{#if feature_image}}
+                                    <a href="{{url}}" class="featured-item-image-link">
+                                        <img src="{{img_url feature_image size="m"}}"
+                                             alt="{{title}}"
+                                             class="featured-item-image"
+                                             loading="lazy">
+                                    </a>
+                                {{/if}}
+                                <div class="featured-item-content">
+                                    <h3 class="featured-item-title">
+                                        <a href="{{url}}">{{title}}</a>
+                                    </h3>
+                                    {{#if excerpt}}
+                                        <p class="featured-item-excerpt">{{excerpt words="20"}}</p>
+                                    {{/if}}
+                                    <div class="featured-item-meta">
+                                        <time datetime="{{date format="YYYY-MM-DD"}}">
+                                            {{date format="MMM DD, YYYY"}}
+                                        </time>
+                                        {{#if primary_tag}}
+                                            <span class="featured-item-tag">{{primary_tag.name}}</span>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </article>
+                        {{/foreach}}
+                    </div>
+                </div>
+            </section>
+        {{/if}}
+    {{/get}}
+{{/unless}}
+
+{{!-- Alpine.js functionality for sharing --}}
+<script>
+document.addEventListener('alpine:init', () => {
+    // Reuse the copy function from post template
+    if (!window.copyToClipboard) {
+        window.copyToClipboard = function(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    console.log('Link copied to clipboard');
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        };
+    }
+});
+</script>
+
+{{!-- Structured data for page --}}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "{{title}}",
+    "description": "{{excerpt}}",
+    "url": "{{url absolute="true"}}",
+    "dateModified": "{{date modified_at format="YYYY-MM-DD"}}",
+    "publisher": {
+        "@type": "Organization",
+        "name": "{{@site.title}}",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{{@site.logo}}"
+        }
+    },
+    "mainEntity": {
+        "@type": "WebPage",
+        "@id": "{{url absolute="true"}}"
+    }
+}
+</script>

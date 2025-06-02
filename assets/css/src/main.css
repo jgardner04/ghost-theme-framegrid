@@ -1,0 +1,255 @@
+/* FrameGrid Ghost Theme - Source Styles */
+
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS variables for Ghost theme integration */
+@layer base {
+  :root {
+    /* Ghost font variables for custom font support */
+    --gh-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, sans-serif;
+    --gh-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, sans-serif;
+
+    /* Theme custom variables */
+    --accent-color: #3b82f6;
+    --grid-columns: 3;
+  }
+
+  /* Base styles that work with Tailwind */
+  body {
+    @apply font-gh-body text-gh-body leading-relaxed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-gh-heading text-gh-heading leading-tight;
+  }
+}
+
+/* Required Ghost content card classes */
+@layer components {
+  .kg-width-wide {
+    position: relative;
+    width: 85vw;
+    min-width: 100%;
+    margin: auto calc(50% - 50vw);
+    transform: translateX(calc(50vw - 50%));
+  }
+
+  .kg-width-full {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  /* Ghost content cards */
+  .kg-card {
+    @apply my-ghost-card;
+  }
+
+  .kg-image {
+    @apply max-w-full h-auto;
+  }
+
+  .kg-gallery-container {
+    @apply flex flex-col max-w-full;
+  }
+
+  .kg-gallery-row {
+    @apply flex flex-row justify-center;
+  }
+
+  .kg-gallery-image {
+    @apply w-full h-full object-cover;
+  }
+
+  /* Site layout */
+  .site-wrapper {
+    @apply min-h-screen flex flex-col;
+  }
+
+  .site-main {
+    @apply flex-1;
+  }
+
+  /* Skip link for accessibility */
+  .skip-link {
+    @apply absolute top-[-40px] left-2 bg-accent text-white px-2 py-2 no-underline rounded z-[1000];
+  }
+
+  .skip-link:focus {
+    @apply top-2;
+  }
+
+  /* Basic grid layout */
+  .grid-ghost {
+    @apply grid gap-4;
+    grid-template-columns: repeat(var(--grid-columns, 3), 1fr);
+  }
+
+  /* Responsive grid adjustments */
+  @screen md {
+    .grid-ghost-3,
+    .grid-ghost-4 {
+      @apply grid-cols-2;
+    }
+  }
+
+  @screen sm {
+    .grid-ghost-2,
+    .grid-ghost-3,
+    .grid-ghost-4 {
+      @apply grid-cols-1;
+    }
+
+    .kg-width-wide,
+    .kg-width-full {
+      @apply w-full my-8;
+      transform: none;
+      left: auto;
+      right: auto;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  /* Button styles */
+  .btn {
+    @apply inline-block px-4 py-2 bg-accent text-white border-none rounded cursor-pointer no-underline;
+  }
+
+  .btn:hover {
+    @apply opacity-90 no-underline;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent;
+  }
+
+  .btn-secondary {
+    @apply btn bg-gray-600;
+  }
+
+  /* Container */
+  .container {
+    @apply max-w-ghost-wide mx-auto px-4;
+  }
+
+  /* Header and footer */
+  .site-header {
+    @apply py-4 border-b border-gray-200;
+  }
+
+  .site-footer {
+    @apply py-8 border-t border-gray-200 mt-auto;
+  }
+
+  /* Post and page content */
+  .post-content,
+  .page-content {
+    @apply max-w-ghost-content mx-auto py-8 px-4;
+  }
+
+  .post-content img,
+  .page-content img {
+    @apply my-8 rounded-lg;
+  }
+
+  /* Form styles */
+  input,
+  textarea,
+  select {
+    @apply w-full p-2 border border-gray-300 rounded;
+    font-family: inherit;
+  }
+
+  /* Dark mode styles */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --gh-color-heading: #ffffff;
+      --gh-color-body: #e5e5e5;
+      --gh-color-secondary: #a1a1aa;
+    }
+
+    body {
+      @apply bg-gray-900 text-gray-100;
+    }
+
+    .site-header,
+    .site-footer {
+      @apply border-gray-700;
+    }
+
+    input,
+    textarea,
+    select {
+      @apply bg-gray-800 border-gray-600 text-gray-100;
+    }
+  }
+
+  .dark-mode {
+    @apply bg-gray-900 text-gray-100;
+  }
+
+  .dark-mode .site-header,
+  .dark-mode .site-footer {
+    @apply border-gray-700;
+  }
+
+  .dark-mode input,
+  .dark-mode textarea,
+  .dark-mode select {
+    @apply bg-gray-800 border-gray-600 text-gray-100;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Photography-specific utilities */
+  .aspect-photo {
+    aspect-ratio: 3/2;
+  }
+
+  .aspect-square {
+    aspect-ratio: 1/1;
+  }
+
+  .aspect-portrait {
+    aspect-ratio: 2/3;
+  }
+}

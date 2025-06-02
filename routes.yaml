@@ -1,0 +1,116 @@
+# FrameGrid Ghost Theme - Custom Routing Configuration
+#
+# This file defines custom URL structures and content collections for the
+# nature photography theme. It enables clean URLs for portfolio categories
+# and location-based content organization.
+#
+# Ghost Routing Documentation: https://ghost.org/docs/themes/routing/
+#
+# Structure:
+# - routes: Simple URL to template mappings
+# - collections: Dynamic content groupings with filters and pagination
+# - redirects: URL redirects for SEO and user experience
+#
+# Last updated: $(date)
+# Theme version: 1.0.0
+
+# ============================================================================
+# ROUTES - Static page mappings
+# ============================================================================
+# Maps specific URLs to static templates for portfolio and location overview pages
+
+routes:
+  # Main portfolio landing page
+  /portfolio/: portfolio
+
+  # Portfolio category pages
+  /portfolio/wildlife/: portfolio-wildlife
+  /portfolio/landscape/: portfolio-landscape
+  /portfolio/underwater/: portfolio-underwater
+  /portfolio/cityscape/: portfolio-cityscape
+
+  # Location overview page
+  /locations/: locations
+
+# ============================================================================
+# COLLECTIONS - Dynamic content groupings
+# ============================================================================
+# Creates filtered collections of posts based on tags with custom URL structures
+# Enables pagination and template assignment for each collection
+
+collections:
+  # Default blog collection (catches all posts not in other collections)
+  /:
+    permalink: /{slug}/
+    template: index
+    filter: tag:-hash-portfolio+tag:-hash-location
+
+  # Location-based collections
+  # Groups posts by location tags for geographic content organization
+  /locations/{slug}/:
+    permalink: /locations/{slug}/
+    template: location
+    filter: tag:hash-location+tag:{slug}
+    data: tag.{slug}
+
+  # Portfolio category collections
+  # Groups posts by portfolio category tags for subject-based organization
+  /portfolio/{slug}/:
+    permalink: /portfolio/{slug}/
+    template: portfolio-category
+    filter: tag:hash-portfolio+tag:{slug}
+    data: tag.{slug}
+
+# ============================================================================
+# REDIRECTS - SEO and legacy URL handling
+# ============================================================================
+# Handles redirects for SEO preservation and user experience
+# Add redirects here as needed for legacy URLs or content reorganization
+
+redirects:
+  # Example redirects (uncomment and modify as needed):
+  # /old-portfolio: /portfolio/
+  # /gallery: /portfolio/
+  # /travel: /locations/
+# ============================================================================
+# CONFIGURATION NOTES
+# ============================================================================
+#
+# Portfolio Categories (Primary Tags):
+# - wildlife: Wildlife photography posts
+# - landscape: Landscape photography posts
+# - underwater: Underwater photography posts
+# - cityscape: Urban and architectural photography posts
+#
+# Location Tags (Secondary Tags):
+# - alaska, kenya, washington, california
+# - japan, italy, florida, iceland
+#
+# Tag Filtering:
+# - hash-portfolio: Internal tag prefix for portfolio categorization
+# - hash-location: Internal tag prefix for location categorization
+# - Use "tag:-hash-portfolio" to exclude portfolio posts from main blog
+# - Use "tag:hash-portfolio+tag:{slug}" to include only specific portfolio category
+#
+# Template Requirements:
+# The following templates should be created to support this routing:
+# - portfolio.hbs: Main portfolio landing page
+# - portfolio-wildlife.hbs: Wildlife portfolio page
+# - portfolio-landscape.hbs: Landscape portfolio page
+# - portfolio-underwater.hbs: Underwater portfolio page
+# - portfolio-cityscape.hbs: Cityscape portfolio page
+# - portfolio-category.hbs: Generic portfolio category template
+# - locations.hbs: Main locations landing page
+# - location.hbs: Individual location page template
+#
+# Pagination:
+# Ghost automatically handles pagination for collections
+# Use {{pagination}} helper in templates to display pagination controls
+#
+# Testing:
+# After creating this file:
+# 1. Restart Ghost to apply routing changes
+# 2. Create test posts with appropriate tags
+# 3. Verify URLs resolve correctly
+# 4. Test pagination functionality
+# 5. Validate template assignments
