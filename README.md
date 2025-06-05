@@ -108,15 +108,15 @@ FrameGrid is a clean, distraction-free Ghost theme that showcases photography th
 
 ### Project Structure
 
-```
+```markdown
 ghost-theme-framegrid/
-├── assets/              # CSS, JS, and image assets
-├── partials/            # Handlebars partial templates
-├── locales/             # Translation files
-├── templates/           # Page-specific templates
-├── package.json         # Theme configuration and dependencies
-├── routes.yaml          # Custom Ghost routing
-└── gulpfile.js         # Build configuration
+├── assets/ # CSS, JS, and image assets
+├── partials/ # Handlebars partial templates
+├── locales/ # Translation files
+├── templates/ # Page-specific templates
+├── package.json # Theme configuration and dependencies
+├── routes.yaml # Custom Ghost routing
+└── gulpfile.js # Build configuration
 ```
 
 ### Available Scripts
@@ -322,8 +322,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: [Theme Documentation](docs/)
 - **Community**: [Ghost Forum](https://forum.ghost.org/)
 - **Issues**: [GitHub Issues](https://github.com/yourusername/ghost-theme-framegrid/issues)
-- **Email**: support@yourtheme.com
+- **Email**: [jonathan@jonathangardner.io](jonathan@jonathangardner.io)
 
 ---
 
-**Made with ❤️ for nature photographers using Ghost CMS**
+Made with ❤️ for nature photographers using Ghost CMS
