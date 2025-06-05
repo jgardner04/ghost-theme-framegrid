@@ -462,6 +462,63 @@
     opacity: 1;
   }
 
+  /* Optimized image component styles */
+  .optimized-image-container {
+    @apply block w-full;
+  }
+
+  .optimized-image {
+    @apply w-full h-auto object-cover transition-all duration-300;
+  }
+
+  .optimized-image.image-loading {
+    @apply opacity-0 scale-95;
+  }
+
+  .optimized-image.image-loaded {
+    @apply opacity-100 scale-100;
+  }
+
+  .optimized-image-placeholder {
+    @apply flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg min-h-[200px];
+  }
+
+  .optimized-image-placeholder svg {
+    @apply w-full h-full text-gray-400 dark:text-gray-600;
+  }
+
+  /* Enhanced loading states for images */
+  .optimized-image:not(.image-loaded) {
+    @apply bg-gray-200 dark:bg-gray-700;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Critical image optimization - disable lazy loading for above-the-fold images */
+  .optimized-image[fetchpriority="high"] {
+    @apply opacity-100;
+  }
+
+  /* WebP support detection fallback */
+  .no-webp .optimized-image-container source[type="image/webp"] {
+    display: none;
+  }
+
   /* Line clamp utility for text truncation */
   .line-clamp-2 {
     display: -webkit-box;

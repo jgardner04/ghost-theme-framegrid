@@ -25,39 +25,16 @@
 
         {{#if feature_image}}
           <a href="{{url}}" class="block" aria-label="View {{title}}">
-            <picture class="masonry-image">
-              {{!-- Generate responsive images using Ghost's img_url helper --}}
-              {{!-- Large screens: full size --}}
-              <source media="(min-width: 1024px)"
-                      srcset="{{img_url feature_image size='m'}} 600w,
-                              {{img_url feature_image size='l'}} 1000w,
-                              {{img_url feature_image size='xl'}} 2000w"
-                      sizes="(min-width: 1200px) 400px, 33vw">
-
-              {{!-- Medium screens: 2 columns --}}
-              <source media="(min-width: 768px)"
-                      srcset="{{img_url feature_image size='s'}} 400w,
-                              {{img_url feature_image size='m'}} 600w,
-                              {{img_url feature_image size='l'}} 1000w"
-                      sizes="50vw">
-
-              {{!-- Small screens: 1 column --}}
-              <source media="(max-width: 767px)"
-                      srcset="{{img_url feature_image size='s'}} 400w,
-                              {{img_url feature_image size='m'}} 600w"
-                      sizes="100vw">
-
-              {{!-- Fallback image --}}
-              <img src="{{img_url feature_image size='m'}}"
-                   alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}"
-                   loading="lazy"
-                   decoding="async"
-                   itemprop="image"
-                   class="masonry-responsive-image"
-                   x-on:load="$el.classList.add('loaded')"
-                   x-on:error="$el.style.display = 'none'"
-                   :class="{ 'masonry-item-loading': isLoading, 'masonry-item-loaded': isLoadingComplete }">
-            </picture>
+            {{!-- Use optimized image partial with enhanced features --}}
+            {{> optimized-image
+                image=feature_image
+                alt=(if feature_image_alt feature_image_alt title)
+                sizes="(min-width: 1200px) 400px, (min-width: 768px) 50vw, 100vw"
+                class="masonry-image"
+                imageClass="masonry-responsive-image"
+                loading="lazy"
+                quality="85"
+                fetchpriority=(if @first "high")}}
 
             {{!-- Overlay with post information --}}
             <div class="masonry-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 absolute inset-0 bg-black bg-opacity-50 flex items-end p-4">
@@ -89,18 +66,34 @@
   </div>
 </div>
 
-{{!-- Alpine.js enhancement for lazy loading --}}
+{{!-- Enhanced Alpine.js component for image loading and WebP detection --}}
 <script>
 document.addEventListener('alpine:init', () => {
+  // WebP support detection
+  function supportsWebP() {
+    const elem = document.createElement('canvas');
+    return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }
+
+  // Add class to html element for WebP support
+  if (!supportsWebP()) {
+    document.documentElement.classList.add('no-webp');
+  }
+
   // Enhanced lazy loading with intersection observer
-  const images = document.querySelectorAll('.masonry-responsive-image[loading="lazy"]');
+  const images = document.querySelectorAll('.optimized-image[loading="lazy"]');
 
   if ('IntersectionObserver' in window) {
     const imageObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
-          img.classList.add('loaded');
+
+          // Trigger Alpine.js load event
+          if (img.hasAttribute('x-on:load')) {
+            img.dispatchEvent(new Event('load'));
+          }
+
           observer.unobserve(img);
         }
       });
@@ -109,7 +102,28 @@ document.addEventListener('alpine:init', () => {
       threshold: 0.1
     });
 
-    images.forEach(img => imageObserver.observe(img));
+    images.forEach(img => {
+      // Preload critical images immediately
+      if (img.hasAttribute('fetchpriority') && img.getAttribute('fetchpriority') === 'high') {
+        img.classList.add('image-loaded');
+        return;
+      }
+
+      imageObserver.observe(img);
+    });
+  }
+
+  // Image performance monitoring
+  if ('PerformanceObserver' in window) {
+    const perfObserver = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.initiatorType === 'img') {
+          console.log('Image load time:', entry.name, entry.duration + 'ms');
+        }
+      });
+    });
+
+    perfObserver.observe({ entryTypes: ['resource'] });
   }
 });
 </script>
