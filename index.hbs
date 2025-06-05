@@ -55,74 +55,8 @@
       </div>
     </div>
 
-    {{! Masonry grid with Alpine.js lightbox }}
-    <div
-      class="masonry-container"
-      x-data="portfolioGrid()"
-      x-init="initMasonry()"
-    >
-
-      {{! Grid }}
-      <div
-        class="masonry-grid"
-        :class="{ 'list-view': $store.view === 'list' }"
-        style="--grid-columns: var(--grid-columns, 3);"
-      >
-
-        {{#foreach posts}}
-          <article
-            class="portfolio-item"
-            data-post-id="{{id}}"
-            x-data="{ loaded: false }"
-            @click="openLightbox({{@index}})"
-          >
-
-            {{! Featured image }}
-            {{#if feature_image}}
-              <div class="portfolio-image-container">
-                <img
-                  src="{{img_url feature_image size="m"}}"
-                  alt="{{title}}"
-                  class="portfolio-image"
-                  loading="lazy"
-                  @load="loaded = true"
-                  :class="{ 'loaded': loaded }"
-                />
-
-                {{! Hover overlay }}
-                <div class="portfolio-overlay">
-                  <div class="portfolio-content">
-                    <h3 class="portfolio-title">{{title}}</h3>
-                    {{#if excerpt}}
-                      <p class="portfolio-excerpt">{{excerpt words="15"}}</p>
-                    {{/if}}
-                    <div class="portfolio-meta">
-                      <time
-                        class="portfolio-date"
-                        datetime="{{date format="YYYY-MM-DD"}}"
-                      >
-                        {{date format="MMM DD, YYYY"}}
-                      </time>
-                      {{#if primary_tag}}
-                        <span class="portfolio-tag">{{primary_tag.name}}</span>
-                      {{/if}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {{else}}
-              {{! Fallback for posts without featured image }}
-              <div class="portfolio-text-only">
-                <h3 class="portfolio-title">{{title}}</h3>
-                {{#if excerpt}}
-                  <p class="portfolio-excerpt">{{excerpt}}</p>
-                {{/if}}
-                <a href="{{url}}" class="read-more-link">Read More</a>
-              </div>
-            {{/if}}
-          </article>
-        {{/foreach}}
-      </div>
+    {{! Use the new masonry portfolio partial }}
+    {{> masonry-portfolio posts=posts}}
 
       {{! Load more button for infinite scroll }}
       {{#if pagination.next}}

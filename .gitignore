@@ -26,4 +26,14 @@ node_modules/
 
 # Task files
 tasks.json
-tasks/ 
+tasks/
+
+# Ghost local testing environment
+ghost-local/
+
+# Ghost theme development files
+/assets/css/src/main.css  ← Your Tailwind source
+/assets/built/            ← Compiled assets
+/partials/               ← Handlebars partials
+/*.hbs                   ← Template files
+/package.json            ← Theme metadata
