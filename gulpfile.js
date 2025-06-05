@@ -16,6 +16,10 @@ const paths = {
     src: "assets/js/**/*.js",
     dest: "assets/built/",
   },
+  vendor: {
+    src: ["node_modules/masonry-layout/dist/masonry.pkgd.min.js"],
+    dest: "assets/built/vendor/",
+  },
   watch: {
     css: "assets/css/src/**/*.css",
     js: "assets/js/**/*.js",
@@ -73,6 +77,14 @@ function js() {
     .pipe(livereload());
 }
 
+// Vendor task - Copy third-party libraries
+function vendor() {
+  return gulp
+    .src(paths.vendor.src)
+    .pipe(gulp.dest(paths.vendor.dest))
+    .pipe(livereload());
+}
+
 // Watch task
 function watch() {
   livereload.listen();
@@ -82,7 +94,7 @@ function watch() {
 }
 
 // Build task for production
-const build = gulp.parallel(css, js);
+const build = gulp.parallel(css, js, vendor);
 
 // Zip task for theme distribution
 function zipTheme() {
@@ -100,14 +112,15 @@ function lint(cb) {
 }
 
 // Development task
-const dev = gulp.series(gulp.parallel(css, js), watch);
+const dev = gulp.series(gulp.parallel(css, js, vendor), watch);
 
 // Default task
-const defaultTask = gulp.series(css, js);
+const defaultTask = gulp.series(css, js, vendor);
 
 // Export tasks
 exports.css = css;
 exports.js = js;
+exports.vendor = vendor;
 exports.watch = watch;
 exports.dev = dev;
 exports.build = build;

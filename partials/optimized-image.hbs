@@ -1,0 +1,95 @@
+{{!-- Optimized Image Partial for Ghost Theme --}}
+{{!-- Usage: {{> optimized-image image=feature_image alt=title sizes="(min-width: 1024px) 400px, 50vw" class="custom-class" loading="lazy" quality="80"}} --}}
+
+{{#if image}}
+  <picture class="optimized-image-container {{#if class}}{{class}}{{/if}}">
+    {{!-- WebP sources for modern browsers --}}
+    {{#if sizes}}
+      {{!-- Large screens with WebP --}}
+      <source media="(min-width: 1024px)"
+              type="image/webp"
+              srcset="{{img_url image size='m' format='webp' quality=(if quality quality '85')}} 600w,
+                      {{img_url image size='l' format='webp' quality=(if quality quality '85')}} 1000w,
+                      {{img_url image size='xl' format='webp' quality=(if quality quality '85')}} 2000w"
+              sizes="{{sizes}}">
+
+      {{!-- Medium screens with WebP --}}
+      <source media="(min-width: 768px)"
+              type="image/webp"
+              srcset="{{img_url image size='s' format='webp' quality=(if quality quality '85')}} 400w,
+                      {{img_url image size='m' format='webp' quality=(if quality quality '85')}} 600w,
+                      {{img_url image size='l' format='webp' quality=(if quality quality '85')}} 1000w"
+              sizes="50vw">
+
+      {{!-- Small screens with WebP --}}
+      <source media="(max-width: 767px)"
+              type="image/webp"
+              srcset="{{img_url image size='s' format='webp' quality=(if quality quality '85')}} 400w,
+                      {{img_url image size='m' format='webp' quality=(if quality quality '85')}} 600w"
+              sizes="100vw">
+    {{else}}
+      {{!-- Fallback WebP without media queries --}}
+      <source type="image/webp"
+              srcset="{{img_url image size='s' format='webp' quality=(if quality quality '85')}} 400w,
+                      {{img_url image size='m' format='webp' quality=(if quality quality '85')}} 600w,
+                      {{img_url image size='l' format='webp' quality=(if quality quality '85')}} 1000w,
+                      {{img_url image size='xl' format='webp' quality=(if quality quality '85')}} 2000w"
+              sizes="(min-width: 1200px) 400px, (min-width: 768px) 50vw, 100vw">
+    {{/if}}
+
+    {{!-- JPEG/PNG fallback sources --}}
+    {{#if sizes}}
+      {{!-- Large screens with JPEG --}}
+      <source media="(min-width: 1024px)"
+              srcset="{{img_url image size='m' quality=(if quality quality '85')}} 600w,
+                      {{img_url image size='l' quality=(if quality quality '85')}} 1000w,
+                      {{img_url image size='xl' quality=(if quality quality '85')}} 2000w"
+              sizes="{{sizes}}">
+
+      {{!-- Medium screens with JPEG --}}
+      <source media="(min-width: 768px)"
+              srcset="{{img_url image size='s' quality=(if quality quality '85')}} 400w,
+                      {{img_url image size='m' quality=(if quality quality '85')}} 600w,
+                      {{img_url image size='l' quality=(if quality quality '85')}} 1000w"
+              sizes="50vw">
+
+      {{!-- Small screens with JPEG --}}
+      <source media="(max-width: 767px)"
+              srcset="{{img_url image size='s' quality=(if quality quality '85')}} 400w,
+                      {{img_url image size='m' quality=(if quality quality '85')}} 600w"
+              sizes="100vw">
+    {{/if}}
+
+    {{!-- Main image element --}}
+    <img src="{{img_url image size='m' quality=(if quality quality '85')}}"
+         alt="{{#if alt}}{{alt}}{{else}}{{#if image_alt}}{{image_alt}}{{else}}Image{{/if}}{{/if}}"
+         {{#if loading}}loading="{{loading}}"{{else}}loading="lazy"{{/if}}
+         decoding="async"
+         {{#if fetchpriority}}fetchpriority="{{fetchpriority}}"{{/if}}
+         itemprop="image"
+         {{#unless sizes}}
+           srcset="{{img_url image size='s' quality=(if quality quality '85')}} 400w,
+                   {{img_url image size='m' quality=(if quality quality '85')}} 600w,
+                   {{img_url image size='l' quality=(if quality quality '85')}} 1000w,
+                   {{img_url image size='xl' quality=(if quality quality '85')}} 2000w"
+           sizes="(min-width: 1200px) 400px, (min-width: 768px) 50vw, 100vw"
+         {{/unless}}
+         class="optimized-image {{#if imageClass}}{{imageClass}}{{/if}}"
+         x-data="{ loaded: false }"
+         x-on:load="loaded = true; $el.classList.add('loaded'); $el.classList.add('image-loaded')"
+         x-on:error="$el.style.display = 'none'; console.warn('Failed to load image:', $el.src)"
+         :class="{ 'image-loaded': loaded, 'image-loading': !loaded }">
+  </picture>
+{{else}}
+  {{!-- Fallback for missing images --}}
+  <div class="optimized-image-placeholder {{#if class}}{{class}}{{/if}}"
+       role="img"
+       aria-label="{{#if alt}}{{alt}}{{else}}No image available{{/if}}">
+    <svg width="100%" height="200" viewBox="0 0 400 200" class="text-gray-300">
+      <rect width="100%" height="100%" fill="currentColor" opacity="0.1"/>
+      <text x="50%" y="50%" text-anchor="middle" dy="0.3em" class="text-sm">
+        {{#if alt}}{{alt}}{{else}}No image{{/if}}
+      </text>
+    </svg>
+  </div>
+{{/if}}

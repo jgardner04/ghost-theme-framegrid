@@ -1,0 +1,129 @@
+{{!-- Masonry Portfolio Grid Partial --}}
+{{!-- Usage: {{> masonry-portfolio posts=posts}} --}}
+
+<div class="masonry-container">
+  {{!-- Loading progress indicator --}}
+  <div x-data="masonryGrid()" x-show="isLoading && totalImages > 0"
+       class="masonry-loading-progress"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 transform translate-y-2"
+       x-transition:enter-end="opacity-100 transform translate-y-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0">
+    Loading images... <span x-text="loadingProgress"></span>%
+  </div>
+
+  <div class="masonry-portfolio"
+       x-data="masonryGrid()"
+       x-init="init()"
+       :class="{ 'masonry-js-enabled': isInitialized, 'masonry-loading': isLoading }">
+    {{#foreach posts}}
+      <article class="masonry-item {{#if feature_image}}has-image{{/if}}"
+               itemscope
+               itemtype="http://schema.org/Article">
+
+        {{#if feature_image}}
+          <a href="{{url}}" class="block" aria-label="View {{title}}">
+            {{!-- Use optimized image partial with enhanced features --}}
+            {{> optimized-image
+                image=feature_image
+                alt=(if feature_image_alt feature_image_alt title)
+                sizes="(min-width: 1200px) 400px, (min-width: 768px) 50vw, 100vw"
+                class="masonry-image"
+                imageClass="masonry-responsive-image"
+                loading="lazy"
+                quality="85"
+                fetchpriority=(if @first "high")}}
+
+            {{!-- Overlay with post information --}}
+            <div class="masonry-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 absolute inset-0 bg-black bg-opacity-50 flex items-end p-4">
+              <div class="text-white">
+                <h3 class="text-lg font-semibold mb-1" itemprop="headline">{{title}}</h3>
+                {{#if excerpt}}
+                  <p class="text-sm opacity-90 line-clamp-2">{{excerpt}}</p>
+                {{/if}}
+                <time class="text-xs opacity-75" datetime="{{date format='YYYY-MM-DD'}}" itemprop="datePublished">
+                  {{date format="MMMM DD, YYYY"}}
+                </time>
+              </div>
+            </div>
+          </a>
+        {{else}}
+          {{!-- Text-only post fallback --}}
+          <a href="{{url}}" class="block p-6 bg-gray-100 dark:bg-gray-800 rounded-lg min-h-[200px] flex flex-col justify-center">
+            <h3 class="text-lg font-semibold mb-2" itemprop="headline">{{title}}</h3>
+            {{#if excerpt}}
+              <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{excerpt}}</p>
+            {{/if}}
+            <time class="text-xs text-gray-500 mt-auto" datetime="{{date format='YYYY-MM-DD'}}" itemprop="datePublished">
+              {{date format="MMMM DD, YYYY"}}
+            </time>
+          </a>
+        {{/if}}
+      </article>
+    {{/foreach}}
+  </div>
+</div>
+
+{{!-- Enhanced Alpine.js component for image loading and WebP detection --}}
+<script>
+document.addEventListener('alpine:init', () => {
+  // WebP support detection
+  function supportsWebP() {
+    const elem = document.createElement('canvas');
+    return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }
+
+  // Add class to html element for WebP support
+  if (!supportsWebP()) {
+    document.documentElement.classList.add('no-webp');
+  }
+
+  // Enhanced lazy loading with intersection observer
+  const images = document.querySelectorAll('.optimized-image[loading="lazy"]');
+
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+
+          // Trigger Alpine.js load event
+          if (img.hasAttribute('x-on:load')) {
+            img.dispatchEvent(new Event('load'));
+          }
+
+          observer.unobserve(img);
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+
+    images.forEach(img => {
+      // Preload critical images immediately
+      if (img.hasAttribute('fetchpriority') && img.getAttribute('fetchpriority') === 'high') {
+        img.classList.add('image-loaded');
+        return;
+      }
+
+      imageObserver.observe(img);
+    });
+  }
+
+  // Image performance monitoring
+  if ('PerformanceObserver' in window) {
+    const perfObserver = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.initiatorType === 'img') {
+          console.log('Image load time:', entry.name, entry.duration + 'ms');
+        }
+      });
+    });
+
+    perfObserver.observe({ entryTypes: ['resource'] });
+  }
+});
+</script>

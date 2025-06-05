@@ -106,56 +106,188 @@ FrameGrid is a clean, distraction-free Ghost theme that showcases photography th
 
 ## 🛠️ Development
 
-### Project Structure
+### Project Architecture
+
+FrameGrid follows Ghost theme development best practices with a **dual-directory structure**:
 
 ```markdown
-ghost-theme-framegrid/
-├── assets/ # CSS, JS, and image assets
+ghost-theme-framegrid/ (DEVELOPMENT)
+├── assets/ # Theme assets (CSS, JS, images)
+│ ├── css/src/main.css # Tailwind CSS source files
+│ ├── built/ # Compiled/minified assets
+│ ├── fonts/ # Web fonts
+│ ├── images/ # Theme images
+│ └── js/ # JavaScript files
 ├── partials/ # Handlebars partial templates
 ├── locales/ # Translation files
-├── templates/ # Page-specific templates
+├── \*.hbs # Template files (index.hbs, post.hbs, etc.)
 ├── package.json # Theme configuration and dependencies
 ├── routes.yaml # Custom Ghost routing
-└── gulpfile.js # Build configuration
+├── gulpfile.js # Build configuration
+└── ghost-local/ # LOCAL GHOST INSTALLATION (testing only)
+└── content/themes/ # Where themes are installed for testing
 ```
+
+**Important**:
+
+- **Root directory** = Your theme development workspace
+- **`ghost-local/`** = Local Ghost installation for testing (excluded from version control)
+- This separation allows clean development while providing a proper testing environment
 
 ### Available Scripts
 
-- `npm run dev` - Start development with live reload
-- `npm run build` - Build for production
-- `npm run zip` - Create theme zip file for upload
-- `npm run test` - Run GScan validation
-- `npm run lint` - Lint Handlebars templates
+- `npm run dev` - Start development with live reload and file watching
+- `npm run build` - Build for production (compiles CSS, copies assets)
+- `npm run zip` - Create theme zip file for upload to Ghost
+- `npm run test` - Run GScan validation to ensure Ghost compatibility
+- `npm run lint` - Lint CSS and JavaScript files
 
 ### Development Workflow
 
-1. **Ghost CLI Setup**
+#### 1. **Initial Setup** (First time only)
 
-   ```bash
-   # Install Ghost CLI globally
-   npm install ghost-cli@latest -g
+```bash
+# Clone and setup the theme
+git clone https://github.com/jgardner04/ghost-theme-framegrid.git
+cd ghost-theme-framegrid
+npm install
 
-   # Create new Ghost installation for development
-   mkdir ghost-local && cd ghost-local
-   ghost install local
-   ```
+# Install Ghost CLI globally (if not already installed)
+npm install ghost-cli@latest -g
 
-2. **Theme Development**
+# Create local Ghost installation for testing
+mkdir ghost-local && cd ghost-local
+ghost install local --db=sqlite3 --development
+cd ..
+```
 
-   ```bash
-   cd content/themes/framegrid
-   npm run dev
-   ```
+#### 2. **Daily Development Workflow**
 
-3. **Theme Validation**
+```bash
+# Start Ghost (run from ghost-local directory)
+cd ghost-local && ghost start --development
 
-   ```bash
-   # Validate theme compliance
-   gscan .
+# In another terminal, start theme development (from root)
+cd /path/to/ghost-theme-framegrid
+npm run dev
+```
 
-   # Or use npm script
-   npm run test
-   ```
+#### 3. **Asset Building**
+
+The build system automatically:
+
+- Compiles Tailwind CSS from `assets/css/src/main.css`
+- Outputs to both `assets/css/main.css` and `assets/built/main.css`
+- Processes JavaScript and copies to `assets/built/`
+- Watches for changes and rebuilds automatically in dev mode
+
+```bash
+# Development build with watching
+npm run dev
+
+# Production build (optimized)
+npm run build
+```
+
+#### 4. **Testing Your Theme**
+
+```bash
+# Option A: Manual installation in Ghost Admin
+npm run zip
+# Upload the generated .zip file in Ghost Admin > Design > Upload theme
+
+# Option B: Direct linking (for development)
+ln -s $(pwd) ghost-local/content/themes/framegrid
+# Restart Ghost and activate theme in admin
+```
+
+#### 5. **Theme Validation**
+
+```bash
+# Validate theme against Ghost standards
+npm run test
+
+# This runs GScan to check for:
+# - Template requirements
+# - Ghost version compatibility
+# - Best practice compliance
+```
+
+### Build System Details
+
+The theme uses **Gulp** with **PostCSS** and **Tailwind CSS**:
+
+- **CSS Processing**: Tailwind CSS → PostCSS → Autoprefixer → Minification
+- **JavaScript**: Copy and sourcemap generation
+- **File Watching**: Auto-rebuild on changes
+- **Live Reload**: Browser refresh on template/asset changes
+
+### File Structure Explained
+
+```markdown
+├── assets/css/src/ # Source CSS files
+│ └── main.css # Main Tailwind CSS file
+├── assets/built/ # Compiled assets (auto-generated)
+├── partials/ # Reusable template components
+│ ├── components/ # UI components
+│ ├── icons/ # SVG icons
+│ └── typography/ # Text styling partials
+├── locales/ # Translation files
+├── default.hbs # Base layout template
+├── index.hbs # Homepage template
+├── post.hbs # Single post template
+├── page.hbs # Static page template
+└── package.json # Theme metadata and Ghost config
+```
+
+### CSS Architecture (Tailwind + Custom)
+
+The theme uses a **component-based CSS architecture**:
+
+```css
+/* assets/css/src/main.css */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom components in @layer components */
+@layer components {
+  .masonry-portfolio {
+    /* Masonry grid styles */
+  }
+  .masonry-item {
+    /* Individual portfolio items */
+  }
+  /* etc. */
+}
+```
+
+**Key CSS Features:**
+
+- **CSS Custom Properties** for dynamic theming
+- **Responsive design** with mobile-first approach
+- **Component organization** following Tailwind best practices
+- **Performance optimization** with PurgeCSS
+
+### JavaScript Architecture
+
+The theme uses **Alpine.js** for reactive functionality:
+
+```javascript
+// assets/js/main.js
+// Lightweight JavaScript for:
+// - Lightbox functionality
+// - Infinite scroll
+// - Theme toggling
+// - Mobile navigation
+```
+
+**JavaScript Features:**
+
+- **Alpine.js** for reactive components
+- **Vanilla JS** for performance-critical features
+- **Progressive enhancement** approach
+- **Touch and keyboard navigation** support
 
 ## 📋 Configuration
 
