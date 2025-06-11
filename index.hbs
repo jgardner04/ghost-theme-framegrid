@@ -33,8 +33,9 @@
           :class="{ 'active': view === 'grid' }"
           class="view-btn"
           aria-label="Grid view"
+          :aria-pressed="view === 'grid'"
         >
-          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor">
+          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path
               d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"
             />
@@ -45,8 +46,9 @@
           :class="{ 'active': view === 'list' }"
           class="view-btn"
           aria-label="List view"
+          :aria-pressed="view === 'list'"
         >
-          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor">
+          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path
               d="M3 5h2v2H3V5zm0 4h2v2H3V9zm0 4h2v2H3v-2zm4-8h14v2H7V5zm0 4h14v2H7V9zm0 4h14v2H7v-2z"
             />
@@ -75,6 +77,11 @@
             data-post-id="{{id}}"
             x-data="{ loaded: false }"
             @click="openLightbox({{@index}})"
+            role="button"
+            tabindex="0"
+            @keydown.enter="openLightbox({{@index}})"
+            @keydown.space.prevent="openLightbox({{@index}})"
+            :aria-label="`Open lightbox for ${posts[{{@index}}]?.title || 'Image {{@index + 1}}'}`"
           >
 
             {{! Featured image }}
@@ -131,6 +138,7 @@
             class="load-more-btn"
             @click="loadMore()"
             :disabled="loading"
+            :aria-label="loading ? 'Loading more images...' : 'Load more images'"
             x-text="loading ? 'Loading...' : 'Load More'"
           >
             Load More
@@ -138,70 +146,99 @@
         </div>
       {{/if}}
 
+      {{! Screen reader live region for announcements }}
+      <div
+        class="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+        x-text="screenReaderAnnouncement"
+        id="lightbox-announcements"
+      ></div>
+
       {{! Lightbox modal }}
       <div
         class="lightbox-modal"
         x-show="lightboxOpen"
         x-transition.opacity.duration.300ms
         @click.self="closeLightbox()"
-        @keydown.escape.window="closeLightbox()"
-        @keydown.arrow-left.window="previousImage()"
-        @keydown.arrow-right.window="nextImage()"
-        @keydown.space.window.prevent="nextImage()"
-        @keydown.home.window.prevent="goToFirstImage()"
-        @keydown.end.window.prevent="goToLastImage()"
+        @keydown.escape.window="handleEscapeKey($event)"
+        @keydown.tab.prevent="handleTabKey($event)"
+        @keydown.shift.tab.prevent="handleShiftTabKey($event)"
+        @keydown.arrow-left.window.prevent="handleNavigationKey('previous', $event)"
+        @keydown.arrow-right.window.prevent="handleNavigationKey('next', $event)"
+        @keydown.space.window.prevent="handleNavigationKey('next', $event)"
+        @keydown.home.window.prevent="handleNavigationKey('first', $event)"
+        @keydown.end.window.prevent="handleNavigationKey('last', $event)"
         role="dialog"
         aria-modal="true"
         :aria-hidden="!lightboxOpen"
-        :aria-label="`Image ${currentIndex + 1} of ${posts.length}`"
+        :aria-label="`Image viewer - ${currentPost?.title || `Image ${currentIndex + 1}`} - ${currentIndex + 1} of ${posts.length}`"
+        :aria-describedby="lightboxOpen ? 'lightbox-info lightbox-instructions' : null"
+        x-ref="lightboxModal"
+        x-init="$watch('lightboxOpen', (value) => { if (value) $nextTick(() => trapFocus()) })"
       >
 
         <div class="lightbox-container">
+          {{! Screen reader instructions (hidden) }}
+          <div id="lightbox-instructions" class="sr-only">
+            Use arrow keys or navigation buttons to browse images. Press Escape or click outside to close. Tab to navigate between controls.
+          </div>
+
           {{! Position indicator }}
-          <div class="lightbox-position-indicator">
+          <div class="lightbox-position-indicator" aria-hidden="true">
             <span x-text="`${currentIndex + 1} of ${posts.length}`"></span>
           </div>
 
           {{! Navigation buttons }}
           <button
             class="lightbox-nav lightbox-prev"
-            @click="previousImage()"
-            @keydown.space.prevent="previousImage()"
-            @keydown.enter.prevent="previousImage()"
+            @click="navigateToImage('previous')"
             :class="{ 'loading': imageLoading }"
-            :aria-label="`Previous image (${currentIndex === 0 ? posts.length : currentIndex} of ${posts.length})`"
+            :aria-label="`Previous image: ${getPreviousImageTitle()}. Image ${getPreviousImageIndex() + 1} of ${posts.length}`"
+            :aria-pressed="false"
+            :aria-describedby="'lightbox-instructions'"
+            :disabled="imageLoading"
+            x-ref="prevButton"
             tabindex="0"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
             </svg>
+            <span class="sr-only">Previous image</span>
           </button>
 
           <button
             class="lightbox-nav lightbox-next"
-            @click="nextImage()"
-            @keydown.space.prevent="nextImage()"
-            @keydown.enter.prevent="nextImage()"
+            @click="navigateToImage('next')"
             :class="{ 'loading': imageLoading }"
-            :aria-label="`Next image (${currentIndex === posts.length - 1 ? 1 : currentIndex + 2} of ${posts.length})`"
+            :aria-label="`Next image: ${getNextImageTitle()}. Image ${getNextImageIndex() + 1} of ${posts.length}`"
+            :aria-pressed="false"
+            :aria-describedby="'lightbox-instructions'"
+            :disabled="imageLoading"
+            x-ref="nextButton"
             tabindex="0"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
             </svg>
+            <span class="sr-only">Next image</span>
           </button>
 
           {{! Close button }}
           <button
             class="lightbox-close"
             @click="closeLightbox()"
-            aria-label="Close lightbox"
+            aria-label="Close image viewer and return to gallery"
+            :aria-describedby="'lightbox-instructions'"
+            x-ref="closeButton"
+            tabindex="0"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path
                 d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
               />
             </svg>
+            <span class="sr-only">Close</span>
           </button>
 
           {{! Lightbox content }}
@@ -214,9 +251,13 @@
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
+                role="status"
+                aria-live="polite"
+                :aria-label="`Loading ${currentPost?.title || 'image'}...`"
+                :aria-describedby="'loading-message'"
               >
-                <div class="loading-spinner"></div>
-                <p class="loading-text">Loading image...</p>
+                <div class="loading-spinner" aria-hidden="true"></div>
+                <p class="loading-text" id="loading-message">Loading image...</p>
               </div>
 
               {{! Error state }}
@@ -226,22 +267,34 @@
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
+                role="alert"
+                aria-live="assertive"
+                :aria-describedby="'error-message'"
               >
-                <div class="error-icon">
+                <div class="error-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
                     />
                   </svg>
                 </div>
-                <p class="error-text">Unable to load image</p>
+                <p class="error-text" id="error-message">Unable to load image. Please try again.</p>
+                <button
+                  @click="retryImageLoad()"
+                  class="error-retry-btn"
+                  aria-label="Retry loading image"
+                  :aria-describedby="'error-message'"
+                  tabindex="0"
+                >
+                  Retry
+                </button>
               </div>
 
               {{! Main lightbox image }}
               <img
                 x-show="!imageLoading && !imageError && currentPost"
                 :src="getLightboxImageUrl(currentPost)"
-                :alt="currentPost?.title || 'Portfolio image'"
+                :alt="`${currentPost?.title || 'Portfolio image'} - Full size view`"
                 :srcset="getLightboxImageSrcset(currentPost)"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
                 class="lightbox-image"
@@ -250,26 +303,51 @@
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
+                role="img"
+                :aria-labelledby="'lightbox-title'"
+                :aria-describedby="currentPost?.excerpt ? 'lightbox-title lightbox-excerpt' : 'lightbox-title'"
               />
             </div>
 
-            <div class="lightbox-info">
-              <h3 class="lightbox-title" x-text="currentPost?.title"></h3>
-              <p class="lightbox-excerpt" x-text="currentPost?.excerpt"></p>
-              <div class="lightbox-meta">
-                <time x-text="currentPost?.date"></time>
-                <span
-                  x-show="currentPost?.primary_tag"
-                  x-text="currentPost?.primary_tag"
-                ></span>
+            <div class="lightbox-info" id="lightbox-info">
+              <div class="lightbox-info-content" tabindex="0" x-ref="infoPanel" role="region" aria-label="Image details">
+                <h3 class="lightbox-title" x-text="currentPost?.title" id="lightbox-title"></h3>
+                <p
+                  class="lightbox-excerpt"
+                  x-text="currentPost?.excerpt"
+                  x-show="currentPost?.excerpt"
+                  id="lightbox-excerpt"
+                ></p>
+                <div class="lightbox-meta" x-show="currentPost?.date || currentPost?.primary_tag" role="group" aria-label="Image metadata">
+                  <time
+                    x-text="currentPost?.date"
+                    x-show="currentPost?.date"
+                    :datetime="currentPost?.date"
+                    aria-label="Publication date"
+                  ></time>
+                  <span
+                    x-show="currentPost?.primary_tag"
+                    x-text="currentPost?.primary_tag"
+                    class="lightbox-tag"
+                    role="button"
+                    tabindex="0"
+                    :aria-label="`Category: ${currentPost?.primary_tag}`"
+                  ></span>
+                </div>
+                <a
+                  :href="currentPost?.url"
+                  class="lightbox-read-more"
+                  x-show="currentPost?.url"
+                  :aria-label="`Read full story: ${currentPost?.title}`"
+                  x-ref="readMoreLink"
+                  tabindex="0"
+                >
+                  Read Full Story
+                  <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                  </svg>
+                </a>
               </div>
-              <a
-                :href="currentPost?.url"
-                class="lightbox-read-more"
-                x-show="currentPost?.url"
-              >
-                Read Full Story
-              </a>
             </div>
           </div>
         </div>

@@ -634,6 +634,232 @@
     @apply pointer-events-auto;
   }
 
+  /* Enhanced focus indicators for accessibility */
+  .lightbox-nav:focus,
+  .lightbox-close:focus {
+    @apply outline-none ring-4 ring-white ring-offset-4 ring-offset-black;
+    @apply shadow-2xl backdrop-blur-md;
+    @apply scale-110;
+  }
+
+  .lightbox-nav:focus-visible,
+  .lightbox-close:focus-visible {
+    @apply outline-none ring-4 ring-white ring-offset-4 ring-offset-black;
+    @apply shadow-2xl backdrop-blur-md;
+    @apply scale-110;
+  }
+
+  /* Portfolio item focus indicators */
+  .portfolio-item:focus {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+    @apply transform scale-105 shadow-2xl;
+  }
+
+  .portfolio-item:focus-visible {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+    @apply transform scale-105 shadow-2xl;
+  }
+
+  /* View controls focus indicators */
+  .view-btn:focus {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+  }
+
+  .view-btn:focus-visible {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+  }
+
+  /* Enhanced disabled state for buttons */
+  .lightbox-nav:disabled,
+  .lightbox-nav[aria-disabled="true"] {
+    @apply opacity-40 cursor-not-allowed;
+    @apply pointer-events-none;
+    @apply ring-0 ring-offset-0;
+  }
+
+  /* Screen reader only content */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Focus visible utility for non-sr-only */
+  .focus\:not-sr-only:focus {
+    @apply static w-auto h-auto p-1 m-0 overflow-visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Error state enhancements */
+  .lightbox-error {
+    @apply absolute inset-0 flex flex-col items-center justify-center;
+    @apply bg-white bg-opacity-95 backdrop-blur-sm rounded-lg;
+    @apply text-gray-500 dark:text-gray-500;
+  }
+
+  .error-retry-btn {
+    @apply mt-4 px-6 py-3 bg-accent text-white rounded-lg;
+    @apply transition-all duration-200;
+    @apply hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2;
+    @apply text-sm font-medium min-h-12;
+    @apply shadow-lg hover:shadow-xl;
+  }
+
+  /* Enhanced info panel accessibility */
+  .lightbox-info-content:focus {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+    @apply shadow-2xl;
+  }
+
+  .lightbox-info-content:focus-visible {
+    @apply outline-none ring-4 ring-accent ring-offset-4;
+    @apply shadow-2xl;
+  }
+
+  /* Enhanced read more link */
+  .lightbox-read-more {
+    @apply inline-flex items-center px-6 py-3 bg-accent text-white;
+    @apply rounded-lg transition-all duration-200;
+    @apply hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2;
+    @apply no-underline min-h-12 shadow-lg hover:shadow-xl;
+  }
+
+  .lightbox-read-more:focus-visible {
+    @apply ring-4 ring-accent ring-offset-2;
+  }
+
+  /* Tag styling in lightbox with accessibility */
+  .lightbox-tag {
+    @apply inline-block px-3 py-1.5 text-xs bg-gray-200 text-gray-700 rounded-full;
+    @apply dark:bg-gray-700 dark:text-gray-300;
+    @apply transition-all duration-200 cursor-pointer;
+    @apply hover:bg-gray-300 dark:hover:bg-gray-600;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1;
+  }
+
+  /* Loading state announcements */
+  .lightbox-loading[role="status"] {
+    @apply focus:outline-none;
+    @apply border-2 border-dashed border-accent border-opacity-30;
+  }
+
+  /* Error state announcements */
+  .lightbox-error[role="alert"] {
+    @apply focus:outline-none;
+    @apply border-2 border-solid border-red-400 border-opacity-50;
+  }
+
+  /* Enhanced button states for all interactive elements */
+  button:focus,
+  [role="button"]:focus,
+  a:focus {
+    @apply outline-none;
+  }
+
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible {
+    @apply ring-4 ring-accent ring-offset-2;
+  }
+
+  /* High contrast mode enhancements */
+  @media (prefers-contrast: high) {
+    .lightbox-nav,
+    .lightbox-close {
+      @apply bg-white text-black border-4 border-black shadow-2xl;
+    }
+
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      @apply ring-black ring-8 bg-yellow-300 text-black;
+    }
+
+    .lightbox-info {
+      @apply bg-white text-black border-4 border-black;
+    }
+
+    .error-retry-btn {
+      @apply bg-black text-white border-4 border-black;
+    }
+
+    .lightbox-read-more {
+      @apply bg-black text-white border-4 border-black;
+    }
+  }
+
+  /* Reduced motion enhancements */
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox-modal,
+    .lightbox-image,
+    .portfolio-item,
+    .lightbox-nav,
+    .lightbox-close {
+      @apply transition-none transform-none;
+    }
+
+    .lightbox-nav:hover,
+    .lightbox-close:hover,
+    .portfolio-item:hover,
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      @apply transform-none scale-100;
+    }
+
+    .loading-spinner {
+      @apply animate-none;
+    }
+
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      @apply ring-4 ring-white ring-offset-2;
+    }
+  }
+
+  /* Enhanced keyboard navigation indicators */
+  .lightbox-modal:focus-within .lightbox-nav,
+  .lightbox-modal:focus-within .lightbox-close {
+    @apply opacity-100 shadow-xl;
+  }
+
+  /* Touch target sizing for accessibility */
+  @media (hover: none) and (pointer: coarse) {
+    .lightbox-nav,
+    .lightbox-close {
+      @apply min-w-16 min-h-16;
+      @apply bg-opacity-60;
+    }
+
+    .error-retry-btn {
+      @apply min-h-16 px-8 text-base;
+    }
+
+    .lightbox-read-more {
+      @apply min-h-16 px-8 text-base;
+    }
+
+    .lightbox-tag {
+      @apply min-h-10 px-4 py-2 text-sm;
+    }
+  }
+
+  /* Focus management for modal */
+  .lightbox-modal[data-focus-trapped="true"] {
+    @apply isolate;
+  }
+
+  /* Skip links for keyboard navigation */
+  .skip-link {
+    @apply absolute left-4 top-4 z-50;
+    @apply bg-white text-black px-6 py-3 rounded-lg font-medium;
+    @apply transform -translate-y-full opacity-0;
+    @apply transition-all duration-200;
+    @apply focus:transform focus:translate-y-0 focus:opacity-100;
+    @apply focus:outline-none focus:ring-4 focus:ring-accent;
+    @apply shadow-2xl;
+  }
+
   /* Loading state */
   .lightbox-image[data-loading="true"] {
     @apply opacity-0;
@@ -643,31 +869,74 @@
     @apply opacity-100;
   }
 
-  /* Touch interactions for mobile */
-  @media (hover: none) and (pointer: coarse) {
-    .lightbox-nav,
-    .lightbox-close {
-      @apply bg-opacity-40;
-    }
+  /* Screen reader announcements styling */
+  #lightbox-announcements[aria-live="polite"] {
+    @apply sr-only;
   }
 
-  /* High contrast mode support */
-  @media (prefers-contrast: high) {
-    .lightbox-nav,
-    .lightbox-close {
-      @apply bg-white text-black;
-    }
-
-    .lightbox-info {
-      @apply bg-white text-black border border-black;
-    }
+  /* Focus trapping indicators */
+  .lightbox-modal[aria-hidden="false"] [tabindex="-1"] {
+    @apply pointer-events-none;
   }
 
-  /* Reduced motion support */
+  .lightbox-modal[aria-hidden="false"] [tabindex="0"] {
+    @apply pointer-events-auto;
+  }
+
+  /* Enhanced loading spinner accessibility */
+  .loading-spinner {
+    @apply border-4 border-accent border-t-transparent animate-spin;
+    animation-duration: 1s;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .lightbox-modal,
-    .lightbox-image {
-      @apply transition-none;
+    .loading-spinner {
+      @apply animate-none border-t-accent;
     }
+
+    .loading-spinner::after {
+      content: "Loading...";
+      @apply sr-only;
+    }
+  }
+
+  /* Enhanced error state */
+  .lightbox-error[role="alert"] {
+    @apply focus:outline-none;
+    @apply border-2 border-red-400 border-opacity-50 bg-red-50 dark:bg-red-900;
+  }
+
+  /* ARIA live region styling */
+  [aria-live="polite"],
+  [aria-live="assertive"] {
+    @apply sr-only;
+  }
+
+  /* Focus visible enhancements for all focusable elements */
+  .lightbox-modal [tabindex="0"]:focus-visible,
+  .lightbox-modal button:focus-visible,
+  .lightbox-modal a:focus-visible {
+    @apply ring-4 ring-white ring-offset-2 ring-offset-black;
+  }
+
+  /* Dark mode adjustments for accessibility */
+  @media (prefers-color-scheme: dark) {
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      @apply ring-yellow-400 ring-offset-gray-900;
+    }
+
+    .skip-link {
+      @apply bg-gray-900 text-white border-2 border-yellow-400;
+    }
+  }
+
+  .dark-mode .lightbox-nav:focus,
+  .dark-mode .lightbox-close:focus {
+    @apply ring-yellow-400 ring-offset-gray-900;
+  }
+
+  .dark-mode .skip-link {
+    @apply bg-gray-900 text-white border-2 border-yellow-400;
   }
 }
