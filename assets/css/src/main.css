@@ -166,6 +166,127 @@
     @apply my-8 rounded-lg;
   }
 
+  /* Portfolio grid styles */
+  .portfolio-section {
+    @apply py-12 px-4;
+  }
+
+  .portfolio-container {
+    @apply max-w-screen-2xl mx-auto;
+  }
+
+  .grid-controls {
+    @apply flex items-center justify-between mb-8;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-gh-heading;
+  }
+
+  .view-controls {
+    @apply flex gap-2;
+  }
+
+  .view-btn {
+    @apply w-10 h-10 rounded-lg bg-gray-100 text-gray-600;
+    @apply flex items-center justify-center transition-colors duration-200;
+    @apply hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-accent;
+  }
+
+  .view-btn.active {
+    @apply bg-accent text-white;
+  }
+
+  .view-icon {
+    @apply w-5 h-5;
+  }
+
+  /* Masonry grid */
+  .masonry-container {
+    @apply w-full;
+  }
+
+  .masonry-grid {
+    @apply grid gap-4;
+    grid-template-columns: repeat(var(--grid-columns, 3), 1fr);
+  }
+
+  .masonry-grid.list-view {
+    @apply grid-cols-1 max-w-4xl mx-auto;
+  }
+
+  /* Portfolio items */
+  .portfolio-item {
+    @apply relative overflow-hidden rounded-lg bg-gray-100;
+    @apply transition-transform duration-200 cursor-pointer;
+    @apply hover:scale-[1.02] focus:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent;
+  }
+
+  .portfolio-image-container {
+    @apply relative overflow-hidden;
+  }
+
+  .portfolio-image {
+    @apply w-full h-auto object-cover transition-opacity duration-300;
+    @apply opacity-0;
+  }
+
+  .portfolio-image.loaded {
+    @apply opacity-100;
+  }
+
+  .portfolio-overlay {
+    @apply absolute inset-0 bg-black bg-opacity-0;
+    @apply flex items-end p-4 transition-all duration-300;
+    @apply opacity-0 hover:opacity-100 focus-within:opacity-100;
+  }
+
+  .portfolio-item:hover .portfolio-overlay {
+    @apply bg-opacity-60 opacity-100;
+  }
+
+  .portfolio-content {
+    @apply text-white;
+  }
+
+  .portfolio-title {
+    @apply text-lg md:text-xl font-bold mb-2 leading-tight;
+  }
+
+  .portfolio-excerpt {
+    @apply text-sm text-gray-200 mb-3 leading-relaxed;
+  }
+
+  .portfolio-meta {
+    @apply flex items-center gap-3 text-xs text-gray-300;
+  }
+
+  .portfolio-date {
+    @apply font-medium;
+  }
+
+  .portfolio-tag {
+    @apply px-2 py-1 bg-accent rounded text-white;
+  }
+
+  .portfolio-text-only {
+    @apply p-6 text-center;
+  }
+
+  .read-more-link {
+    @apply text-accent hover:underline;
+  }
+
+  /* Load more functionality */
+  .load-more-container {
+    @apply mt-12 text-center;
+  }
+
+  .load-more-btn {
+    @apply btn bg-accent text-white px-8 py-3;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
   /* Form styles */
   input,
   textarea,
@@ -251,5 +372,273 @@
 
   .aspect-portrait {
     aspect-ratio: 2/3;
+  }
+
+  /* Body scroll lock for modals */
+  .lightbox-open {
+    @apply overflow-hidden;
+  }
+}
+
+/* Lightbox Component Styles */
+@layer components {
+  /* Lightbox modal overlay */
+  .lightbox-modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90;
+    @apply transition-opacity duration-300 ease-in-out;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Lightbox container */
+  .lightbox-container {
+    @apply relative w-full h-full max-w-screen-xl mx-auto flex items-center justify-center;
+    @apply px-4 py-4 md:px-8 md:py-8;
+  }
+
+  /* Lightbox navigation buttons */
+  .lightbox-nav {
+    @apply absolute top-1/2 transform -translate-y-1/2 z-10;
+    @apply w-12 h-12 md:w-16 md:h-16 rounded-full bg-white bg-opacity-20;
+    @apply flex items-center justify-center text-white;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none focus:ring-2 focus:ring-white;
+    @apply disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-opacity-20;
+  }
+
+  .lightbox-nav svg {
+    @apply w-6 h-6 md:w-8 md:h-8;
+  }
+
+  .lightbox-prev {
+    @apply left-4 md:left-8;
+  }
+
+  .lightbox-next {
+    @apply right-4 md:right-8;
+  }
+
+  /* Lightbox close button */
+  .lightbox-close {
+    @apply absolute top-4 right-4 z-20;
+    @apply w-10 h-10 md:w-12 md:h-12 rounded-full bg-white bg-opacity-20;
+    @apply flex items-center justify-center text-white;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none focus:ring-2 focus:ring-white;
+  }
+
+  .lightbox-close svg {
+    @apply w-5 h-5 md:w-6 md:h-6;
+  }
+
+  /* Lightbox content area */
+  .lightbox-content {
+    @apply w-full h-full flex flex-col lg:flex-row items-center justify-center;
+    @apply max-h-full overflow-hidden;
+  }
+
+  /* Lightbox image container */
+  .lightbox-image-container {
+    @apply flex-1 flex items-center justify-center;
+    @apply max-w-full max-h-full overflow-hidden;
+    @apply mb-4 lg:mb-0 lg:mr-8;
+  }
+
+  .lightbox-image {
+    @apply max-w-full max-h-full object-contain;
+    @apply transition-opacity duration-300 ease-in-out;
+    @apply shadow-2xl;
+  }
+
+  /* Loading and error states for lightbox */
+  .lightbox-loading {
+    @apply absolute inset-0 flex flex-col items-center justify-center;
+    @apply bg-white bg-opacity-95 backdrop-blur-sm rounded-lg;
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .loading-spinner {
+    @apply w-8 h-8 mb-3 border-2 border-accent border-t-transparent rounded-full animate-spin;
+  }
+
+  .loading-text {
+    @apply text-sm font-medium;
+  }
+
+  .lightbox-error {
+    @apply absolute inset-0 flex flex-col items-center justify-center;
+    @apply bg-white bg-opacity-95 backdrop-blur-sm rounded-lg;
+    @apply text-gray-500 dark:text-gray-500;
+  }
+
+  .error-icon {
+    @apply w-12 h-12 mb-3 text-gray-400 dark:text-gray-600;
+  }
+
+  .error-icon svg {
+    @apply w-full h-full;
+  }
+
+  .error-text {
+    @apply text-sm font-medium;
+  }
+
+  /* Dark mode adjustments for loading/error states */
+  @media (prefers-color-scheme: dark) {
+    .lightbox-loading,
+    .lightbox-error {
+      @apply bg-gray-900 bg-opacity-95;
+    }
+  }
+
+  .dark-mode .lightbox-loading,
+  .dark-mode .lightbox-error {
+    @apply bg-gray-900 bg-opacity-95;
+  }
+
+  /* Lightbox info panel */
+  .lightbox-info {
+    @apply w-full lg:w-80 xl:w-96 lg:max-h-full;
+    @apply bg-white bg-opacity-95 backdrop-blur-sm;
+    @apply rounded-lg p-6 shadow-xl;
+    @apply overflow-y-auto;
+  }
+
+  .lightbox-title {
+    @apply text-xl md:text-2xl font-bold text-gray-900 mb-3;
+    @apply leading-tight;
+  }
+
+  .lightbox-excerpt {
+    @apply text-gray-700 text-sm md:text-base mb-4;
+    @apply leading-relaxed;
+  }
+
+  .lightbox-meta {
+    @apply flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4;
+    @apply border-t border-gray-200 pt-4;
+  }
+
+  .lightbox-read-more {
+    @apply inline-flex items-center px-4 py-2 bg-accent text-white;
+    @apply rounded-lg transition-colors duration-200;
+    @apply hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+    @apply no-underline;
+  }
+
+  /* Dark mode adjustments */
+  @media (prefers-color-scheme: dark) {
+    .lightbox-info {
+      @apply bg-gray-900 bg-opacity-95 text-white;
+    }
+
+    .lightbox-title {
+      @apply text-white;
+    }
+
+    .lightbox-excerpt {
+      @apply text-gray-300;
+    }
+
+    .lightbox-meta {
+      @apply text-gray-400 border-gray-700;
+    }
+  }
+
+  .dark-mode .lightbox-info {
+    @apply bg-gray-900 bg-opacity-95 text-white;
+  }
+
+  .dark-mode .lightbox-title {
+    @apply text-white;
+  }
+
+  .dark-mode .lightbox-excerpt {
+    @apply text-gray-300;
+  }
+
+  .dark-mode .lightbox-meta {
+    @apply text-gray-400 border-gray-700;
+  }
+
+  /* Mobile responsiveness */
+  @screen sm {
+    .lightbox-container {
+      @apply px-2 py-2;
+    }
+
+    .lightbox-content {
+      @apply flex-col;
+    }
+
+    .lightbox-image-container {
+      @apply mb-4 mr-0 max-h-[60vh];
+    }
+
+    .lightbox-info {
+      @apply w-full max-h-[35vh];
+    }
+
+    .lightbox-nav {
+      @apply w-10 h-10;
+    }
+
+    .lightbox-nav svg {
+      @apply w-5 h-5;
+    }
+
+    .lightbox-close {
+      @apply w-8 h-8 top-2 right-2;
+    }
+
+    .lightbox-close svg {
+      @apply w-4 h-4;
+    }
+  }
+
+  /* Focus trapping and accessibility */
+  .lightbox-modal[aria-hidden="true"] {
+    @apply pointer-events-none;
+  }
+
+  .lightbox-modal[aria-hidden="false"] {
+    @apply pointer-events-auto;
+  }
+
+  /* Loading state */
+  .lightbox-image[data-loading="true"] {
+    @apply opacity-0;
+  }
+
+  .lightbox-image[data-loading="false"] {
+    @apply opacity-100;
+  }
+
+  /* Touch interactions for mobile */
+  @media (hover: none) and (pointer: coarse) {
+    .lightbox-nav,
+    .lightbox-close {
+      @apply bg-opacity-40;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .lightbox-nav,
+    .lightbox-close {
+      @apply bg-white text-black;
+    }
+
+    .lightbox-info {
+      @apply bg-white text-black border border-black;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox-modal,
+    .lightbox-image {
+      @apply transition-none;
+    }
   }
 }
