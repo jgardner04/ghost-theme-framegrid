@@ -147,19 +147,30 @@
         @keydown.escape.window="closeLightbox()"
         @keydown.arrow-left.window="previousImage()"
         @keydown.arrow-right.window="nextImage()"
+        @keydown.space.window.prevent="nextImage()"
+        @keydown.home.window.prevent="goToFirstImage()"
+        @keydown.end.window.prevent="goToLastImage()"
         role="dialog"
         aria-modal="true"
         :aria-hidden="!lightboxOpen"
+        :aria-label="`Image ${currentIndex + 1} of ${posts.length}`"
       >
 
         <div class="lightbox-container">
+          {{! Position indicator }}
+          <div class="lightbox-position-indicator">
+            <span x-text="`${currentIndex + 1} of ${posts.length}`"></span>
+          </div>
+
           {{! Navigation buttons }}
           <button
             class="lightbox-nav lightbox-prev"
             @click="previousImage()"
-            :disabled="currentIndex === 0 || imageLoading"
-            :class="{ 'opacity-50': currentIndex === 0 || imageLoading }"
-            aria-label="Previous image"
+            @keydown.space.prevent="previousImage()"
+            @keydown.enter.prevent="previousImage()"
+            :class="{ 'loading': imageLoading }"
+            :aria-label="`Previous image (${currentIndex === 0 ? posts.length : currentIndex} of ${posts.length})`"
+            tabindex="0"
           >
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
@@ -169,9 +180,11 @@
           <button
             class="lightbox-nav lightbox-next"
             @click="nextImage()"
-            :disabled="currentIndex === posts.length - 1 || imageLoading"
-            :class="{ 'opacity-50': currentIndex === posts.length - 1 || imageLoading }"
-            aria-label="Next image"
+            @keydown.space.prevent="nextImage()"
+            @keydown.enter.prevent="nextImage()"
+            :class="{ 'loading': imageLoading }"
+            :aria-label="`Next image (${currentIndex === posts.length - 1 ? 1 : currentIndex + 2} of ${posts.length})`"
+            tabindex="0"
           >
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
@@ -293,13 +306,24 @@
   closeButton.focus(); }); // Preload adjacent images for smooth navigation
   this.preloadAdjacentImages(index); }, closeLightbox() { this.lightboxOpen =
   false; this.imageLoading = false; this.imageError = false;
-  document.body.classList.remove('lightbox-open'); }, nextImage() { if
-  (this.currentIndex < this.posts.length - 1 && !this.imageLoading) {
-  this.navigateToImage(this.currentIndex + 1); } }, previousImage() { if
-  (this.currentIndex > 0 && !this.imageLoading) {
-  this.navigateToImage(this.currentIndex - 1); } }, navigateToImage(index) {
-  this.currentIndex = index; this.currentPost = this.posts[index];
-  this.imageLoading = true; this.imageError = false; // Preload adjacent images
+  document.body.classList.remove('lightbox-open'); }, // Enhanced navigation
+  with looping support nextImage() { if (!this.imageLoading && this.posts.length
+  > 0) { // Implement looping: if at last image, go to first const nextIndex =
+  this.currentIndex >= this.posts.length - 1 ? 0 : this.currentIndex + 1;
+  this.navigateToImage(nextIndex); } }, previousImage() { if (!this.imageLoading
+  && this.posts.length > 0) { // Implement looping: if at first image, go to
+  last const prevIndex = this.currentIndex <= 0 ? this.posts.length - 1 :
+  this.currentIndex - 1; this.navigateToImage(prevIndex); } }, // New navigation
+  methods for keyboard shortcuts goToFirstImage() { if (!this.imageLoading &&
+  this.posts.length > 0) { this.navigateToImage(0); } }, goToLastImage() { if
+  (!this.imageLoading && this.posts.length > 0) {
+  this.navigateToImage(this.posts.length - 1); } }, handleEnterKey(event) { //
+  Handle Enter key on focused navigation buttons const activeElement =
+  document.activeElement; if (activeElement &&
+  activeElement.classList.contains('lightbox-nav')) { event.preventDefault();
+  activeElement.click(); } }, navigateToImage(index) { this.currentIndex =
+  index; this.currentPost = this.posts[index]; this.imageLoading = true;
+  this.imageError = false; // Preload adjacent images with circular logic
   this.preloadAdjacentImages(index); }, handleImageLoad() { this.imageLoading =
   false; this.imageError = false; }, handleImageError() { this.imageLoading =
   false; this.imageError = true; }, getLightboxImageUrl(post) { if
@@ -329,14 +353,17 @@
   initial experience const imagesToPreload = this.posts.slice(0, 3);
   imagesToPreload.forEach(post => { if (post.feature_image) {
   this.preloadImage(post); } }); }, preloadAdjacentImages(currentIndex) { //
-  Preload previous and next images for smooth navigation const indicesToPreload
-  = [ currentIndex - 1, currentIndex + 1 ].filter(index => index >= 0 && index <
-  this.posts.length); indicesToPreload.forEach(index => { const post =
-  this.posts[index]; if (post?.feature_image) { this.preloadImage(post); } });
-  }, preloadImage(post) { const imageUrl = this.getLightboxImageUrl(post); if
-  (imageUrl && !this.imageCache.has(imageUrl)) { const img = new Image();
-  img.onload = () => { this.imageCache.set(imageUrl, true); }; img.onerror = ()
-  => { this.imageCache.set(imageUrl, false); }; img.src = imageUrl; } }, async
+  Enhanced preloading with circular navigation support const totalPosts =
+  this.posts.length; if (totalPosts <= 1) return; // Calculate adjacent indices
+  with circular logic const prevIndex = currentIndex <= 0 ? totalPosts - 1 :
+  currentIndex - 1; const nextIndex = currentIndex >= totalPosts - 1 ? 0 :
+  currentIndex + 1; // Preload previous and next images [prevIndex,
+  nextIndex].forEach(index => { const post = this.posts[index]; if
+  (post?.feature_image) { this.preloadImage(post); } }); }, preloadImage(post) {
+  const imageUrl = this.getLightboxImageUrl(post); if (imageUrl &&
+  !this.imageCache.has(imageUrl)) { const img = new Image(); img.onload = () =>
+  { this.imageCache.set(imageUrl, true); }; img.onerror = () => {
+  this.imageCache.set(imageUrl, false); }; img.src = imageUrl; } }, async
   loadMore() { if (this.loading) return; this.loading = true; try { // Implement
   infinite scroll loading with Ghost Content API const nextPage = '{{pagination.next}}';
   if (nextPage) { const response = await fetch(`${nextPage}?formats=html,json`);
@@ -347,7 +374,7 @@
   Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month:
   'short', day: 'numeric' }), primary_tag: post.primary_tag?.name || '' }));
   this.posts.push(...newPosts); // Preload some of the new images
-  this.preloadNewImages(newPosts.slice(0, 2)); } } } catch (error) {
+  this.preloadNewImages(newPosts.slice(0, 2)); } } catch (error) {
   console.error('Error loading more posts:', error); } finally { this.loading =
   false; } }, preloadNewImages(newPosts) { newPosts.forEach(post => { if
   (post.feature_image) { this.preloadImage(post); } }); } })); });
