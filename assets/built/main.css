@@ -1587,7 +1587,7 @@ input,
 .lightbox-modal[aria-hidden="false"] {
   pointer-events: auto;
 }
-/* Enhanced focus indicators for accessibility */
+/* Enhanced focus indicators for accessibility - Cross Browser Support */
 .lightbox-nav:focus,
   .lightbox-close:focus {
   outline: 2px solid transparent;
@@ -1607,6 +1607,8 @@ input,
   --tw-scale-x: 1.1;
   --tw-scale-y: 1.1;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    /* Fallback for browsers without backdrop-blur */
+    background-color: rgba(0, 0, 0, 0.8);
 }
 .lightbox-nav:focus-visible,
   .lightbox-close:focus-visible {
@@ -1627,7 +1629,35 @@ input,
   --tw-scale-x: 1.1;
   --tw-scale-y: 1.1;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    /* Fallback for browsers without backdrop-blur */
+    background-color: rgba(0, 0, 0, 0.8);
 }
+/* IE11 and older browser fallbacks */
+@media screen and (-ms-high-contrast: active),
+    screen and (-ms-high-contrast: none) {
+    .lightbox-modal {
+      background-color: rgba(0, 0, 0, 0.95); /* Solid background for IE */
+    }
+
+    .lightbox-nav,
+    .lightbox-close {
+      background-color: rgba(0, 0, 0, 0.8);
+      border: 2px solid white;
+    }
+
+    .lightbox-info {
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+    }
+  }
+/* Firefox-specific fixes */
+@-moz-document url-prefix() {
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      outline: 2px solid white;
+      outline-offset: 2px;
+    }
+  }
 /* Portfolio item focus indicators */
 .portfolio-item:focus {
   outline: 2px solid transparent;
@@ -2023,36 +2053,55 @@ button:focus-visible,
 @media (hover: none) and (pointer: coarse) {
     .lightbox-nav,
     .lightbox-close {
-    min-height: 4rem;
-    min-width: 4rem;
-    --tw-bg-opacity: 0.6;
-  }
+      /* Larger touch targets for mobile */
+      min-height: 3rem;
+      min-width: 3rem;
+      /* Ensure visibility on mobile */
+      opacity: 0.9;
+    }
 
     .error-retry-btn {
-    min-height: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
+      /* Larger touch target for retry button */
+      min-height: 3rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
 
     .lightbox-read-more {
-    min-height: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
+      /* Better touch target for read more link */
+      min-height: 2.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
 
     .lightbox-tag {
-    min-height: 2.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+      /* Improve touch interaction for tags */
+      min-height: 2rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
   }
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .lightbox-modal {
+      /* Fix iOS Safari backdrop blur issues */
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .lightbox-nav,
+    .lightbox-close {
+      /* Improve button appearance on iOS */
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Fix iOS zoom on focus */
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
   }
 /* Focus management for modal */
 .lightbox-modal[data-focus-trapped="true"] {

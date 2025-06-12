@@ -20,7 +20,7 @@ function enhanceLightboxNavigation() {
       imageError: false,
       posts: [],
       currentPost: null,
-      imageCache: new Map(),
+      imageCache: {},
       screenReaderAnnouncement: "",
       lastFocusedElement: null,
       focusableElements: [],
@@ -476,26 +476,20 @@ function enhanceLightboxNavigation() {
 
       // Enhanced screen reader announcements with live regions
       announceToScreenReader(message) {
-        if (!message) return;
+        this.screenReaderAnnouncement = message;
 
-        // Clear previous announcement
-        this.screenReaderAnnouncement = "";
+        // Also update the live region directly for immediate announcement
+        const liveRegion = document.getElementById("lightbox-announcements");
+        if (liveRegion) {
+          liveRegion.textContent = message;
 
-        // Use a small delay to ensure screen readers pick up the change
-        setTimeout(() => {
-          this.screenReaderAnnouncement = message;
-
-          // Also update aria-live regions if they exist
-          const liveRegion = document.getElementById("lightbox-announcements");
-          if (liveRegion) {
-            liveRegion.textContent = message;
-
-            // Clear the announcement after a delay to prepare for next one
-            setTimeout(() => {
+          // Clear after a delay to allow for multiple announcements
+          setTimeout(() => {
+            if (liveRegion.textContent === message) {
               liveRegion.textContent = "";
-            }, 1000);
-          }
-        }, 100);
+            }
+          }, 1000);
+        }
       },
 
       getLightboxImageUrl(post) {
@@ -605,13 +599,13 @@ function enhanceLightboxNavigation() {
 
       preloadImage(post) {
         const imageUrl = this.getLightboxImageUrl(post);
-        if (imageUrl && !this.imageCache.has(imageUrl)) {
+        if (imageUrl && !this.imageCache[imageUrl]) {
           const img = new Image();
           img.onload = () => {
-            this.imageCache.set(imageUrl, true);
+            this.imageCache[imageUrl] = true;
           };
           img.onerror = () => {
-            this.imageCache.set(imageUrl, false);
+            this.imageCache[imageUrl] = false;
           };
           img.src = imageUrl;
         }
@@ -624,10 +618,20 @@ function enhanceLightboxNavigation() {
         this.announceToScreenReader("Loading more images...");
 
         try {
+          // Check if fetch is supported (IE11+ support)
+          if (typeof fetch === "undefined") {
+            throw new Error("Fetch API not supported");
+          }
+
           // Implement infinite scroll loading with Ghost Content API
           const nextPage = "{{pagination.next}}";
           if (nextPage) {
             const response = await fetch(`${nextPage}?formats=html,json`);
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
 
             // Add new posts to the array and update the grid

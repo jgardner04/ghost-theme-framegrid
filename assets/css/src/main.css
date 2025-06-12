@@ -634,12 +634,14 @@
     @apply pointer-events-auto;
   }
 
-  /* Enhanced focus indicators for accessibility */
+  /* Enhanced focus indicators for accessibility - Cross Browser Support */
   .lightbox-nav:focus,
   .lightbox-close:focus {
     @apply outline-none ring-4 ring-white ring-offset-4 ring-offset-black;
     @apply shadow-2xl backdrop-blur-md;
     @apply scale-110;
+    /* Fallback for browsers without backdrop-blur */
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   .lightbox-nav:focus-visible,
@@ -647,6 +649,36 @@
     @apply outline-none ring-4 ring-white ring-offset-4 ring-offset-black;
     @apply shadow-2xl backdrop-blur-md;
     @apply scale-110;
+    /* Fallback for browsers without backdrop-blur */
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  /* IE11 and older browser fallbacks */
+  @media screen and (-ms-high-contrast: active),
+    screen and (-ms-high-contrast: none) {
+    .lightbox-modal {
+      background-color: rgba(0, 0, 0, 0.95); /* Solid background for IE */
+    }
+
+    .lightbox-nav,
+    .lightbox-close {
+      background-color: rgba(0, 0, 0, 0.8);
+      border: 2px solid white;
+    }
+
+    .lightbox-info {
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+    }
+  }
+
+  /* Firefox-specific fixes */
+  @-moz-document url-prefix() {
+    .lightbox-nav:focus,
+    .lightbox-close:focus {
+      outline: 2px solid white;
+      outline-offset: 2px;
+    }
   }
 
   /* Portfolio item focus indicators */
@@ -827,20 +859,48 @@
   @media (hover: none) and (pointer: coarse) {
     .lightbox-nav,
     .lightbox-close {
-      @apply min-w-16 min-h-16;
-      @apply bg-opacity-60;
+      /* Larger touch targets for mobile */
+      @apply min-w-12 min-h-12;
+      /* Ensure visibility on mobile */
+      opacity: 0.9;
     }
 
     .error-retry-btn {
-      @apply min-h-16 px-8 text-base;
+      /* Larger touch target for retry button */
+      @apply min-h-12 px-6;
     }
 
     .lightbox-read-more {
-      @apply min-h-16 px-8 text-base;
+      /* Better touch target for read more link */
+      @apply min-h-10 px-4;
     }
 
     .lightbox-tag {
-      @apply min-h-10 px-4 py-2 text-sm;
+      /* Improve touch interaction for tags */
+      @apply min-h-8 px-3;
+    }
+  }
+
+  /* iOS Safari specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    .lightbox-modal {
+      /* Fix iOS Safari backdrop blur issues */
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .lightbox-nav,
+    .lightbox-close {
+      /* Improve button appearance on iOS */
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Fix iOS zoom on focus */
+    input,
+    textarea,
+    select {
+      font-size: 16px;
     }
   }
 
