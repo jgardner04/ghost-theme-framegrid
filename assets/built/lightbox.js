@@ -544,8 +544,15 @@ function enhanceLightboxNavigation() {
             `/content/images/size/w${width}/`
           );
         } else if (
-          imageUrl.includes("images.unsplash.com") ||
-          imageUrl.includes("cdn.")
+          (() => {
+            try {
+              const parsedUrl = new URL(imageUrl);
+              const allowedHosts = ["images.unsplash.com", "cdn.example.com"];
+              return allowedHosts.includes(parsedUrl.host);
+            } catch (e) {
+              return false; // Invalid URL
+            }
+          })()
         ) {
           // For external images, append size parameter
           const separator = imageUrl.includes("?") ? "&" : "?";
