@@ -28,6 +28,17 @@ node_modules/
 tasks.json
 tasks/
 
+# Ghost database files
+ghost-local.db
+*.db
+content/data/ghost-local.db
+content/data/*.db
+
+# Ghost process files
+.ghostpid
+
+# Ghost logs
+content/logs/
 # Ghost local testing environment
 ghost-local/
 
