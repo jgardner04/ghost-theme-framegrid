@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FrameGrid Responsive Masonry Test</title>
+    <link rel="stylesheet" href="assets/built/main.css" />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <script src="assets/built/masonry.js"></script>
+    <style>
+      /* Test viewport indicators */
+      .viewport-indicator {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 1000;
+      }
+
+      /* Test content styling */
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .test-image {
+        background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-weight: bold;
+        min-height: 200px;
+      }
+
+      /* Different aspect ratios for testing */
+      .test-image.square {
+        aspect-ratio: 1/1;
+      }
+      .test-image.portrait {
+        aspect-ratio: 2/3;
+      }
+      .test-image.landscape {
+        aspect-ratio: 3/2;
+      }
+      .test-image.panoramic {
+        aspect-ratio: 16/9;
+      }
+      .test-image.xpan {
+        aspect-ratio: 65/24;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Viewport indicator -->
+    <div
+      class="viewport-indicator"
+      x-data="{ width: window.innerWidth }"
+      x-init="setInterval(() => width = window.innerWidth, 100)"
+    >
+      <div x-text="`Viewport: ${width}px`"></div>
+      <div
+        x-text="width >= 1024 ? 'Desktop (3 cols)' : width >= 768 ? 'Tablet (2 cols)' : 'Mobile (1 col)'"
+      ></div>
+      <div x-text="width >= 768 ? 'Masonry: ON' : 'Masonry: OFF'"></div>
+    </div>
+
+    <div class="test-container">
+      <h1>FrameGrid Responsive Masonry Test</h1>
+      <p>Resize your browser window to test responsive breakpoints:</p>
+      <ul>
+        <li>
+          <strong>Desktop (≥1024px):</strong> 3 columns, 10px gaps, masonry
+          enabled
+        </li>
+        <li>
+          <strong>Tablet (≤768px):</strong> 2 columns, 8px gaps, masonry enabled
+        </li>
+        <li>
+          <strong>Mobile (≤640px):</strong> 1 column, 6px gaps, masonry disabled
+        </li>
+      </ul>
+
+      <!-- Masonry Portfolio Test -->
+      <div class="masonry-container">
+        <div
+          class="masonry-portfolio"
+          x-data="masonryGrid()"
+          x-init="init()"
+          :class="{ 'masonry-js-enabled': isInitialized, 'masonry-loading': isLoading }"
+        >
+          <!-- Test items with different aspect ratios -->
+          <article class="masonry-item">
+            <div class="test-image square">Square<br />1:1</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image portrait">Portrait<br />2:3</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image landscape">Landscape<br />3:2</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image panoramic">Panoramic<br />16:9</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image square">Square<br />1:1</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image xpan">Xpan<br />65:24</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image portrait">Portrait<br />2:3</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image landscape">Landscape<br />3:2</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image square">Square<br />1:1</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image panoramic">Panoramic<br />16:9</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image portrait">Portrait<br />2:3</div>
+          </article>
+
+          <article class="masonry-item">
+            <div class="test-image landscape">Landscape<br />3:2</div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug information -->
+    <div
+      style="
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 11px;
+      "
+    >
+      <div
+        x-data="{
+            cssColumns: getComputedStyle(document.querySelector('.masonry-portfolio')).gridTemplateColumns,
+            cssGap: getComputedStyle(document.querySelector('.masonry-portfolio')).gap
+        }"
+        x-init="setInterval(() => {
+            cssColumns = getComputedStyle(document.querySelector('.masonry-portfolio')).gridTemplateColumns;
+            cssGap = getComputedStyle(document.querySelector('.masonry-portfolio')).gap;
+        }, 500)"
+      >
+        <div x-text="`CSS Columns: ${cssColumns}`"></div>
+        <div x-text="`CSS Gap: ${cssGap}`"></div>
+      </div>
+    </div>
+  </body>
+</html>
