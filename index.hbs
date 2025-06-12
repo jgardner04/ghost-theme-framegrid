@@ -57,6 +57,7 @@
       </div>
     </div>
 
+
     {{! Masonry grid with Alpine.js lightbox }}
     <div
       class="masonry-container"
@@ -130,6 +131,10 @@
           </article>
         {{/foreach}}
       </div>
+
+    {{! Use the new masonry portfolio partial }}
+    {{> masonry-portfolio posts=posts}}
+
 
       {{! Load more button for infinite scroll }}
       {{#if pagination.next}}

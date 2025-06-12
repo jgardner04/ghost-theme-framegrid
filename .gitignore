@@ -39,3 +39,14 @@ content/data/*.db
 
 # Ghost logs
 content/logs/
+# Ghost local testing environment
+ghost-local/
+
+# Ghost theme development files
+/assets/css/src/main.css  ← Your Tailwind source
+/assets/built/            ← Compiled assets
+/partials/               ← Handlebars partials
+/*.hbs                   ← Template files
+/package.json            ← Theme metadata
+ghost-local/content/data/ghost-local.db
+ghost-local/.ghostpid

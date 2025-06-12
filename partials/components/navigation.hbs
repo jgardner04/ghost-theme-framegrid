@@ -1,0 +1,16 @@
+{{!-- Navigation Component - Override for Ghost theme compatibility --}}
+{{!-- This fixes the invalid {{json}} helper issue from the default source theme --}}
+
+<nav class="gh-navigation" role="navigation" aria-label="Main navigation">
+  {{#if @site.navigation}}
+    <ul class="nav">
+      {{#foreach @site.navigation}}
+        <li class="nav-item {{#if current}}nav-current{{/if}}">
+          <a href="{{url}}" class="nav-link"{{#if current}} aria-current="page"{{/if}}>
+            {{label}}
+          </a>
+        </li>
+      {{/foreach}}
+    </ul>
+  {{/if}}
+</nav>
