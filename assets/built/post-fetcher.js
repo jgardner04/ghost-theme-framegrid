@@ -231,7 +231,8 @@ class PostFetcher {
     // Handle external images
     try {
       const url = new URL(imageUrl);
-      if (url.hostname.includes("unsplash.com")) {
+      const allowedDomains = ["unsplash.com"];
+      if (allowedDomains.includes(url.hostname)) {
         url.searchParams.set("w", width.toString());
         url.searchParams.set("q", "80");
         return url.toString();
