@@ -1,0 +1,213 @@
+{{!< default}}
+
+{{#contentFor "page_class"}}portfolio-page{{/contentFor}}
+{{#contentFor "meta_title"}}{{meta_title default="Portfolio"}}{{/contentFor}}
+{{#contentFor "meta_description"}}{{meta_description default="Explore my nature photography portfolio featuring wildlife, landscape, underwater, and cityscape imagery"}}{{/contentFor}}
+
+{{! Main portfolio landing page }}
+<main class="portfolio-landing" role="main">
+  {{! Hero section }}
+  <section class="portfolio-hero bg-gray-50 dark:bg-gray-900 py-16 lg:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          Portfolio
+        </h1>
+        <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+          Discover my nature photography through curated collections of wildlife encounters,
+          breathtaking landscapes, underwater adventures, and urban architectural beauty.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {{! Portfolio categories section }}
+  <section class="portfolio-categories py-16 lg:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        {{! Wildlife category }}
+        <div class="category-card group">
+          <a href="/portfolio/wildlife/" class="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="aspect-w-16 aspect-h-12 bg-gray-200 dark:bg-gray-700 relative">
+              <div class="w-full h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                <svg class="w-16 h-16 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Wildlife</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                Intimate moments with wild animals in their natural habitats
+              </p>
+              <div class="flex items-center text-green-600 dark:text-green-400 text-sm font-medium">
+                View Collection
+                <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        {{! Landscape category }}
+        <div class="category-card group">
+          <a href="/portfolio/landscape/" class="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="aspect-w-16 aspect-h-12 bg-gray-200 dark:bg-gray-700 relative">
+              <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
+                <svg class="w-16 h-16 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14,6L10.25,11L13.1,14.8L11.5,16C9.81,13.75 7,10 7,10L1,18H23L14,6Z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Landscape</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                Majestic vistas and serene natural scenes from around the world
+              </p>
+              <div class="flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+                View Collection
+                <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        {{! Underwater category }}
+        <div class="category-card group">
+          <a href="/portfolio/underwater/" class="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="aspect-w-16 aspect-h-12 bg-gray-200 dark:bg-gray-700 relative">
+              <div class="w-full h-48 bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center">
+                <svg class="w-16 h-16 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12,18.5C15.5,16.5 21,11 21,6.5C21,4.5 19.5,3 17.5,3C15.5,3 14,4 12,6C10,4 8.5,3 6.5,3C4.5,3 3,4.5 3,6.5C3,11 8.5,16.5 12,18.5Z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Underwater</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                Aquatic life and underwater ecosystems captured beneath the surface
+              </p>
+              <div class="flex items-center text-teal-600 dark:text-teal-400 text-sm font-medium">
+                View Collection
+                <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        {{! Cityscape category }}
+        <div class="category-card group">
+          <a href="/portfolio/cityscape/" class="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="aspect-w-16 aspect-h-12 bg-gray-200 dark:bg-gray-700 relative">
+              <div class="w-full h-48 bg-gradient-to-br from-slate-400 to-blue-600 flex items-center justify-center">
+                <svg class="w-16 h-16 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M15,11V5L12,2L9,5V7H7V11H1V21H23V11H15M9,19H7V17H9V19M9,15H7V13H9V15M13,19H11V17H13V19M13,15H11V13H13V15M13,11H11V9H13V11M13,7H11V5H13V7M17,19H15V17H17V19M17,15H15V13H17V15Z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Cityscape</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                Urban architecture and city life captured through a photographer's lens
+              </p>
+              <div class="flex items-center text-slate-600 dark:text-slate-400 text-sm font-medium">
+                View Collection
+                <svg class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Featured work section }}
+  <section class="featured-work bg-gray-50 dark:bg-gray-900 py-16 lg:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Featured Work
+        </h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-600 dark:text-gray-300">
+          A curated selection of my most impactful images from across all categories
+        </p>
+      </div>
+
+      {{! Get featured portfolio posts }}
+      {{#get "posts" filter="tag:hash-portfolio+featured:true" limit="8" as |featured_posts|}}
+        {{#if featured_posts}}
+          {{> masonry-portfolio posts=featured_posts}}
+        {{else}}
+          {{! Fallback: get latest portfolio posts if no featured posts }}
+          {{#get "posts" filter="tag:hash-portfolio" limit="8" as |portfolio_posts|}}
+            {{#if portfolio_posts}}
+              {{> masonry-portfolio posts=portfolio_posts}}
+            {{/if}}
+          {{/get}}
+        {{/if}}
+      {{/get}}
+
+      {{! View all portfolios link }}
+      <div class="text-center mt-12">
+        <a
+          href="/portfolio/all/"
+          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          View All Portfolio Images
+          <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{! JSON-LD structured data for portfolio page }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{meta_title default="Portfolio"}}",
+  "description": "{{meta_description default="Nature photography portfolio featuring wildlife, landscape, underwater, and cityscape imagery"}}",
+  "url": "{{@site.url}}/portfolio/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Photography Portfolio Categories",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Wildlife Photography",
+        "url": "{{@site.url}}/portfolio/wildlife/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Landscape Photography",
+        "url": "{{@site.url}}/portfolio/landscape/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Underwater Photography",
+        "url": "{{@site.url}}/portfolio/underwater/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Cityscape Photography",
+        "url": "{{@site.url}}/portfolio/cityscape/"
+      }
+    ]
+  }
+}
+</script>

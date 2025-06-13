@@ -1,0 +1,298 @@
+{{!< default}}
+
+{{#contentFor "page_class"}}portfolio-wildlife-page{{/contentFor}}
+{{#contentFor "meta_title"}}{{meta_title default="Wildlife Photography Portfolio"}}{{/contentFor}}
+{{#contentFor "meta_description"}}{{meta_description default="Explore stunning wildlife photography featuring intimate moments with wild animals in their natural habitats from around the world"}}{{/contentFor}}
+
+{{! Wildlife portfolio page }}
+<main class="portfolio-wildlife" role="main">
+  {{! Wildlife hero section with category-specific styling }}
+  <section class="wildlife-hero bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 text-white py-20 lg:py-32 relative overflow-hidden">
+    {{! Background pattern }}
+    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center">
+        <div class="flex justify-center mb-6">
+          {{! Wildlife icon }}
+          <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          Wildlife Photography
+        </h1>
+
+        <p class="max-w-3xl mx-auto text-lg md:text-xl text-green-100 mb-8">
+          Capturing intimate moments with wild animals in their natural habitats. From African safaris to Arctic expeditions,
+          witness the raw beauty and untamed spirit of wildlife through my lens.
+        </p>
+
+        {{! Wildlife-specific stats }}
+        <div class="flex flex-wrap justify-center gap-8 text-sm text-green-200">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>Global Expeditions</span>
+          </div>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            <span>Field Observations</span>
+          </div>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+            <span>Conservation Focused</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Navigation breadcrumb }}
+  <nav class="breadcrumb bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-4" aria-label="Breadcrumb">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <ol class="flex items-center space-x-2 text-sm">
+        <li>
+          <a href="/" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+            Home
+          </a>
+        </li>
+        <li class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <a href="/portfolio/" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+            Portfolio
+          </a>
+        </li>
+        <li class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <span class="text-gray-900 dark:text-white font-medium">Wildlife</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  {{! Wildlife collection filter and controls }}
+  <section class="controls bg-green-50 dark:bg-gray-900 py-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        {{! View controls }}
+        <div class="view-controls" x-data="{ view: 'grid' }">
+          <div class="flex items-center space-x-2">
+            <button
+              @click="view = 'grid'"
+              :class="{ 'bg-green-600 text-white': view === 'grid', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': view !== 'grid' }"
+              class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+              aria-label="Grid view"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+              </svg>
+            </button>
+            <button
+              @click="view = 'list'"
+              :class="{ 'bg-green-600 text-white': view === 'list', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': view !== 'list' }"
+              class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+              aria-label="List view"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 5h2v2H3V5zm0 4h2v2H3V9zm0 4h2v2H3v-2zm4-8h14v2H7V5zm0 4h14v2H7V9zm0 4h14v2H7v-2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {{! Wildlife-specific filter buttons }}
+        <div class="wildlife-filters" x-data="{ activeFilter: 'all' }">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-sm text-gray-600 dark:text-gray-400 mr-2">Filter by habitat:</span>
+            <button
+              @click="activeFilter = 'all'"
+              :class="{ 'bg-green-600 text-white': activeFilter === 'all', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': activeFilter !== 'all' }"
+              class="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              All
+            </button>
+            <button
+              @click="activeFilter = 'africa'"
+              :class="{ 'bg-green-600 text-white': activeFilter === 'africa', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': activeFilter !== 'africa' }"
+              class="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              African Safari
+            </button>
+            <button
+              @click="activeFilter = 'arctic'"
+              :class="{ 'bg-green-600 text-white': activeFilter === 'arctic', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': activeFilter !== 'arctic' }"
+              class="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Arctic
+            </button>
+            <button
+              @click="activeFilter = 'forest'"
+              :class="{ 'bg-green-600 text-white': activeFilter === 'forest', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': activeFilter !== 'forest' }"
+              class="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Forest
+            </button>
+          </div>
+        </div>
+
+        {{! Results count }}
+        <div class="results-info text-sm text-gray-600 dark:text-gray-400">
+          {{#get "posts" filter="tag:hash-portfolio+tag:wildlife" as |wildlife_posts|}}
+            {{wildlife_posts.length}} Wildlife Images
+          {{/get}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Wildlife portfolio grid }}
+  <section class="wildlife-grid py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      {{! Get wildlife posts }}
+      {{#get "posts" filter="tag:hash-portfolio+tag:wildlife" limit="all" as |wildlife_posts|}}
+        {{#if wildlife_posts}}
+          {{> masonry-portfolio posts=wildlife_posts}}
+        {{else}}
+          {{! Empty state }}
+          <div class="empty-state text-center py-16">
+            <div class="max-w-md mx-auto">
+              <div class="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                No Wildlife Images Yet
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-6">
+                Wildlife photography collection is currently being curated. Check back soon for amazing animal encounters!
+              </p>
+              <a
+                href="/portfolio/"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-green-600 bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 transition-colors"
+              >
+                Browse Other Categories
+              </a>
+            </div>
+          </div>
+        {{/if}}
+      {{/get}}
+    </div>
+  </section>
+
+  {{! Wildlife photography tips section }}
+  <section class="wildlife-tips bg-green-50 dark:bg-gray-900 py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">
+          Wildlife Photography Ethics
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="ethics-item">
+            <div class="w-12 h-12 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Respect Wildlife</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">
+              Always maintain safe distances and never disturb natural behavior for a photograph.
+            </p>
+          </div>
+          <div class="ethics-item">
+            <div class="w-12 h-12 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Protect Habitats</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">
+              Follow Leave No Trace principles and respect protected areas and local regulations.
+            </p>
+          </div>
+          <div class="ethics-item">
+            <div class="w-12 h-12 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Conservation Education</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm">
+              Use photography to raise awareness about conservation and support wildlife protection efforts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Other portfolio categories }}
+  <section class="related-categories bg-white dark:bg-gray-800 py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+        Explore Other Collections
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <a href="/portfolio/landscape/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Landscape Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Majestic vistas and serene natural scenes from around the world
+          </p>
+        </a>
+
+        <a href="/portfolio/underwater/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Underwater Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Aquatic life and underwater ecosystems captured beneath the surface
+          </p>
+        </a>
+
+        <a href="/portfolio/cityscape/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Cityscape Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Urban architecture and city life captured through a photographer's lens
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{! JSON-LD structured data for wildlife portfolio }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Wildlife Photography Portfolio",
+  "description": "Explore stunning wildlife photography featuring intimate moments with wild animals in their natural habitats from around the world",
+  "url": "{{@site.url}}/portfolio/wildlife/",
+  "about": {
+    "@type": "Thing",
+    "name": "Wildlife Photography",
+    "description": "Nature photography specializing in capturing wild animals in their natural environments"
+  },
+  "specialty": "Wildlife Photography"
+}
+</script>

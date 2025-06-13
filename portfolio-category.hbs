@@ -1,0 +1,261 @@
+{{!< default}}
+
+{{#contentFor "page_class"}}portfolio-category-page{{/contentFor}}
+{{#contentFor "meta_title"}}{{meta_title default=(concat (titlecase tag.name) " Photography")}}{{/contentFor}}
+{{#contentFor "meta_description"}}{{meta_description default=(concat "Explore " (lowercase tag.name) " photography featuring stunning images from around the world")}}{{/contentFor}}
+
+{{! Portfolio category page }}
+<main class="portfolio-category" role="main">
+  {{! Category hero section }}
+  <section class="category-hero bg-gray-900 text-white py-16 lg:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        {{! Category title from tag data }}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          {{#if tag}}
+            {{titlecase tag.name}} Photography
+          {{else}}
+            Portfolio Category
+          {{/if}}
+        </h1>
+
+        {{! Category description }}
+        {{#if tag.description}}
+          <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-8">
+            {{tag.description}}
+          </p>
+        {{else}}
+          <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-8">
+            {{#if tag}}
+              Discover stunning {{lowercase tag.name}} photography capturing the essence and beauty of this unique category.
+            {{else}}
+              Explore this curated collection of photography showcasing exceptional artistic vision and technical skill.
+            {{/if}}
+          </p>
+        {{/if}}
+
+        {{! Category statistics }}
+        <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span>{{pagination.total}} Images</span>
+          </div>
+          {{#if tag.created_at}}
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>Collection since {{date tag.created_at format="YYYY"}}</span>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Portfolio navigation breadcrumb }}
+  <nav class="breadcrumb bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-4" aria-label="Breadcrumb">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <ol class="flex items-center space-x-2 text-sm">
+        <li>
+          <a href="/" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+            Home
+          </a>
+        </li>
+        <li class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <a href="/portfolio/" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+            Portfolio
+          </a>
+        </li>
+        <li class="flex items-center">
+          <svg class="w-4 h-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <span class="text-gray-900 dark:text-white font-medium">
+            {{#if tag}}
+              {{titlecase tag.name}}
+            {{else}}
+              Category
+            {{/if}}
+          </span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  {{! Filter and sort controls }}
+  <section class="controls bg-gray-50 dark:bg-gray-900 py-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {{! View controls }}
+        <div class="view-controls" x-data="{ view: 'grid' }">
+          <div class="flex items-center space-x-2">
+            <button
+              @click="view = 'grid'"
+              :class="{ 'bg-blue-600 text-white': view === 'grid', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': view !== 'grid' }"
+              class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Grid view"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+              </svg>
+            </button>
+            <button
+              @click="view = 'list'"
+              :class="{ 'bg-blue-600 text-white': view === 'list', 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-300': view !== 'list' }"
+              class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="List view"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 5h2v2H3V5zm0 4h2v2H3V9zm0 4h2v2H3v-2zm4-8h14v2H7V5zm0 4h14v2H7V9zm0 4h14v2H7v-2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {{! Results count }}
+        <div class="results-info text-sm text-gray-600 dark:text-gray-400">
+          Showing {{pagination.from}}-{{pagination.to}} of {{pagination.total}} images
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{! Enhanced filtering controls }}
+  {{> enhanced-filters}}
+
+  {{! Portfolio grid section }}
+  <section class="portfolio-grid py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      {{#if posts}}
+        {{! Use the masonry portfolio partial }}
+        {{> masonry-portfolio posts=posts}}
+      {{else}}
+        {{! Empty state }}
+        <div class="empty-state text-center py-16">
+          <div class="max-w-md mx-auto">
+            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              No images found
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">
+              {{#if tag}}
+                There are currently no {{lowercase tag.name}} images in this collection.
+              {{else}}
+                There are currently no images in this category.
+              {{/if}}
+            </p>
+            <a
+              href="/portfolio/"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 transition-colors"
+            >
+              Browse All Categories
+            </a>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </section>
+
+  {{! Enhanced pagination }}
+  {{#if pagination}}
+    {{> enhanced-pagination}}
+  {{/if}}
+
+  {{! Related categories }}
+  <section class="related-categories bg-white dark:bg-gray-800 py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+        Explore Other Categories
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{! Wildlife category }}
+        {{#unless (match tag.name "wildlife")}}
+        <a href="/portfolio/wildlife/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Wildlife Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Intimate moments with wild animals in their natural habitats
+          </p>
+        </a>
+        {{/unless}}
+
+        {{! Landscape category }}
+        {{#unless (match tag.name "landscape")}}
+        <a href="/portfolio/landscape/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Landscape Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Majestic vistas and serene natural scenes from around the world
+          </p>
+        </a>
+        {{/unless}}
+
+        {{! Underwater category }}
+        {{#unless (match tag.name "underwater")}}
+        <a href="/portfolio/underwater/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Underwater Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Aquatic life and underwater ecosystems captured beneath the surface
+          </p>
+        </a>
+        {{/unless}}
+
+        {{! Cityscape category }}
+        {{#unless (match tag.name "cityscape")}}
+        <a href="/portfolio/cityscape/" class="group block bg-gray-50 dark:bg-gray-700 rounded-lg p-6 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            Cityscape Photography
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">
+            Urban architecture and city life captured through a photographer's lens
+          </p>
+        </a>
+        {{/unless}}
+      </div>
+    </div>
+  </section>
+</main>
+
+{{! JSON-LD structured data for category page }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{#if tag}}{{titlecase tag.name}} Photography{{else}}Portfolio Category{{/if}}",
+  "description": "{{#if tag.description}}{{tag.description}}{{else}}{{#if tag}}Stunning {{lowercase tag.name}} photography from around the world{{else}}Portfolio category showcase{{/if}}{{/if}}",
+  "url": "{{@site.url}}{{url}}",
+  {{#if tag}}
+  "about": {
+    "@type": "Thing",
+    "name": "{{titlecase tag.name}} Photography"
+  },
+  {{/if}}
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "{{#if tag}}{{titlecase tag.name}} Photography Collection{{else}}Portfolio Images{{/if}}",
+    "numberOfItems": {{pagination.total}},
+    "itemListElement": [
+      {{#foreach posts}}
+      {
+        "@type": "ListItem",
+        "position": {{@index}},
+        "url": "{{@site.url}}{{url}}"
+      }{{#unless @last}},{{/unless}}
+      {{/foreach}}
+    ]
+  }
+}
+</script>
