@@ -291,10 +291,15 @@ document.addEventListener('alpine:init', () => {
     link.addEventListener('mouseenter', () => {
       const nextPageUrl = link.getAttribute('data-next-page');
       if (nextPageUrl) {
-        const linkEl = document.createElement('link');
-        linkEl.rel = 'prefetch';
-        linkEl.href = nextPageUrl;
-        document.head.appendChild(linkEl);
+        try {
+          const validatedUrl = new URL(nextPageUrl, window.location.origin).href;
+          const linkEl = document.createElement('link');
+          linkEl.rel = 'prefetch';
+          linkEl.href = validatedUrl;
+          document.head.appendChild(linkEl);
+        } catch (e) {
+          console.warn('Invalid next page URL:', nextPageUrl);
+        }
       }
     }, { once: true });
   });
