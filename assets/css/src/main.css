@@ -1518,3 +1518,409 @@
     transparent 100%
   );
 }
+
+/* ===== TIER SYSTEM STYLES ===== */
+
+/* Tier Badge Components */
+.tier-badge {
+  transition: all 0.2s ease;
+}
+
+.tier-badge:hover {
+  transform: translateY(-1px);
+}
+
+/* Premium tier styling */
+.tier-premium {
+  --tier-color-primary: theme("colors.purple.600");
+  --tier-color-secondary: theme("colors.pink.500");
+  --tier-bg-light: theme("colors.purple.50");
+  --tier-bg-dark: theme("colors.purple.900/20");
+  --tier-text-light: theme("colors.purple.800");
+  --tier-text-dark: theme("colors.purple.200");
+}
+
+/* Workshop tier styling */
+.tier-workshop {
+  --tier-color-primary: theme("colors.blue.600");
+  --tier-color-secondary: theme("colors.indigo.500");
+  --tier-bg-light: theme("colors.blue.50");
+  --tier-bg-dark: theme("colors.blue.900/20");
+  --tier-text-light: theme("colors.blue.800");
+  --tier-text-dark: theme("colors.blue.200");
+}
+
+/* Paid tier styling */
+.tier-paid {
+  --tier-color-primary: theme("colors.green.600");
+  --tier-color-secondary: theme("colors.emerald.500");
+  --tier-bg-light: theme("colors.green.50");
+  --tier-bg-dark: theme("colors.green.900/20");
+  --tier-text-light: theme("colors.green.800");
+  --tier-text-dark: theme("colors.green.200");
+}
+
+/* Free tier styling */
+.tier-free {
+  --tier-color-primary: theme("colors.gray.600");
+  --tier-color-secondary: theme("colors.gray.500");
+  --tier-bg-light: theme("colors.gray.100");
+  --tier-bg-dark: theme("colors.gray.800");
+  --tier-text-light: theme("colors.gray.800");
+  --tier-text-dark: theme("colors.gray.200");
+}
+
+/* Tier Gate Components */
+.tier-gate {
+  border-radius: 12px;
+  border: 1px solid theme("colors.gray.200");
+  background: linear-gradient(
+    135deg,
+    theme("colors.white") 0%,
+    theme("colors.gray.50") 100%
+  );
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.tier-gate:hover {
+  border-color: theme("colors.gray.300");
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.tier-gate-blur {
+  filter: blur(8px);
+  transition: filter 0.3s ease;
+}
+
+.tier-gate-overlay {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Premium content overlays */
+.premium-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(147, 51, 234, 0.9) 0%,
+    rgba(219, 39, 119, 0.8) 100%
+  );
+}
+
+.workshop-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.9) 0%,
+    rgba(99, 102, 241, 0.8) 100%
+  );
+}
+
+/* Member section styling */
+.member-exclusive-portfolio {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    theme("colors.gray.50") 20%,
+    theme("colors.gray.50") 80%,
+    transparent 100%
+  );
+}
+
+.premium-portfolio-card,
+.workshop-portfolio-card {
+  transition: all 0.3s ease;
+  border: 1px solid theme("colors.gray.200");
+}
+
+.premium-portfolio-card:hover,
+.workshop-portfolio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.premium-portfolio-card:hover {
+  border-color: theme("colors.purple.300");
+}
+
+.workshop-portfolio-card:hover {
+  border-color: theme("colors.blue.300");
+}
+
+/* Upgrade prompt styling */
+.upgrade-prompt {
+  background: linear-gradient(
+    135deg,
+    theme("colors.white") 0%,
+    theme("colors.blue.50") 50%,
+    theme("colors.purple.50") 100%
+  );
+  border: 1px solid theme("colors.blue.200");
+}
+
+.upgrade-prompt-premium {
+  background: linear-gradient(
+    135deg,
+    theme("colors.purple.50") 0%,
+    theme("colors.pink.50") 100%
+  );
+  border: 1px solid theme("colors.purple.200");
+}
+
+.upgrade-prompt-workshop {
+  background: linear-gradient(
+    135deg,
+    theme("colors.blue.50") 0%,
+    theme("colors.indigo.50") 100%
+  );
+  border: 1px solid theme("colors.blue.200");
+}
+
+/* Signin prompt styling */
+.signin-prompt {
+  background: linear-gradient(
+    135deg,
+    theme("colors.white") 0%,
+    theme("colors.gray.50") 100%
+  );
+  border: 1px solid theme("colors.gray.200");
+}
+
+/* Tier-specific button styling */
+.btn-tier-premium {
+  background: linear-gradient(
+    135deg,
+    theme("colors.purple.600") 0%,
+    theme("colors.pink.600") 100%
+  );
+  color: white;
+  border: none;
+}
+
+.btn-tier-premium:hover {
+  background: linear-gradient(
+    135deg,
+    theme("colors.purple.700") 0%,
+    theme("colors.pink.700") 100%
+  );
+  transform: translateY(-1px);
+}
+
+.btn-tier-workshop {
+  background: linear-gradient(
+    135deg,
+    theme("colors.blue.600") 0%,
+    theme("colors.indigo.600") 100%
+  );
+  color: white;
+  border: none;
+}
+
+.btn-tier-workshop:hover {
+  background: linear-gradient(
+    135deg,
+    theme("colors.blue.700") 0%,
+    theme("colors.indigo.700") 100%
+  );
+  transform: translateY(-1px);
+}
+
+.btn-tier-paid {
+  background: linear-gradient(
+    135deg,
+    theme("colors.green.600") 0%,
+    theme("colors.emerald.600") 100%
+  );
+  color: white;
+  border: none;
+}
+
+.btn-tier-paid:hover {
+  background: linear-gradient(
+    135deg,
+    theme("colors.green.700") 0%,
+    theme("colors.emerald.700") 100%
+  );
+  transform: translateY(-1px);
+}
+
+/* Dark mode support for tier system */
+@media (prefers-color-scheme: dark) {
+  .tier-gate {
+    background: linear-gradient(
+      135deg,
+      theme("colors.gray.800") 0%,
+      theme("colors.gray.900") 100%
+    );
+    border-color: theme("colors.gray.700");
+  }
+
+  .tier-gate:hover {
+    border-color: theme("colors.gray.600");
+  }
+
+  .tier-gate-overlay {
+    background: linear-gradient(
+      45deg,
+      rgba(31, 41, 55, 0.9) 0%,
+      rgba(31, 41, 55, 0.7) 100%
+    );
+  }
+
+  .member-exclusive-portfolio {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      theme("colors.gray.900") 20%,
+      theme("colors.gray.900") 80%,
+      transparent 100%
+    );
+  }
+
+  .premium-portfolio-card,
+  .workshop-portfolio-card {
+    border-color: theme("colors.gray.700");
+  }
+
+  .premium-portfolio-card:hover {
+    border-color: theme("colors.purple.600");
+  }
+
+  .workshop-portfolio-card:hover {
+    border-color: theme("colors.blue.600");
+  }
+
+  .upgrade-prompt {
+    background: linear-gradient(
+      135deg,
+      theme("colors.gray.800") 0%,
+      theme("colors.blue.900/30") 50%,
+      theme("colors.purple.900/30") 100%
+    );
+    border-color: theme("colors.gray.700");
+  }
+
+  .upgrade-prompt-premium {
+    background: linear-gradient(
+      135deg,
+      theme("colors.purple.900/30") 0%,
+      theme("colors.pink.900/30") 100%
+    );
+    border-color: theme("colors.purple.700");
+  }
+
+  .upgrade-prompt-workshop {
+    background: linear-gradient(
+      135deg,
+      theme("colors.blue.900/30") 0%,
+      theme("colors.indigo.900/30") 100%
+    );
+    border-color: theme("colors.blue.700");
+  }
+
+  .signin-prompt {
+    background: linear-gradient(
+      135deg,
+      theme("colors.gray.800") 0%,
+      theme("colors.gray.900") 100%
+    );
+    border-color: theme("colors.gray.700");
+  }
+}
+
+/* Dark mode class overrides */
+.dark-mode .tier-gate {
+  background: linear-gradient(
+    135deg,
+    theme("colors.gray.800") 0%,
+    theme("colors.gray.900") 100%
+  );
+  border-color: theme("colors.gray.700");
+}
+
+.dark-mode .tier-gate:hover {
+  border-color: theme("colors.gray.600");
+}
+
+.dark-mode .member-exclusive-portfolio {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    theme("colors.gray.900") 20%,
+    theme("colors.gray.900") 80%,
+    transparent 100%
+  );
+}
+
+/* Accessibility improvements */
+.tier-gate:focus-within {
+  outline: 2px solid theme("colors.blue.500");
+  outline-offset: 2px;
+}
+
+.tier-badge:focus {
+  outline: 2px solid theme("colors.blue.500");
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .tier-badge,
+  .tier-gate,
+  .premium-portfolio-card,
+  .workshop-portfolio-card,
+  .btn-tier-premium,
+  .btn-tier-workshop,
+  .btn-tier-paid {
+    transition: none !important;
+  }
+
+  .tier-badge:hover,
+  .btn-tier-premium:hover,
+  .btn-tier-workshop:hover,
+  .btn-tier-paid:hover {
+    transform: none !important;
+  }
+}
+
+/* Mobile responsiveness for tier components */
+@media (max-width: 768px) {
+  .tier-gate {
+    margin: 1rem 0;
+    padding: 1.5rem;
+  }
+
+  .premium-portfolio-card,
+  .workshop-portfolio-card {
+    margin-bottom: 1rem;
+  }
+
+  .tier-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tier-gate {
+    border-width: 2px;
+    border-color: currentColor;
+  }
+
+  .tier-badge {
+    border: 1px solid currentColor;
+  }
+
+  .btn-tier-premium,
+  .btn-tier-workshop,
+  .btn-tier-paid {
+    border: 2px solid currentColor;
+  }
+}

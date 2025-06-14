@@ -47,7 +47,28 @@
     {{!-- Page content --}}
     <div class="page-content" itemprop="mainContentOfPage">
         <div class="page-content-inner">
-            {{content}}
+            {{!-- Check if page requires membership based on tags or slug --}}
+            {{#has tag="premium-page"}}
+                {{> members/tier-gate tier="premium"
+                    title="Premium Access Required"
+                    preview="This exclusive content is available to premium members only."
+                    strict=true}}
+            {{else}}
+                {{#has tag="workshop-page"}}
+                    {{> members/tier-gate tier="workshop"
+                        title="Workshop Member Content"
+                        preview="Access workshop resources, schedules, and exclusive materials."}}
+                {{else}}
+                    {{#has tag="member-page"}}
+                        {{> members/tier-gate tier="paid"
+                            title="Member Content"
+                            preview="This content is available to members only."}}
+                    {{else}}
+                        {{!-- Regular public content --}}
+                        {{content}}
+                    {{/has}}
+                {{/has}}
+            {{/has}}
         </div>
     </div>
 

@@ -1,0 +1,405 @@
+{{!-- FrameGrid Enhanced Tier Gate Component --}}
+{{!-- Usage: {{> members/tier-gate tier="premium" message="Custom message" preview=true}} --}}
+{{!-- Available tiers: free, paid, workshop, premium --}}
+{{!-- Options: message (custom access message), preview (show content preview), strict (exact tier match) --}}
+
+<div x-data="enhancedTierGate({
+       tier: '{{#if tier}}{{tier}}{{else}}paid{{/if}}',
+       message: '{{#if message}}{{message}}{{/if}}',
+       preview: {{#if preview}}true{{else}}false{{/if}},
+       strict: {{#if strict}}true{{else}}false{{/if}}
+     })"
+     x-init="initializeGate()"
+     class="enhanced-tier-gate">
+
+  {{!-- Server-side access check (Ghost helpers) --}}
+  {{#if @member}}
+    {{#if @member.subscriptions}}
+      {{!-- Check for active subscriptions --}}
+      {{#foreach @member.subscriptions}}
+        {{#if (eq status "active")}}
+          {{#if tier}}
+            {{!-- Member has active tier subscription --}}
+            {{#if (or (and (eq ../tier "premium") (eq tier.name "Premium"))
+                      (and (eq ../tier "workshop") (or (eq tier.name "Workshop") (eq tier.name "Premium")))
+                      (and (eq ../tier "paid") (ne tier.name "Free")))}}
+              <div class="tier-gate-content">
+                {{{body}}}
+              </div>
+            {{else}}
+              {{> members/upgrade-prompt tier=../tier}}
+            {{/if}}
+          {{else}}
+            {{!-- Basic paid member --}}
+            {{#if (or (eq tier "free") (eq tier "paid"))}}
+              <div class="tier-gate-content">
+                {{{body}}}
+              </div>
+            {{else}}
+              {{> members/upgrade-prompt tier=tier}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      {{/foreach}}
+    {{else}}
+      {{!-- Free member --}}
+      {{#if (eq tier "free")}}
+        <div class="tier-gate-content">
+          {{{body}}}
+        </div>
+      {{else}}
+        {{> members/upgrade-prompt tier=tier}}
+      {{/if}}
+    {{/if}}
+  {{else}}
+    {{!-- Non-member --}}
+    <div class="tier-gate-signin-prompt">
+      {{> members/signin-prompt tier=tier}}
+    </div>
+  {{/if}}
+
+  {{!-- Client-side enhanced functionality (Alpine.js) --}}
+  <div x-show="showClientContent"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 transform translate-y-2"
+       x-transition:enter-end="opacity-100 transform translate-y-0"
+       class="client-tier-content">
+    {{{body}}}
+  </div>
+
+  {{!-- Enhanced upgrade prompt --}}
+  <div x-show="showUpgradePrompt"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 transform translate-y-2"
+       x-transition:enter-end="opacity-100 transform translate-y-0"
+       class="enhanced-upgrade-prompt">
+
+    <div class="tier-upgrade-card">
+      {{!-- Custom tier-specific content --}}
+      <div class="tier-upgrade-header">
+        <div class="tier-upgrade-icon" x-html="tierIcon"></div>
+        <h3 class="tier-upgrade-title" x-text="upgradeTitle"></h3>
+        <p class="tier-upgrade-description" x-html="upgradeDescription"></p>
+      </div>
+
+      {{!-- Benefits list --}}
+      <div class="tier-benefits" x-show="tierBenefits.length > 0">
+        <h4 class="benefits-title">What you'll get:</h4>
+        <ul class="benefits-list">
+          <template x-for="benefit in tierBenefits" :key="benefit">
+            <li class="benefit-item">
+              <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span x-text="benefit"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      {{!-- Action buttons --}}
+      <div class="tier-upgrade-actions">
+        <button @click="triggerUpgrade()"
+                class="tier-upgrade-button"
+                x-text="upgradeButtonText">
+        </button>
+        <div class="tier-upgrade-note" x-text="upgradeNote"></div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Content preview (if enabled) --}}
+  <div x-show="showPreview && hasPreview"
+       class="tier-content-preview">
+    <div class="preview-container">
+      <div class="preview-content">
+        {{#if preview}}
+          {{{preview}}}
+        {{else}}
+          <div class="preview-placeholder">
+            <p>This premium content contains exclusive photography galleries, behind-the-scenes content, and professional insights.</p>
+          </div>
+        {{/if}}
+      </div>
+      <div class="preview-overlay">
+        <div class="preview-blur"></div>
+        <div class="preview-cta">
+          <button @click="triggerUpgrade()" class="preview-upgrade-button">
+            <span x-text="'Unlock ' + requiredTier + ' Content'"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('enhancedTierGate', (config) => ({
+    // Configuration
+    requiredTier: config.tier || 'paid',
+    customMessage: config.message || '',
+    showPreview: config.preview || false,
+    strictMode: config.strict || false,
+
+    // State
+    showClientContent: false,
+    showUpgradePrompt: false,
+    hasPreview: false,
+    currentUserTier: 'free',
+
+    // UI Content
+    tierIcon: '',
+    upgradeTitle: '',
+    upgradeDescription: '',
+    upgradeButtonText: '',
+    upgradeNote: '',
+    tierBenefits: [],
+
+    init() {
+      this.initializeGate();
+    },
+
+    initializeGate() {
+      const memberAuth = this.getMemberAuth();
+
+      if (memberAuth) {
+        this.currentUserTier = memberAuth.memberTier || 'free';
+        this.showClientContent = this.checkAccess(memberAuth);
+        this.showUpgradePrompt = memberAuth.isAuthenticated && !this.showClientContent;
+      } else {
+        this.showClientContent = this.checkServerSideAccess();
+        this.showUpgradePrompt = !this.showClientContent;
+      }
+
+      this.setupTierContent();
+      this.hasPreview = this.showPreview && !this.showClientContent;
+    },
+
+    getMemberAuth() {
+      const memberAuthElement = document.querySelector('[x-data*="memberAuth"]');
+      return memberAuthElement?.__x?.$data;
+    },
+
+    checkAccess(memberAuth) {
+      if (this.strictMode) {
+        return memberAuth.memberTier === this.requiredTier;
+      }
+      return memberAuth.hasAccess(this.requiredTier);
+    },
+
+    checkServerSideAccess() {
+      // Fallback to body classes if no Alpine.js member auth
+      const body = document.body;
+
+      if (!body.classList.contains('member-logged-in')) {
+        return false;
+      }
+
+      switch (this.requiredTier) {
+        case 'free':
+          return true;
+        case 'paid':
+          return body.classList.contains('member-paid');
+        case 'workshop':
+          return body.classList.contains('member-workshop') || body.classList.contains('member-premium');
+        case 'premium':
+          return body.classList.contains('member-premium');
+        default:
+          return false;
+      }
+    },
+
+    setupTierContent() {
+      const tierConfig = this.getTierConfig(this.requiredTier);
+
+      this.tierIcon = tierConfig.icon;
+      this.upgradeTitle = this.customMessage || tierConfig.title;
+      this.upgradeDescription = tierConfig.description;
+      this.upgradeButtonText = tierConfig.buttonText;
+      this.upgradeNote = tierConfig.note;
+      this.tierBenefits = tierConfig.benefits;
+    },
+
+    getTierConfig(tier) {
+      const configs = {
+        premium: {
+          icon: '⭐',
+          title: 'Premium Content',
+          description: 'This exclusive content is available to premium members only.',
+          buttonText: 'Upgrade to Premium',
+          note: 'Starting at $9.99/month • Cancel anytime',
+          benefits: [
+            'Access to all premium galleries',
+            'Behind-the-scenes content',
+            'Exclusive photography tutorials',
+            'Early access to new content',
+            'Priority workshop booking'
+          ]
+        },
+        workshop: {
+          icon: '🎓',
+          title: 'Workshop Content',
+          description: 'This content is reserved for workshop participants and premium members.',
+          buttonText: 'Join Workshop Access',
+          note: 'Workshop access includes premium benefits',
+          benefits: [
+            'Workshop exclusive content',
+            'Live session recordings',
+            'Hands-on project materials',
+            'Direct instructor feedback',
+            'Community access'
+          ]
+        },
+        paid: {
+          icon: '✓',
+          title: 'Member Content',
+          description: 'This content is exclusively available to paid members.',
+          buttonText: 'Become a Member',
+          note: 'Starting at $4.99/month • Cancel anytime',
+          benefits: [
+            'Full gallery access',
+            'Member-only content',
+            'Monthly photography tips',
+            'Community discussions',
+            'No advertisements'
+          ]
+        },
+        free: {
+          icon: 'ℹ',
+          title: 'Free Content',
+          description: 'This content is available to all registered members.',
+          buttonText: 'Sign Up Free',
+          note: 'Free membership • No credit card required',
+          benefits: [
+            'Basic gallery access',
+            'Weekly photography tips',
+            'Community participation'
+          ]
+        }
+      };
+
+      return configs[tier] || configs.paid;
+    },
+
+    triggerUpgrade() {
+      const memberAuth = this.getMemberAuth();
+
+      if (memberAuth && memberAuth.isAuthenticated) {
+        // Existing member - trigger upgrade
+        if (window.ghost && window.ghost.portal) {
+          window.ghost.portal.open('upgrade');
+        } else {
+          window.location.hash = '#/portal/upgrade';
+        }
+      } else {
+        // Non-member - trigger signup
+        if (memberAuth) {
+          memberAuth.openSignUp();
+        } else {
+          if (window.ghost && window.ghost.portal) {
+            window.ghost.portal.open('signup');
+          } else {
+            window.location.hash = '#/portal/signup';
+          }
+        }
+      }
+    }
+  }));
+});
+</script>
+
+<style>
+.enhanced-tier-gate {
+  @apply relative;
+}
+
+.tier-upgrade-card {
+  @apply bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply rounded-xl p-6 shadow-lg;
+}
+
+.tier-upgrade-header {
+  @apply text-center mb-6;
+}
+
+.tier-upgrade-icon {
+  @apply text-4xl mb-3;
+}
+
+.tier-upgrade-title {
+  @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+}
+
+.tier-upgrade-description {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+.tier-benefits {
+  @apply mb-6;
+}
+
+.benefits-title {
+  @apply text-sm font-medium text-gray-900 dark:text-white mb-3;
+}
+
+.benefits-list {
+  @apply space-y-2;
+}
+
+.benefit-item {
+  @apply flex items-center text-sm text-gray-600 dark:text-gray-300;
+}
+
+.benefit-icon {
+  @apply w-4 h-4 text-green-500 mr-2 flex-shrink-0;
+}
+
+.tier-upgrade-actions {
+  @apply text-center;
+}
+
+.tier-upgrade-button {
+  @apply inline-flex items-center px-6 py-3;
+  @apply bg-gradient-to-r from-blue-600 to-purple-600;
+  @apply hover:from-blue-700 hover:to-purple-700;
+  @apply text-white font-medium rounded-lg;
+  @apply transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.tier-upgrade-note {
+  @apply text-xs text-gray-500 dark:text-gray-400 mt-3;
+}
+
+.tier-content-preview {
+  @apply relative mt-4;
+}
+
+.preview-container {
+  @apply relative overflow-hidden rounded-lg;
+}
+
+.preview-content {
+  @apply prose dark:prose-invert max-w-none;
+}
+
+.preview-overlay {
+  @apply absolute inset-0 flex items-end justify-center;
+}
+
+.preview-blur {
+  @apply absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent;
+  @apply dark:from-gray-900 dark:via-gray-900/80;
+}
+
+.preview-cta {
+  @apply relative p-4;
+}
+
+.preview-upgrade-button {
+  @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white;
+  @apply font-medium rounded-md transition-colors duration-200;
+}
+</style>

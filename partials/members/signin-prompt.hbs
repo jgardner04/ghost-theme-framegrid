@@ -1,0 +1,272 @@
+{{! FrameGrid Member Sign-in Prompt Component }}
+{{!-- Usage: {{> members/signin-prompt tier="premium"}} --}}
+{{! For non-authenticated users who need to sign in or sign up }}
+
+<div class="member-signin-prompt" x-data="signinPrompt('{{tier}}')">
+  <div class="signin-prompt-card">
+    <div class="signin-prompt-header">
+      <div class="signin-prompt-icon">
+        <svg
+          class="w-12 h-12 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 48 48"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 11c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3-3-1.343-3-3zm0 0v8m0 0c0 1.11.89 2 2 2h2m-2-2v4m8-6V9a3 3 0 00-6 0v2m0 8c0 1.11.89 2 2 2h2m-2-2v4"
+          />
+        </svg>
+      </div>
+
+      <h3 class="signin-prompt-title">
+        {{#if (eq tier "free")}}
+          Free Member Content
+        {{else}}
+          Member-Only Content
+        {{/if}}
+      </h3>
+
+      <p class="signin-prompt-description">
+        {{#if (eq tier "premium")}}
+          This exclusive content is available to premium members. Sign in to
+          your account or create one to access our most exclusive photography
+          galleries and content.
+        {{else if (eq tier "workshop")}}
+          This workshop content is available to workshop participants and
+          premium members. Join our community to access these exclusive
+          materials.
+        {{else if (eq tier "paid")}}
+          This content is exclusively available to our community members. Sign
+          in to your account or create a new one to access our photography
+          galleries and exclusive content.
+        {{else}}
+          Join our photography community for free and get access to this
+          content, plus weekly photography tips and community discussions.
+        {{/if}}
+      </p>
+    </div>
+
+    <div class="signin-prompt-benefits">
+      <h4 class="benefits-title">Join the community and get:</h4>
+      <ul class="benefits-list">
+        {{#if (eq tier "premium")}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Access to all premium galleries
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Behind-the-scenes content
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Exclusive photography tutorials
+          </li>
+        {{else if (eq tier "workshop")}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Workshop exclusive materials
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Live session recordings
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Direct instructor feedback
+          </li>
+        {{else if (eq tier "paid")}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Full gallery access
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Member-only content
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            No advertisements
+          </li>
+        {{else}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Basic gallery access
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Weekly photography tips
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Community participation
+          </li>
+        {{/if}}
+      </ul>
+    </div>
+
+    <div class="signin-prompt-actions">
+      <div class="signin-buttons-group">
+        <button @click="openSignIn()" class="signin-button signin-primary">
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+            />
+          </svg>
+          Sign In
+        </button>
+
+        <button @click="openSignUp()" class="signin-button signin-secondary">
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+            />
+          </svg>
+          Create Account
+        </button>
+      </div>
+
+      <p class="signin-note">
+        {{#if (eq tier "free")}}
+          Free membership • No credit card required
+        {{else}}
+          Join thousands of photography enthusiasts
+        {{/if}}
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => { Alpine.data('signinPrompt',
+  (tier) => ({ requiredTier: tier, openSignIn() { // Dispatch event to open
+  sign-in modal this.$dispatch('open-signin'); // Fallback: try to trigger
+  member auth component directly const memberAuth = this.getMemberAuth(); if
+  (memberAuth) { memberAuth.openSignIn(); } else { // Final fallback: trigger
+  Ghost portal if (window.ghost && window.ghost.portal) {
+  window.ghost.portal.open('signin'); } else { window.location.hash =
+  '#/portal/signin'; } } }, openSignUp() { // Dispatch event to open sign-up
+  modal this.$dispatch('open-signup'); // Fallback: try to trigger member auth
+  component directly const memberAuth = this.getMemberAuth(); if (memberAuth) {
+  memberAuth.openSignUp(); } else { // Final fallback: trigger Ghost portal if
+  (window.ghost && window.ghost.portal) { window.ghost.portal.open('signup'); }
+  else { window.location.hash = '#/portal/signup'; } } }, getMemberAuth() {
+  const memberAuthElement = document.querySelector('[x-data*="memberAuth"]');
+  return memberAuthElement?.__x?.$data; } })); });
+</script>
+
+<style>
+  .member-signin-prompt { @apply mt-4; } .signin-prompt-card { @apply bg-gray-50
+  dark:bg-gray-800; @apply border border-gray-200 dark:border-gray-700; @apply
+  rounded-xl p-6 shadow-sm; } .signin-prompt-header { @apply text-center mb-6; }
+  .signin-prompt-icon { @apply flex justify-center mb-3; } .signin-prompt-title
+  { @apply text-xl font-semibold text-gray-900 dark:text-white mb-2; }
+  .signin-prompt-description { @apply text-gray-600 dark:text-gray-300 text-sm;
+  } .signin-prompt-benefits { @apply mb-6; } .benefits-title { @apply text-sm
+  font-medium text-gray-900 dark:text-white mb-3; } .benefits-list { @apply
+  space-y-2; } .benefit-item { @apply flex items-start text-sm text-gray-600
+  dark:text-gray-300; } .benefit-icon { @apply w-4 h-4 text-blue-500 mr-2
+  flex-shrink-0 mt-0.5; } .signin-prompt-actions { @apply text-center; }
+  .signin-buttons-group { @apply flex flex-col sm:flex-row gap-3 justify-center
+  mb-4; } .signin-button { @apply inline-flex items-center justify-center px-6
+  py-3; @apply font-medium rounded-lg transition-all duration-200; @apply
+  focus:outline-none focus:ring-2 focus:ring-offset-2; @apply w-full sm:w-auto;
+  } .signin-primary { @apply bg-blue-600 hover:bg-blue-700 text-white; @apply
+  focus:ring-blue-500; } .signin-secondary { @apply bg-white dark:bg-gray-700
+  text-gray-700 dark:text-gray-300; @apply border border-gray-300
+  dark:border-gray-600; @apply hover:bg-gray-50 dark:hover:bg-gray-600; @apply
+  focus:ring-blue-500; } .signin-note { @apply text-xs text-gray-500
+  dark:text-gray-400; }
+</style>

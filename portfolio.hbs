@@ -169,6 +169,94 @@
       </div>
     </div>
   </section>
+
+  {{!-- Members-only exclusive content section --}}
+  {{#if @member}}
+    <section class="member-exclusive-portfolio py-16 lg:py-24">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              Member Exclusives
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+              High-resolution downloads and behind-the-scenes content
+            </p>
+          </div>
+          {{> members/tier-badge}}
+        </div>
+
+        {{!-- Premium content for premium members --}}
+        {{#get "posts" filter="tag:premium+tag:portfolio" limit="4" as |premium_portfolio|}}
+          {{#if premium_portfolio}}
+            <div class="mb-12">
+              <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mb-4">
+                Premium Collection - High Resolution & RAW Files
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {{#foreach premium_portfolio}}
+                  <div class="premium-portfolio-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    {{#if feature_image}}
+                      <div class="relative">
+                        <img src="{{img_url feature_image size="m"}}" alt="{{title}}" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2">
+                          <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">Premium</span>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <div class="p-4">
+                      <h4 class="font-semibold mb-2">{{title}}</h4>
+                      <a href="{{url}}" class="text-purple-600 dark:text-purple-400 text-sm">View & Download</a>
+                    </div>
+                  </div>
+                {{/foreach}}
+              </div>
+            </div>
+          {{/if}}
+        {{/get}}
+
+        {{!-- Workshop content for workshop+ members --}}
+        {{#get "posts" filter="tag:workshop+tag:portfolio" limit="3" as |workshop_portfolio|}}
+          {{#if workshop_portfolio}}
+            <div class="mb-12">
+              <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-4">
+                Workshop Resources - Tutorials & Behind-the-Scenes
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {{#foreach workshop_portfolio}}
+                  <div class="workshop-portfolio-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    {{#if feature_image}}
+                      <div class="relative">
+                        <img src="{{img_url feature_image size="m"}}" alt="{{title}}" class="w-full h-32 object-cover">
+                        <div class="absolute top-2 right-2">
+                          <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">Workshop</span>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <div class="p-4">
+                      <h4 class="font-semibold mb-2">{{title}}</h4>
+                      <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">{{excerpt words="15"}}</p>
+                      <a href="{{url}}" class="text-blue-600 dark:text-blue-400 text-sm">Access Tutorial</a>
+                    </div>
+                  </div>
+                {{/foreach}}
+              </div>
+            </div>
+          {{/if}}
+        {{/get}}
+      </div>
+    </section>
+  {{else}}
+    {{!-- Exclusive content teaser for non-members --}}
+    <section class="portfolio-member-teaser py-16 lg:py-24 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        {{> members/signin-prompt
+            title="Unlock Exclusive Portfolio Content"
+            description="Access high-resolution downloads, RAW files, and behind-the-scenes photography tutorials."
+            showBenefits=true}}
+      </div>
+    </section>
+  {{/if}}
 </main>
 
 {{! JSON-LD structured data for portfolio page }}

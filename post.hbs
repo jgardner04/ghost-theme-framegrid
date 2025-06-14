@@ -72,7 +72,22 @@
     {{!-- Post content --}}
     <div class="post-content" itemprop="articleBody">
         <div class="post-content-inner">
-            {{content}}
+            {{!-- Check if post has premium/workshop content based on tags --}}
+            {{#has tag="premium"}}
+                {{> members/tier-gate tier="premium"
+                    title="Premium Photography Content"
+                    preview="This post contains exclusive premium photography techniques and high-resolution images."
+                    strict=true}}
+            {{else}}
+                {{#has tag="workshop"}}
+                    {{> members/tier-gate tier="workshop"
+                        title="Workshop Member Content"
+                        preview="Access detailed photography workshop content and tutorials."}}
+                {{else}}
+                    {{!-- Regular content for all users --}}
+                    {{content}}
+                {{/has}}
+            {{/has}}
         </div>
     </div>
 
@@ -203,6 +218,54 @@
         </section>
     {{/if}}
 {{/get}}
+
+{{!-- Premium exclusive content section --}}
+{{#if @member}}
+    {{#get "posts" filter="tag:premium+id:-{{id}}" limit="2" as |premium_posts|}}
+        {{#if premium_posts}}
+            <section class="premium-content-section">
+                <div class="premium-content-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="premium-content-title">Premium Member Exclusives</h2>
+                        {{> members/tier-badge}}
+                    </div>
+                    <div class="premium-posts-grid">
+                        {{#foreach premium_posts}}
+                            <article class="premium-post">
+                                {{#if feature_image}}
+                                    <a href="{{url}}" class="premium-post-image-link">
+                                        <img src="{{img_url feature_image size="m"}}"
+                                             alt="{{title}}"
+                                             class="premium-post-image"
+                                             loading="lazy">
+                                        <div class="premium-overlay">
+                                            <span class="premium-badge">Premium</span>
+                                        </div>
+                                    </a>
+                                {{/if}}
+                                <div class="premium-post-content">
+                                    <h3 class="premium-post-title">
+                                        <a href="{{url}}">{{title}}</a>
+                                    </h3>
+                                    {{#if excerpt}}
+                                        <p class="premium-post-excerpt">{{excerpt words="15"}}</p>
+                                    {{/if}}
+                                </div>
+                            </article>
+                        {{/foreach}}
+                    </div>
+                </div>
+            </section>
+        {{/if}}
+    {{/get}}
+{{else}}
+    {{!-- Premium content teaser for non-members --}}
+    <section class="premium-teaser-section">
+        {{> members/upgrade-prompt
+            title="Unlock Premium Photography Content"
+            description="Access exclusive tutorials, high-resolution images, and behind-the-scenes photography techniques."}}
+    </section>
+{{/if}}
 
 {{!-- Comments section (if enabled) --}}
 {{#if @site.comments_enabled}}

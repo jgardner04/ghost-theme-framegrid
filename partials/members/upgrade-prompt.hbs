@@ -1,0 +1,262 @@
+{{! FrameGrid Member Upgrade Prompt Component }}
+{{!-- Usage: {{> members/upgrade-prompt tier="premium"}} --}}
+{{! For existing members who need to upgrade their tier }}
+
+<div class="member-upgrade-prompt" x-data="upgradePrompt('{{tier}}')">
+  <div class="upgrade-prompt-card">
+    <div class="upgrade-prompt-header">
+      <div class="upgrade-prompt-icon">
+        {{#if (eq tier "premium")}}
+          ⭐
+        {{else if (eq tier "workshop")}}
+          🎓
+        {{else}}
+          ✓
+        {{/if}}
+      </div>
+
+      <h3 class="upgrade-prompt-title">
+        {{#if (eq tier "premium")}}
+          Upgrade to Premium
+        {{else if (eq tier "workshop")}}
+          Join Workshop Access
+        {{else}}
+          Become a Member
+        {{/if}}
+      </h3>
+
+      <p class="upgrade-prompt-description">
+        {{#if (eq tier "premium")}}
+          Unlock our most exclusive photography galleries, behind-the-scenes
+          content, and premium tutorials.
+        {{else if (eq tier "workshop")}}
+          Access workshop-exclusive content including live session recordings
+          and hands-on materials.
+        {{else}}
+          Support our work and get unlimited access to our photography galleries
+          and exclusive content.
+        {{/if}}
+      </p>
+    </div>
+
+    <div class="upgrade-prompt-benefits">
+      <h4 class="benefits-title">What you'll get:</h4>
+      <ul class="benefits-list">
+        {{#if (eq tier "premium")}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Access to all premium galleries
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Behind-the-scenes content and stories
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Exclusive photography tutorials
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Priority workshop booking
+          </li>
+        {{else if (eq tier "workshop")}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Workshop exclusive content
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Live session recordings
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Hands-on project materials
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Direct instructor feedback
+          </li>
+        {{else}}
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Full gallery access
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Member-only content
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Monthly photography tips
+          </li>
+          <li class="benefit-item">
+            <svg class="benefit-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Community discussions
+          </li>
+        {{/if}}
+      </ul>
+    </div>
+
+    <div class="upgrade-prompt-actions">
+      <button @click="triggerUpgrade()" class="upgrade-button">
+        {{#if (eq tier "premium")}}
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
+          </svg>
+          Upgrade to Premium
+        {{else if (eq tier "workshop")}}
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+          Join Workshop Access
+        {{else}}
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Become a Member
+        {{/if}}
+      </button>
+
+      <p class="upgrade-note">
+        {{#if (eq tier "premium")}}
+          Starting at $9.99/month • Cancel anytime
+        {{else if (eq tier "workshop")}}
+          Workshop access includes premium benefits
+        {{else}}
+          Starting at $4.99/month • Cancel anytime
+        {{/if}}
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => { Alpine.data('upgradePrompt',
+  (tier) => ({ requiredTier: tier, triggerUpgrade() { // Trigger Ghost portal
+  for subscription upgrade if (window.ghost && window.ghost.portal) {
+  window.ghost.portal.open('upgrade'); } else { window.location.hash =
+  '#/portal/upgrade'; } } })); });
+</script>
+
+<style>
+  .member-upgrade-prompt { @apply mt-4; } .upgrade-prompt-card { @apply
+  bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20
+  dark:to-purple-900/20; @apply border border-blue-200 dark:border-blue-700;
+  @apply rounded-xl p-6 shadow-md; } .upgrade-prompt-header { @apply text-center
+  mb-6; } .upgrade-prompt-icon { @apply text-4xl mb-3; } .upgrade-prompt-title {
+  @apply text-xl font-semibold text-gray-900 dark:text-white mb-2; }
+  .upgrade-prompt-description { @apply text-gray-600 dark:text-gray-300 text-sm;
+  } .upgrade-prompt-benefits { @apply mb-6; } .benefits-title { @apply text-sm
+  font-medium text-gray-900 dark:text-white mb-3; } .benefits-list { @apply
+  space-y-2; } .benefit-item { @apply flex items-start text-sm text-gray-600
+  dark:text-gray-300; } .benefit-icon { @apply w-4 h-4 text-green-500 mr-2
+  flex-shrink-0 mt-0.5; } .upgrade-prompt-actions { @apply text-center; }
+  .upgrade-button { @apply inline-flex items-center justify-center px-6 py-3;
+  @apply bg-gradient-to-r from-blue-600 to-purple-600; @apply
+  hover:from-blue-700 hover:to-purple-700; @apply text-white font-medium
+  rounded-lg; @apply transition-all duration-200; @apply focus:outline-none
+  focus:ring-2 focus:ring-offset-2 focus:ring-blue-500; @apply w-full sm:w-auto;
+  } .upgrade-note { @apply text-xs text-gray-500 dark:text-gray-400 mt-3; }
+</style>
