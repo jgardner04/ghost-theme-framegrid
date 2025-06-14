@@ -1,5 +1,5 @@
 {{!-- Site header with navigation --}}
-<div class="header-container">
+<div class="header-container" x-data="memberAuth()">
     {{!-- Logo/Site title --}}
     <div class="site-logo">
         {{#if @site.logo}}
@@ -45,14 +45,58 @@
             <li class="nav-item">
                 <a href="/locations/" class="nav-link">Locations</a>
             </li>
-            {{!-- Members integration --}}
+            {{!-- Enhanced Members integration --}}
             {{#unless @member}}
                 <li class="nav-item">
-                    <a href="#/portal/" class="nav-link btn-signin" data-portal="signin">Sign In</a>
+                    <button @click="openSignIn()" class="nav-link btn-signin" data-portal="signin">
+                        Sign In
+                    </button>
                 </li>
             {{else}}
-                <li class="nav-item">
-                    <a href="#/portal/" class="nav-link" data-portal="account">Account</a>
+                <li class="nav-item member-nav-item">
+                    <div class="member-dropdown" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="nav-link member-account-btn flex items-center space-x-2" :aria-expanded="open">
+                            {{#if @member.avatar}}
+                                <img src="{{@member.avatar}}" alt="{{@member.name}}" class="w-6 h-6 rounded-full">
+                            {{else}}
+                                <div class="w-6 h-6 rounded-full bg-accent-color flex items-center justify-center text-white text-xs font-medium">
+                                    {{substr @member.name 0 1}}
+                                </div>
+                            {{/if}}
+                            <span>{{@member.name}}</span>
+                            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform scale-95"
+                             x-transition:enter-end="opacity-100 transform scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 transform scale-100"
+                             x-transition:leave-end="opacity-0 transform scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                            <div class="py-1">
+                                <button @click="openAccount(); open = false" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    Account Settings
+                                </button>
+                                {{#if @member.paid}}
+                                    <a href="#/portal/account/plans" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        Subscription
+                                    </a>
+                                {{else}}
+                                    <button @click="requestUpgrade(); open = false" class="block w-full text-left px-4 py-2 text-sm text-accent-color hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        Upgrade Membership
+                                    </button>
+                                {{/if}}
+                                <hr class="my-1 border-gray-200 dark:border-gray-700">
+                                <button @click="signOut(); open = false" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    Sign Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             {{/unless}}
         </ul>
@@ -91,14 +135,56 @@
                 </li>
                 {{#unless @member}}
                     <li class="mobile-nav-item">
-                        <a href="#/portal/" class="mobile-nav-link btn-signin" data-portal="signin">Sign In</a>
+                        <button @click="openSignIn()" class="mobile-nav-link btn-signin w-full text-left" data-portal="signin">
+                            Sign In
+                        </button>
                     </li>
                 {{else}}
                     <li class="mobile-nav-item">
-                        <a href="#/portal/" class="mobile-nav-link" data-portal="account">Account</a>
+                        <div class="mobile-member-info px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center space-x-3">
+                                {{#if @member.avatar}}
+                                    <img src="{{@member.avatar}}" alt="{{@member.name}}" class="w-8 h-8 rounded-full">
+                                {{else}}
+                                    <div class="w-8 h-8 rounded-full bg-accent-color flex items-center justify-center text-white text-sm font-medium">
+                                        {{substr @member.name 0 1}}
+                                    </div>
+                                {{/if}}
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{@member.name}}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{@member.email}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <button @click="openAccount()" class="mobile-nav-link w-full text-left">
+                            Account Settings
+                        </button>
+                    </li>
+                    {{#if @member.paid}}
+                        <li class="mobile-nav-item">
+                            <a href="#/portal/account/plans" class="mobile-nav-link">
+                                Subscription
+                            </a>
+                        </li>
+                    {{else}}
+                        <li class="mobile-nav-item">
+                            <button @click="requestUpgrade()" class="mobile-nav-link w-full text-left text-accent-color">
+                                Upgrade Membership
+                            </button>
+                        </li>
+                    {{/if}}
+                    <li class="mobile-nav-item">
+                        <button @click="signOut()" class="mobile-nav-link w-full text-left">
+                            Sign Out
+                        </button>
                     </li>
                 {{/unless}}
             </ul>
         </div>
     </nav>
+
+    {{!-- Include Member Authentication Modal --}}
+    {{> members/auth-modal}}
 </div>
