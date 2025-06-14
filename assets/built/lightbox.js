@@ -546,9 +546,9 @@ function enhanceLightboxNavigation() {
         } else if (
           (() => {
             try {
-              const parsedUrl = new URL(imageUrl);
+              const urlHost = new URL(imageUrl).host;
               const allowedHosts = ["images.unsplash.com", "cdn.example.com"];
-              return allowedHosts.includes(parsedUrl.host);
+              return allowedHosts.includes(urlHost);
             } catch (e) {
               return false; // Invalid URL
             }

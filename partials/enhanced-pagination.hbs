@@ -1,0 +1,280 @@
+{{! Enhanced Pagination Component }}
+{{! Comprehensive pagination with SEO, infinite scroll, and accessibility }}
+
+<div class="enhanced-pagination" x-data="enhancedPagination()" x-init="init()">
+  {{! Standard pagination controls }}
+  <nav
+    class="pagination-nav bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8"
+    aria-label="Portfolio pagination"
+  >
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+
+        {{! Results summary }}
+        <div class="pagination-summary">
+          <p class="text-sm text-gray-700 dark:text-gray-300">
+            Showing
+            <span class="font-medium" x-text="startResult"></span>
+            to
+            <span class="font-medium" x-text="endResult"></span>
+            of
+            <span class="font-medium" x-text="totalResults"></span>
+            results
+          </p>
+        </div>
+
+        {{! Pagination controls }}
+        <div class="pagination-controls flex items-center gap-2">
+          {{! Previous button }}
+          <button
+            @click="goToPage(currentPage - 1)"
+            :disabled="!hasPrevious"
+            :class="hasPrevious ? 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'"
+            class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            aria-label="Go to previous page"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+            <span class="hidden sm:inline ml-1">Previous</span>
+          </button>
+
+          {{! Page numbers }}}
+          <div class="hidden sm:flex items-center">
+            <template x-for="page in visiblePages" :key="page">
+              <button
+                @click="goToPage(page)"
+                :class="page === currentPage ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'"
+                class="relative inline-flex items-center px-4 py-2 text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                :aria-label="page === currentPage ? `Current page ${page}` : `Go to page ${page}`"
+                :aria-current="page === currentPage ? 'page' : false"
+                x-text="page"
+              ></button>
+            </template>
+          </div>
+
+          {{! Mobile page indicator }}
+          <div
+            class="sm:hidden relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
+          >
+            <span x-text="currentPage"></span>
+            <span class="mx-1">of</span>
+            <span x-text="totalPages"></span>
+          </div>
+
+          {{! Next button }}
+          <button
+            @click="goToPage(currentPage + 1)"
+            :disabled="!hasNext"
+            :class="hasNext ? 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'"
+            class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            aria-label="Go to next page"
+          >
+            <span class="hidden sm:inline mr-1">Next</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {{! Infinite scroll toggle }}
+      <div
+        class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-4">
+          {{! Infinite scroll toggle }}
+          <label class="inline-flex items-center">
+            <input
+              type="checkbox"
+              x-model="infiniteScrollEnabled"
+              @change="toggleInfiniteScroll()"
+              class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+            />
+            <span
+              class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200"
+            >Enable infinite scroll</span>
+          </label>
+
+          {{! Items per page selector }}
+          <div class="flex items-center gap-2">
+            <label
+              for="items-per-page"
+              class="text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Items per page:
+            </label>
+            <select
+              id="items-per-page"
+              x-model="itemsPerPage"
+              @change="changeItemsPerPage()"
+              class="form-select text-sm border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            >
+              <option value="6">6</option>
+              <option value="12">12</option>
+              <option value="24">24</option>
+              <option value="48">48</option>
+            </select>
+          </div>
+        </div>
+
+        {{! Load more button (for infinite scroll) }}
+        <div
+          x-show="infiniteScrollEnabled && hasNext && !autoLoading"
+          class="flex justify-center"
+        >
+          <button
+            @click="loadMore()"
+            :disabled="loading"
+            class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            :aria-label="loading ? 'Loading more images...' : 'Load more images'"
+          >
+            <svg
+              x-show="loading"
+              class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span x-text="loading ? 'Loading...' : 'Load More'"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  {{! Infinite scroll detector }}
+  <div
+    x-show="infiniteScrollEnabled && hasNext && autoLoading"
+    x-intersect="loadMore()"
+    class="load-more-trigger h-4"
+  ></div>
+
+  {{! Screen reader announcements }}
+  <div
+    class="sr-only"
+    aria-live="polite"
+    aria-atomic="true"
+    x-text="announcement"
+  ></div>
+</div>
+
+{{! Enhanced Pagination Alpine.js Data }}
+<script>
+  document.addEventListener('alpine:init', () => {
+  Alpine.data('enhancedPagination', () => ({ // Pagination state currentPage: 1,
+  totalPages: 1, totalResults: 0, itemsPerPage: 12, hasPrevious: false, hasNext:
+  false, // Infinite scroll infiniteScrollEnabled: false, autoLoading: true,
+  loading: false, // UI state announcement: '', // Computed properties get
+  startResult() { return Math.min((this.currentPage - 1) * this.itemsPerPage +
+  1, this.totalResults); }, get endResult() { return Math.min(this.currentPage *
+  this.itemsPerPage, this.totalResults); }, get visiblePages() { const pages =
+  []; const delta = 2; // Show 2 pages on each side of current const start =
+  Math.max(1, this.currentPage - delta); const end = Math.min(this.totalPages,
+  this.currentPage + delta); // Always show first page if (start > 1) {
+  pages.push(1); if (start > 2) pages.push('...'); } // Show pages around
+  current for (let i = start; i <= end; i++) { pages.push(i); } // Always show
+  last page if (end < this.totalPages) { if (end < this.totalPages - 1)
+  pages.push('...'); pages.push(this.totalPages); } return pages.filter(page =>
+  page !== '...' || pages.indexOf(page) === pages.lastIndexOf(page)); }, init()
+  { // Initialize from Ghost pagination data this.syncWithGhostPagination(); //
+  Listen for filter changes this.$watch('currentPage', () =>
+  this.updatePaginationState()); // Load infinite scroll preference
+  this.infiniteScrollEnabled = localStorage.getItem('portfolioInfiniteScroll')
+  === 'true'; this.itemsPerPage =
+  parseInt(localStorage.getItem('portfolioItemsPerPage')) || 12; },
+  syncWithGhostPagination() { // Sync with Ghost pagination data if available if
+  (window.ghostPagination) { this.currentPage = window.ghostPagination.page ||
+  1; this.totalPages = window.ghostPagination.pages || 1; this.totalResults =
+  window.ghostPagination.total || 0; this.hasPrevious =
+  window.ghostPagination.prev !== null; this.hasNext =
+  window.ghostPagination.next !== null; } }, async goToPage(page) { if (page ===
+  this.currentPage || page < 1 || page > this.totalPages) { return; }
+  this.loading = true; this.announce(`Loading page ${page}...`); try { // Update
+  URL and fetch new content const url = new URL(window.location);
+  url.searchParams.set('page', page); if (this.infiniteScrollEnabled) { // For
+  infinite scroll, append to existing content await this.loadPageContent(page,
+  true); } else { // For standard pagination, navigate to new page
+  window.location.href = url.toString(); } } catch (error) {
+  console.error('Failed to load page:', error); this.announce('Failed to load
+  page. Please try again.'); } finally { this.loading = false; } }, async
+  loadMore() { if (!this.hasNext || this.loading) return; this.loading = true;
+  this.announce('Loading more images...'); try { const nextPage =
+  this.currentPage + 1; await this.loadPageContent(nextPage, true);
+  this.currentPage = nextPage; this.updatePaginationState();
+  this.announce(`Loaded page ${nextPage}. ${this.endResult} of
+  ${this.totalResults} results shown.`); } catch (error) { console.error('Failed
+  to load more content:', error); this.announce('Failed to load more content.
+  Please try again.'); } finally { this.loading = false; } }, async
+  loadPageContent(page, append = false) { // Get current filter state const
+  filterState = this.getFilterState(); // Use PostFetcher if available if
+  (window.postFetcher) { const options = { ...filterState, page: page, limit:
+  this.itemsPerPage }; const data = await
+  window.postFetcher.fetchPosts(options); if (append) {
+  this.appendContentToGrid(data.posts); } else {
+  this.replaceGridContent(data.posts); } // Update pagination state
+  this.totalPages = data.totalPages; this.totalResults = data.totalCount;
+  this.hasNext = data.pagination.hasNext; this.hasPrevious =
+  data.pagination.hasPrev; } else { // Fallback to full page reload const url =
+  new URL(window.location); url.searchParams.set('page', page);
+  window.location.href = url.toString(); } }, getFilterState() { // Get filter
+  state from URL or filter component const params = new
+  URLSearchParams(window.location.search); return { category:
+  this.getCategoryFromPath(), sort: params.get('sort') || 'newest', year:
+  params.get('year') || null, featured: params.get('featured') === '1' }; },
+  getCategoryFromPath() { // Extract category from URL path const path =
+  window.location.pathname; const match = path.match(/\/portfolio\/([^\/]+)/);
+  return match ? match[1] : null; }, appendContentToGrid(newPosts) { // Dispatch
+  event to add new posts to the masonry grid this.$dispatch('posts-loaded', {
+  posts: newPosts, append: true }); }, replaceGridContent(posts) { // Dispatch
+  event to replace grid content this.$dispatch('posts-loaded', { posts: posts,
+  append: false }); }, toggleInfiniteScroll() {
+  localStorage.setItem('portfolioInfiniteScroll', this.infiniteScrollEnabled);
+  if (this.infiniteScrollEnabled) { this.announce('Infinite scroll enabled. New
+  images will load automatically as you scroll.'); } else {
+  this.announce('Infinite scroll disabled. Use pagination controls to
+  navigate.'); } }, changeItemsPerPage() {
+  localStorage.setItem('portfolioItemsPerPage', this.itemsPerPage); // Reload
+  current page with new items per page const url = new URL(window.location);
+  url.searchParams.set('limit', this.itemsPerPage);
+  url.searchParams.delete('page'); // Reset to first page window.location.href =
+  url.toString(); }, updatePaginationState() { this.hasPrevious =
+  this.currentPage > 1; this.hasNext = this.currentPage < this.totalPages; },
+  announce(message) { this.announcement = message; // Clear announcement after a
+  delay setTimeout(() => { this.announcement = ''; }, 1000); } })); });
+</script>

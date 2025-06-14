@@ -1,19 +1,25 @@
-{{! Home page template with masonry grid }}
+{{!< default}}
+
+{{#contentFor "page_class"}}home-page{{/contentFor}}
+{{#contentFor "meta_title"}}{{meta_title default="Home"}}{{/contentFor}}
+{{#contentFor "meta_description"}}{{meta_description default=@site.description}}{{/contentFor}}
 
 {{! Hero section }}
 {{#if @site.cover_image}}
-  <section class="hero-section">
-    <div class="hero-image-container">
+  <section class="hero-section bg-gray-900 relative overflow-hidden">
+    <div class="hero-image-container relative h-96 md:h-[32rem]">
       <img
         src="{{img_url @site.cover_image size="xl"}}"
         alt="{{@site.title}}"
-        class="hero-image"
+        class="hero-image w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
       />
-      <div class="hero-overlay">
-        <div class="hero-content">
-          <h1 class="hero-title">{{@site.title}}</h1>
+      <div class="hero-overlay absolute inset-0 bg-black/40 flex items-center justify-center">
+        <div class="hero-content text-center text-white px-4 max-w-4xl mx-auto">
+          <h1 class="hero-title text-4xl md:text-6xl font-bold mb-4">{{@site.title}}</h1>
           {{#if @site.description}}
-            <p class="hero-description">{{@site.description}}</p>
+            <p class="hero-description text-lg md:text-xl opacity-90 max-w-2xl mx-auto">{{@site.description}}</p>
           {{/if}}
         </div>
       </div>
@@ -22,443 +28,150 @@
 {{/if}}
 
 {{! Portfolio grid section }}
-<section class="portfolio-section" id="portfolio">
-  <div class="portfolio-container">
-    {{! Grid controls }}
-    <div class="grid-controls" x-data="{ view: 'grid' }">
-      <h2 class="section-title">Latest Work</h2>
-      <div class="view-controls">
-        <button
-          @click="view = 'grid'"
-          :class="{ 'active': view === 'grid' }"
-          class="view-btn"
-          aria-label="Grid view"
-          :aria-pressed="view === 'grid'"
-        >
-          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"
-            />
-          </svg>
-        </button>
-        <button
-          @click="view = 'list'"
-          :class="{ 'active': view === 'list' }"
-          class="view-btn"
-          aria-label="List view"
-          :aria-pressed="view === 'list'"
-        >
-          <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M3 5h2v2H3V5zm0 4h2v2H3V9zm0 4h2v2H3v-2zm4-8h14v2H7V5zm0 4h14v2H7V9zm0 4h14v2H7v-2z"
-            />
-          </svg>
-        </button>
-      </div>
+<section class="portfolio-section py-16 lg:py-24" id="portfolio">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+    {{! Section header }}
+    <div class="text-center mb-12">
+      <h2 class="section-title text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        Latest Work
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        Discover my latest photography capturing the beauty of nature, wildlife, and landscapes from around the world.
+      </p>
     </div>
 
+    {{! Get portfolio posts }}
+    {{#get "posts" filter="tag:hash-portfolio" limit="12" as |portfolio_posts|}}
+      {{#if portfolio_posts}}
+        {{> masonry-portfolio posts=portfolio_posts}}
+      {{else}}
+        {{! Fallback: show latest posts if no portfolio posts exist }}
+        {{> masonry-portfolio posts=posts}}
+      {{/if}}
+    {{/get}}
 
-    {{! Masonry grid with Alpine.js lightbox }}
-    <div
-      class="masonry-container"
-      x-data="portfolioGrid()"
-      x-init="initMasonry()"
-    >
+    {{! Load more button for pagination }}
+    {{#if pagination.next}}
+      <div class="load-more-container text-center mt-12">
+        <a
+          href="{{pagination.next}}"
+          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          Load More Images
+          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </a>
+      </div>
+    {{/if}}
 
-      {{! Grid }}
-      <div
-        class="masonry-grid"
-        :class="{ 'list-view': $store.view === 'list' }"
-        style="--grid-columns: var(--grid-columns, 3);"
-      >
-
-        {{#foreach posts}}
-          <article
-            class="portfolio-item"
-            data-post-id="{{id}}"
-            x-data="{ loaded: false }"
-            @click="openLightbox({{@index}})"
-            role="button"
-            tabindex="0"
-            @keydown.enter="openLightbox({{@index}})"
-            @keydown.space.prevent="openLightbox({{@index}})"
-            :aria-label="`Open lightbox for ${posts[{{@index}}]?.title || 'Image {{@index + 1}}'}`"
-          >
-
-            {{! Featured image }}
-            {{#if feature_image}}
-              <div class="portfolio-image-container">
-                <img
-                  src="{{img_url feature_image size="m"}}"
-                  alt="{{title}}"
-                  class="portfolio-image"
-                  loading="lazy"
-                  @load="loaded = true"
-                  :class="{ 'loaded': loaded }"
-                />
-
-                {{! Hover overlay }}
-                <div class="portfolio-overlay">
-                  <div class="portfolio-content">
-                    <h3 class="portfolio-title">{{title}}</h3>
-                    {{#if excerpt}}
-                      <p class="portfolio-excerpt">{{excerpt words="15"}}</p>
-                    {{/if}}
-                    <div class="portfolio-meta">
-                      <time
-                        class="portfolio-date"
-                        datetime="{{date format="YYYY-MM-DD"}}"
-                      >
-                        {{date format="MMM DD, YYYY"}}
-                      </time>
-                      {{#if primary_tag}}
-                        <span class="portfolio-tag">{{primary_tag.name}}</span>
-                      {{/if}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {{else}}
-              {{! Fallback for posts without featured image }}
-              <div class="portfolio-text-only">
-                <h3 class="portfolio-title">{{title}}</h3>
-                {{#if excerpt}}
-                  <p class="portfolio-excerpt">{{excerpt}}</p>
-                {{/if}}
-                <a href="{{url}}" class="read-more-link">Read More</a>
-              </div>
-            {{/if}}
-          </article>
-        {{/foreach}}
+    {{! Portfolio categories showcase }}
+    <div class="mt-16 pt-16 border-t border-gray-200 dark:border-gray-700">
+      <div class="text-center mb-12">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          Explore Portfolio Categories
+        </h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Browse photography collections organized by subject and location
+        </p>
       </div>
 
-    {{! Use the new masonry portfolio partial }}
-    {{> masonry-portfolio posts=posts}}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-
-      {{! Load more button for infinite scroll }}
-      {{#if pagination.next}}
-        <div class="load-more-container" x-intersect="loadMore()">
-          <button
-            class="load-more-btn"
-            @click="loadMore()"
-            :disabled="loading"
-            :aria-label="loading ? 'Loading more images...' : 'Load more images'"
-            x-text="loading ? 'Loading...' : 'Load More'"
-          >
-            Load More
-          </button>
-        </div>
-      {{/if}}
-
-      {{! Screen reader live region for announcements }}
-      <div
-        class="sr-only"
-        aria-live="polite"
-        aria-atomic="true"
-        x-text="screenReaderAnnouncement"
-        id="lightbox-announcements"
-      ></div>
-
-      {{! Lightbox modal }}
-      <div
-        class="lightbox-modal"
-        x-show="lightboxOpen"
-        x-transition.opacity.duration.300ms
-        @click.self="closeLightbox()"
-        @keydown.escape.window="handleEscapeKey($event)"
-        @keydown.tab.prevent="handleTabKey($event)"
-        @keydown.shift.tab.prevent="handleShiftTabKey($event)"
-        @keydown.arrow-left.window.prevent="handleNavigationKey('previous', $event)"
-        @keydown.arrow-right.window.prevent="handleNavigationKey('next', $event)"
-        @keydown.space.window.prevent="handleNavigationKey('next', $event)"
-        @keydown.home.window.prevent="handleNavigationKey('first', $event)"
-        @keydown.end.window.prevent="handleNavigationKey('last', $event)"
-        role="dialog"
-        aria-modal="true"
-        :aria-hidden="!lightboxOpen"
-        :aria-label="`Image viewer - ${currentPost?.title || `Image ${currentIndex + 1}`} - ${currentIndex + 1} of ${posts.length}`"
-        :aria-describedby="lightboxOpen ? 'lightbox-info lightbox-instructions' : null"
-        x-ref="lightboxModal"
-        x-init="$watch('lightboxOpen', (value) => { if (value) $nextTick(() => trapFocus()) })"
-      >
-
-        <div class="lightbox-container">
-          {{! Screen reader instructions (hidden) }}
-          <div id="lightbox-instructions" class="sr-only">
-            Use arrow keys or navigation buttons to browse images. Press Escape or click outside to close. Tab to navigate between controls.
-          </div>
-
-          {{! Position indicator }}
-          <div class="lightbox-position-indicator" aria-hidden="true">
-            <span x-text="`${currentIndex + 1} of ${posts.length}`"></span>
-          </div>
-
-          {{! Navigation buttons }}
-          <button
-            class="lightbox-nav lightbox-prev"
-            @click="navigateToImage('previous')"
-            :class="{ 'loading': imageLoading }"
-            :aria-label="`Previous image: ${getPreviousImageTitle()}. Image ${getPreviousImageIndex() + 1} of ${posts.length}`"
-            :aria-pressed="false"
-            :aria-describedby="'lightbox-instructions'"
-            :disabled="imageLoading"
-            x-ref="prevButton"
-            tabindex="0"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-            </svg>
-            <span class="sr-only">Previous image</span>
-          </button>
-
-          <button
-            class="lightbox-nav lightbox-next"
-            @click="navigateToImage('next')"
-            :class="{ 'loading': imageLoading }"
-            :aria-label="`Next image: ${getNextImageTitle()}. Image ${getNextImageIndex() + 1} of ${posts.length}`"
-            :aria-pressed="false"
-            :aria-describedby="'lightbox-instructions'"
-            :disabled="imageLoading"
-            x-ref="nextButton"
-            tabindex="0"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-            </svg>
-            <span class="sr-only">Next image</span>
-          </button>
-
-          {{! Close button }}
-          <button
-            class="lightbox-close"
-            @click="closeLightbox()"
-            aria-label="Close image viewer and return to gallery"
-            :aria-describedby="'lightbox-instructions'"
-            x-ref="closeButton"
-            tabindex="0"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path
-                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-              />
-            </svg>
-            <span class="sr-only">Close</span>
-          </button>
-
-          {{! Lightbox content }}
-          <div class="lightbox-content" x-show="currentPost">
-            <div class="lightbox-image-container">
-              {{! Loading indicator }}
-              <div
-                class="lightbox-loading"
-                x-show="imageLoading"
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                role="status"
-                aria-live="polite"
-                :aria-label="`Loading ${currentPost?.title || 'image'}...`"
-                :aria-describedby="'loading-message'"
-              >
-                <div class="loading-spinner" aria-hidden="true"></div>
-                <p class="loading-text" id="loading-message">Loading image...</p>
-              </div>
-
-              {{! Error state }}
-              <div
-                class="lightbox-error"
-                x-show="imageError && !imageLoading"
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                role="alert"
-                aria-live="assertive"
-                :aria-describedby="'error-message'"
-              >
-                <div class="error-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-                    />
-                  </svg>
-                </div>
-                <p class="error-text" id="error-message">Unable to load image. Please try again.</p>
-                <button
-                  @click="retryImageLoad()"
-                  class="error-retry-btn"
-                  aria-label="Retry loading image"
-                  :aria-describedby="'error-message'"
-                  tabindex="0"
-                >
-                  Retry
-                </button>
-              </div>
-
-              {{! Main lightbox image }}
-              <img
-                x-show="!imageLoading && !imageError && currentPost"
-                :src="getLightboxImageUrl(currentPost)"
-                :alt="`${currentPost?.title || 'Portfolio image'} - Full size view`"
-                :srcset="getLightboxImageSrcset(currentPost)"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
-                class="lightbox-image"
-                @load="handleImageLoad()"
-                @error="handleImageError()"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                role="img"
-                :aria-labelledby="'lightbox-title'"
-                :aria-describedby="currentPost?.excerpt ? 'lightbox-title lightbox-excerpt' : 'lightbox-title'"
-              />
-            </div>
-
-            <div class="lightbox-info" id="lightbox-info">
-              <div class="lightbox-info-content" tabindex="0" x-ref="infoPanel" role="region" aria-label="Image details">
-                <h3 class="lightbox-title" x-text="currentPost?.title" id="lightbox-title"></h3>
-                <p
-                  class="lightbox-excerpt"
-                  x-text="currentPost?.excerpt"
-                  x-show="currentPost?.excerpt"
-                  id="lightbox-excerpt"
-                ></p>
-                <div class="lightbox-meta" x-show="currentPost?.date || currentPost?.primary_tag" role="group" aria-label="Image metadata">
-                  <time
-                    x-text="currentPost?.date"
-                    x-show="currentPost?.date"
-                    :datetime="currentPost?.date"
-                    aria-label="Publication date"
-                  ></time>
-                  <span
-                    x-show="currentPost?.primary_tag"
-                    x-text="currentPost?.primary_tag"
-                    class="lightbox-tag"
-                    role="button"
-                    tabindex="0"
-                    :aria-label="`Category: ${currentPost?.primary_tag}`"
-                  ></span>
-                </div>
-                <a
-                  :href="currentPost?.url"
-                  class="lightbox-read-more"
-                  x-show="currentPost?.url"
-                  :aria-label="`Read full story: ${currentPost?.title}`"
-                  x-ref="readMoreLink"
-                  tabindex="0"
-                >
-                  Read Full Story
-                  <svg class="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                  </svg>
-                </a>
-              </div>
+        {{! Wildlife category }}
+        <a href="/portfolio/wildlife/" class="group bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <div class="aspect-w-16 aspect-h-12 bg-gradient-to-br from-green-400 to-green-600">
+            <div class="flex items-center justify-center">
+              <svg class="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
             </div>
           </div>
-        </div>
+          <div class="p-4">
+            <h4 class="font-semibold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+              Wildlife
+            </h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              Animal encounters in their natural habitats
+            </p>
+          </div>
+        </a>
+
+        {{! Landscape category }}
+        <a href="/portfolio/landscape/" class="group bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <div class="aspect-w-16 aspect-h-12 bg-gradient-to-br from-blue-400 to-blue-600">
+            <div class="flex items-center justify-center">
+              <svg class="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              Landscape
+            </h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              Breathtaking vistas and natural scenes
+            </p>
+          </div>
+        </a>
+
+        {{! Underwater category }}
+        <a href="/portfolio/underwater/" class="group bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <div class="aspect-w-16 aspect-h-12 bg-gradient-to-br from-teal-400 to-cyan-600">
+            <div class="flex items-center justify-center">
+              <svg class="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 7h12v9a1 1 0 01-1 1H5a1 1 0 01-1-1V7z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+              Underwater
+            </h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              Marine life and underwater ecosystems
+            </p>
+          </div>
+        </a>
+
+        {{! Cityscape category }}
+        <a href="/portfolio/cityscape/" class="group bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+          <div class="aspect-w-16 aspect-h-12 bg-gradient-to-br from-gray-500 to-slate-600">
+            <div class="flex items-center justify-center">
+              <svg class="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2V4zm2 0h1v12H6V4zm3 0h1v12H9V4zm3 0h1v12h-1V4zm3 0h1v12h-1V4z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold text-gray-900 dark:text-white group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
+              Cityscape
+            </h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              Urban architecture and city life
+            </p>
+          </div>
+        </a>
+
       </div>
     </div>
   </div>
 </section>
 
-{{! Alpine.js portfolio grid component }}
-<script>
-  document.addEventListener('alpine:init', () => { Alpine.data('portfolioGrid',
-  () => ({ lightboxOpen: false, currentIndex: 0, loading: false, imageLoading:
-  false, imageError: false, posts: [], currentPost: null, imageCache: new Map(),
-  init() { // Initialize posts data from server-side rendered content this.posts
-  = [
-  {{#foreach posts}}
-    { id: '{{id}}', title: '{{title}}', excerpt: '{{excerpt words="30"}}', url:
-    '{{url}}', feature_image: '{{feature_image}}', date: '{{date
-      format="MMM DD, YYYY"
-    }}', primary_tag: '{{#if primary_tag}}{{primary_tag.name}}{{/if}}' }{{#unless
-      @last
-    }},{{/unless}}
-  {{/foreach}}
-  ]; // Preload first few images for better UX this.preloadInitialImages(); },
-  initMasonry() { // Initialize masonry layout this.$nextTick(() => {
-  this.updateMasonryLayout(); }); }, updateMasonryLayout() { // CSS Grid handles
-  the masonry layout automatically // This method can be extended for more
-  complex masonry logic }, openLightbox(index) { this.currentIndex = index;
-  this.currentPost = this.posts[index]; this.lightboxOpen = true;
-  this.imageLoading = true; this.imageError = false; // Add body class to
-  prevent scrolling document.body.classList.add('lightbox-open'); // Focus
-  management for accessibility this.$nextTick(() => { const closeButton =
-  document.querySelector('.lightbox-close'); if (closeButton)
-  closeButton.focus(); }); // Preload adjacent images for smooth navigation
-  this.preloadAdjacentImages(index); }, closeLightbox() { this.lightboxOpen =
-  false; this.imageLoading = false; this.imageError = false;
-  document.body.classList.remove('lightbox-open'); }, // Enhanced navigation
-  with looping support nextImage() { if (!this.imageLoading && this.posts.length
-  > 0) { // Implement looping: if at last image, go to first const nextIndex =
-  this.currentIndex >= this.posts.length - 1 ? 0 : this.currentIndex + 1;
-  this.navigateToImage(nextIndex); } }, previousImage() { if (!this.imageLoading
-  && this.posts.length > 0) { // Implement looping: if at first image, go to
-  last const prevIndex = this.currentIndex <= 0 ? this.posts.length - 1 :
-  this.currentIndex - 1; this.navigateToImage(prevIndex); } }, // New navigation
-  methods for keyboard shortcuts goToFirstImage() { if (!this.imageLoading &&
-  this.posts.length > 0) { this.navigateToImage(0); } }, goToLastImage() { if
-  (!this.imageLoading && this.posts.length > 0) {
-  this.navigateToImage(this.posts.length - 1); } }, handleEnterKey(event) { //
-  Handle Enter key on focused navigation buttons const activeElement =
-  document.activeElement; if (activeElement &&
-  activeElement.classList.contains('lightbox-nav')) { event.preventDefault();
-  activeElement.click(); } }, navigateToImage(index) { this.currentIndex =
-  index; this.currentPost = this.posts[index]; this.imageLoading = true;
-  this.imageError = false; // Preload adjacent images with circular logic
-  this.preloadAdjacentImages(index); }, handleImageLoad() { this.imageLoading =
-  false; this.imageError = false; }, handleImageError() { this.imageLoading =
-  false; this.imageError = true; }, getLightboxImageUrl(post) { if
-  (!post?.feature_image) return ''; // Use appropriate size based on screen size
-  and pixel ratio const isMobile = window.innerWidth <= 768; const isHighDPI =
-  window.devicePixelRatio > 1; // Choose optimal size let size = 'xl'; // 2400px
-  default if (isMobile && !isHighDPI) { size = 'l'; // 1600px for mobile } else
-  if (isMobile && isHighDPI) { size = 'xl'; // 2400px for high-DPI mobile } //
-  Ghost img_url helper equivalent for client-side return
-  this.getGhostImageUrl(post.feature_image, size); },
-  getLightboxImageSrcset(post) { if (!post?.feature_image) return ''; //
-  Generate responsive srcset for optimal loading const baseUrl =
-  post.feature_image; return [ `${this.getGhostImageUrl(baseUrl, 'l')} 1600w`,
-  `${this.getGhostImageUrl(baseUrl, 'xl')} 2400w` ].join(', '); },
-  getGhostImageUrl(imageUrl, size) { if (!imageUrl) return ''; // Size mappings
-  from package.json config const sizes = { 'xs': 300, 's': 600, 'm': 1000, 'l':
-  1600, 'xl': 2400 }; const width = sizes[size] || sizes['xl']; // Handle
-  Ghost's image transformation URL pattern if
-  (imageUrl.includes('/content/images/')) { // For local Ghost installations
-  return imageUrl.replace('/content/images/',
-  `/content/images/size/w${width}/`); } else if
-  (imageUrl.includes('images.unsplash.com') || imageUrl.includes('cdn.')) { //
-  For external images, append size parameter const separator =
-  imageUrl.includes('?') ? '&' : '?'; return
-  `${imageUrl}${separator}w=${width}`; } // Fallback: return original URL return
-  imageUrl; }, preloadInitialImages() { // Preload first 3 images for better
-  initial experience const imagesToPreload = this.posts.slice(0, 3);
-  imagesToPreload.forEach(post => { if (post.feature_image) {
-  this.preloadImage(post); } }); }, preloadAdjacentImages(currentIndex) { //
-  Enhanced preloading with circular navigation support const totalPosts =
-  this.posts.length; if (totalPosts <= 1) return; // Calculate adjacent indices
-  with circular logic const prevIndex = currentIndex <= 0 ? totalPosts - 1 :
-  currentIndex - 1; const nextIndex = currentIndex >= totalPosts - 1 ? 0 :
-  currentIndex + 1; // Preload previous and next images [prevIndex,
-  nextIndex].forEach(index => { const post = this.posts[index]; if
-  (post?.feature_image) { this.preloadImage(post); } }); }, preloadImage(post) {
-  const imageUrl = this.getLightboxImageUrl(post); if (imageUrl &&
-  !this.imageCache.has(imageUrl)) { const img = new Image(); img.onload = () =>
-  { this.imageCache.set(imageUrl, true); }; img.onerror = () => {
-  this.imageCache.set(imageUrl, false); }; img.src = imageUrl; } }, async
-  loadMore() { if (this.loading) return; this.loading = true; try { // Implement
-  infinite scroll loading with Ghost Content API const nextPage = '{{pagination.next}}';
-  if (nextPage) { const response = await fetch(`${nextPage}?formats=html,json`);
-  const data = await response.json(); // Add new posts to the array and update
-  the grid if (data.posts) { const newPosts = data.posts.map(post => ({ id:
-  post.id, title: post.title, excerpt: post.excerpt, url: post.url,
-  feature_image: post.feature_image, date: new
-  Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month:
-  'short', day: 'numeric' }), primary_tag: post.primary_tag?.name || '' }));
-  this.posts.push(...newPosts); // Preload some of the new images
-  this.preloadNewImages(newPosts.slice(0, 2)); } } catch (error) {
-  console.error('Error loading more posts:', error); } finally { this.loading =
-  false; } }, preloadNewImages(newPosts) { newPosts.forEach(post => { if
-  (post.feature_image) { this.preloadImage(post); } }); } })); });
+{{! JSON-LD structured data for home page }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{@site.title}}",
+  "description": "{{@site.description}}",
+  "url": "{{@site.url}}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{@site.url}}/search/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
 </script>

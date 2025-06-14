@@ -135,6 +135,34 @@
     break-inside: avoid;
     position: relative;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .masonry-item-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered animation for masonry items */
+  .masonry-item:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  .masonry-item:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+  .masonry-item:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  .masonry-item:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+  .masonry-item:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+  .masonry-item:nth-child(6) {
+    transition-delay: 0.6s;
   }
 
   .masonry-item img {
@@ -571,10 +599,8 @@
   .lightbox-open {
     @apply overflow-hidden;
   }
-}
 
-/* Lightbox Component Styles */
-@layer components {
+  /* Lightbox Component Styles */
   /* Lightbox modal overlay */
   .lightbox-modal {
     @apply fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90;
@@ -1191,7 +1217,8 @@
 
   .dark-mode .skip-link {
     @apply bg-gray-900 text-white border-2 border-yellow-400;
-=======
+  }
+
   /* Masonry responsive image utilities */
   .masonry-responsive-image {
     width: 100%;
@@ -1265,7 +1292,7 @@
     display: none;
   }
 
-  /* Line clamp utility for text truncation */
+  /* Custom line-clamp utilities for Ghost theme */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1280,15 +1307,214 @@
     overflow: hidden;
   }
 
-  /* Masonry overlay enhancements */
-  .masonry-overlay {
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  @supports not (backdrop-filter: blur(2px)) {
+  .line-clamp-none {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+  }
+
+  /* Enhanced masonry overlay styles */
+  .masonry-overlay {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  @supports not (backdrop-filter: blur(8px)) {
     .masonry-overlay {
       background-color: rgba(0, 0, 0, 0.6);
     }
   }
+
+  /* Masonry item metadata styles */
+  .masonry-item .description-container {
+    max-height: none;
+    transition: max-height 0.3s ease-out;
+  }
+
+  /* Enhanced hover effects for portfolio items */
+  .masonry-item:hover .masonry-responsive-image {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Button focus states for better accessibility */
+  .masonry-overlay button:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Smooth transitions for metadata display */
+  .masonry-item .text-sm,
+  .masonry-item .text-xs {
+    transition: opacity 0.2s ease;
+  }
+
+  /* Enhanced text-only post styles */
+  .masonry-item article {
+    transition: all 0.3s ease;
+  }
+
+  .masonry-item article:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Tag and metadata styling */
+  .masonry-item [role="list"] {
+    gap: 0.25rem;
+  }
+
+  .masonry-item [role="listitem"] {
+    transition: background-color 0.2s ease;
+  }
+
+  /* Category-specific accent colors */
+  .category-wildlife .masonry-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(34, 197, 94, 0.8),
+      rgba(34, 197, 94, 0.4),
+      transparent
+    );
+  }
+
+  .category-landscape .masonry-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(59, 130, 246, 0.8),
+      rgba(59, 130, 246, 0.4),
+      transparent
+    );
+  }
+
+  .category-underwater .masonry-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(20, 184, 166, 0.8),
+      rgba(20, 184, 166, 0.4),
+      transparent
+    );
+  }
+
+  .category-cityscape .masonry-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(71, 85, 105, 0.8),
+      rgba(71, 85, 105, 0.4),
+      transparent
+    );
+  }
+
+  @media (max-width: 768px) {
+    /* Ensure touch targets are appropriate size on mobile */
+    .masonry-overlay button {
+      min-height: 44px;
+      padding: 8px 12px;
+    }
+
+    /* Simplify metadata on mobile */
+    .masonry-item .text-xs {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .masonry-item .masonry-responsive-image,
+    .masonry-item article,
+    .masonry-overlay,
+    .description-container {
+      transition: none !important;
+    }
+  }
+}
+
+/* Custom line-clamp utilities for Ghost theme */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-none {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  overflow: visible;
+}
+
+/* Enhanced masonry overlay styles */
+.masonry-overlay {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Category-specific accent colors */
+.category-wildlife {
+  --accent-color: theme("colors.green.500");
+}
+
+.category-landscape {
+  --accent-color: theme("colors.blue.500");
+}
+
+.category-underwater {
+  --accent-color: theme("colors.teal.500");
+}
+
+.category-cityscape {
+  --accent-color: theme("colors.slate.500");
+}
+
+/* Responsive masonry improvements */
+@media (max-width: 767px) {
+  .masonry-item {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Accessibility and reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .masonry-overlay,
+  .masonry-image,
+  .group-hover\:scale-105 {
+    transition: none !important;
+  }
+}
+
+/* Focus states for better accessibility */
+.masonry-item a:focus {
+  outline: 2px solid theme("colors.blue.500");
+  outline-offset: 2px;
+}
+
+/* Enhanced hover effects */
+.masonry-item:hover .masonry-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    transparent 100%
+  );
 }

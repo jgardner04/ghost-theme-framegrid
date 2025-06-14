@@ -50,7 +50,7 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    // Load Masonry library dynamically
+    // Load Masonry library dynamically with improved error handling
     loadMasonryLibrary() {
       return new Promise((resolve, reject) => {
         if (typeof Masonry !== "undefined") {
@@ -60,9 +60,45 @@ document.addEventListener("alpine:init", () => {
 
         const script = document.createElement("script");
         script.src = "/assets/built/vendor/masonry.pkgd.min.js";
-        script.onload = () => resolve();
-        script.onerror = () =>
+        script.async = true;
+        script.crossOrigin = "anonymous";
+
+        script.onload = () => {
+          console.log("Masonry library loaded successfully");
+          resolve();
+        };
+
+        script.onerror = () => {
+          console.error(
+            "Failed to load Masonry library from CDN, trying fallback"
+          );
+          // Fallback to CDN if local version fails
+          this.loadMasonryFromCDN().then(resolve).catch(reject);
+        };
+
+        document.head.appendChild(script);
+      });
+    },
+
+    // Fallback CDN loading for Masonry
+    loadMasonryFromCDN() {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src =
+          "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js";
+        script.async = true;
+        script.crossOrigin = "anonymous";
+
+        script.onload = () => {
+          console.log("Masonry library loaded from CDN fallback");
+          resolve();
+        };
+
+        script.onerror = () => {
+          console.error("Failed to load Masonry library from all sources");
           reject(new Error("Failed to load Masonry library"));
+        };
+
         document.head.appendChild(script);
       });
     },
@@ -99,7 +135,7 @@ document.addEventListener("alpine:init", () => {
       });
     },
 
-    // Initialize Masonry instance
+    // Initialize Masonry instance with enhanced configuration
     initializeMasonry() {
       // Only initialize masonry on multi-column layouts
       if (!this.shouldUseMasonry()) {
@@ -108,6 +144,7 @@ document.addEventListener("alpine:init", () => {
       }
 
       try {
+        // Enhanced Masonry configuration following best practices
         this.masonry = new Masonry(this.$el, {
           itemSelector: ".masonry-item",
           columnWidth: ".masonry-item",
@@ -116,20 +153,63 @@ document.addEventListener("alpine:init", () => {
           transitionDuration: "0.3s",
           stagger: 30,
           fitWidth: false,
+          originLeft: true,
+          originTop: true,
+          containerStyle: {
+            position: "relative",
+          },
+          stamp: ".stamp", // Support for stamped elements
         });
 
         this.isInitialized = true;
         this.setupResizeHandler();
+        this.setupIntersectionObserver();
 
-        // Trigger layout after initialization
+        // Trigger layout after initialization with slight delay
         this.$nextTick(() => {
-          this.masonry.layout();
+          setTimeout(() => {
+            this.masonry.layout();
+            this.isLoading = false;
+          }, 100);
         });
 
-        console.log("Masonry initialized successfully");
+        console.log(
+          "Masonry initialized successfully with enhanced configuration"
+        );
       } catch (error) {
         console.error("Failed to initialize masonry:", error);
         this.isInitialized = false;
+        this.isLoading = false;
+      }
+    },
+
+    // Setup Intersection Observer for lazy loading optimization
+    setupIntersectionObserver() {
+      if ("IntersectionObserver" in window && this.masonry) {
+        const options = {
+          root: null,
+          rootMargin: "50px",
+          threshold: 0.1,
+        };
+
+        this.intersectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const item = entry.target;
+              // Trigger any lazy loading or animation effects
+              item.classList.add("masonry-item-visible");
+
+              // Unobserve the item once it's visible
+              this.intersectionObserver.unobserve(item);
+            }
+          });
+        }, options);
+
+        // Observe all masonry items
+        const items = this.$el.querySelectorAll(".masonry-item");
+        items.forEach((item) => {
+          this.intersectionObserver.observe(item);
+        });
       }
     },
 
@@ -239,6 +319,12 @@ document.addEventListener("alpine:init", () => {
 
       if (this.resizeTimeout) {
         clearTimeout(this.resizeTimeout);
+      }
+
+      // Clean up intersection observer
+      if (this.intersectionObserver) {
+        this.intersectionObserver.disconnect();
+        this.intersectionObserver = null;
       }
     },
 
