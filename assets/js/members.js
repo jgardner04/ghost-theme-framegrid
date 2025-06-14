@@ -403,6 +403,299 @@ document.addEventListener("alpine:init", () => {
     },
   }));
 
+  // Member portal dashboard component
+  Alpine.data("memberPortal", () => ({
+    // Portal state
+    showPortal: false,
+    showAccountSettings: false,
+    activeSettingsTab: "profile",
+
+    // Loading states
+    isRefreshing: false,
+    isUpdatingProfile: false,
+    isChangingPassword: false,
+    isUpdatingPreferences: false,
+
+    // Messages
+    settingsSuccessMessage: "",
+    settingsErrorMessage: "",
+
+    // Forms
+    profileForm: {
+      name: "",
+      email: "",
+      bio: "",
+    },
+
+    passwordForm: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+
+    preferencesForm: {
+      emailNewsletter: true,
+      emailWorkshops: true,
+      emailNewContent: false,
+      publicProfile: false,
+      activityTracking: true,
+    },
+
+    // Stats and activity data
+    stats: {
+      viewed: 0,
+      collections: 0,
+      downloads: 0,
+      workshops: 0,
+    },
+
+    recentActivity: [],
+
+    init() {
+      this.loadMemberData();
+      this.loadStats();
+      this.loadRecentActivity();
+    },
+
+    // Get member auth data from main component
+    get memberAuth() {
+      const memberAuthElement = document.querySelector(
+        '[x-data*="memberAuth"]'
+      );
+      return memberAuthElement?.__x?.$data;
+    },
+
+    // Member data getters from auth component
+    get memberName() {
+      return this.memberAuth?.memberName || "Member";
+    },
+
+    get memberEmail() {
+      return this.memberAuth?.memberEmail || "";
+    },
+
+    get memberAvatar() {
+      return this.memberAuth?.memberAvatar;
+    },
+
+    get memberInitials() {
+      const name = this.memberName;
+      if (name === "Member") return "M";
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    },
+
+    get memberTier() {
+      return this.memberAuth?.memberTier || "free";
+    },
+
+    get memberTierDisplayName() {
+      const tierNames = {
+        free: "Free Member",
+        paid: "Paid Member",
+        workshop: "Workshop Member",
+        premium: "Premium Member",
+      };
+      return tierNames[this.memberTier] || "Member";
+    },
+
+    get hasWorkshopAccess() {
+      return this.memberAuth?.hasWorkshopAccess || false;
+    },
+
+    get hasPremiumAccess() {
+      return this.memberAuth?.hasPremiumAccess || false;
+    },
+
+    get nextBillingDate() {
+      // Mock data - would come from Ghost member API
+      return "Dec 15, 2024";
+    },
+
+    get memberSince() {
+      // Mock data - would come from Ghost member API
+      return "Jan 2024";
+    },
+
+    // Portal management
+    openPortal() {
+      this.showPortal = true;
+    },
+
+    closePortal() {
+      this.showPortal = false;
+    },
+
+    openAccountSettings() {
+      this.showAccountSettings = true;
+      this.loadMemberData();
+    },
+
+    closeAccountSettings() {
+      this.showAccountSettings = false;
+      this.clearSettingsMessages();
+    },
+
+    // Data loading
+    loadMemberData() {
+      if (this.memberAuth) {
+        this.profileForm.name = this.memberAuth.memberName;
+        this.profileForm.email = this.memberAuth.memberEmail;
+        this.profileForm.bio = this.memberAuth.currentMember?.bio || "";
+      }
+    },
+
+    loadStats() {
+      // Mock stats - would be loaded from actual user data
+      this.stats = {
+        viewed: 1247,
+        collections: 12,
+        downloads: 45,
+        workshops: 3,
+      };
+    },
+
+    loadRecentActivity() {
+      // Mock activity data - would be loaded from actual user activity
+      this.recentActivity = [
+        {
+          id: 1,
+          icon: "📸",
+          title: 'Viewed "Aurora Borealis Collection"',
+          time: "2 hours ago",
+          color: "bg-blue-500",
+        },
+        {
+          id: 2,
+          icon: "⬇️",
+          title: "Downloaded high-res image",
+          time: "1 day ago",
+          color: "bg-green-500",
+        },
+        {
+          id: 3,
+          icon: "🎥",
+          title: 'Watched "Northern Lights Workshop"',
+          time: "3 days ago",
+          color: "bg-purple-500",
+        },
+      ];
+    },
+
+    // Actions
+    async refreshMemberData() {
+      this.isRefreshing = true;
+      try {
+        if (this.memberAuth) {
+          await this.memberAuth.getMemberData();
+          this.loadMemberData();
+          this.loadStats();
+          this.loadRecentActivity();
+        }
+      } catch (error) {
+        console.error("Failed to refresh member data:", error);
+      } finally {
+        this.isRefreshing = false;
+      }
+    },
+
+    async updateProfile() {
+      this.isUpdatingProfile = true;
+      this.clearSettingsMessages();
+
+      try {
+        // Mock profile update - would use Ghost Members API
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        this.settingsSuccessMessage = "Profile updated successfully!";
+      } catch (error) {
+        this.settingsErrorMessage =
+          "Failed to update profile. Please try again.";
+      } finally {
+        this.isUpdatingProfile = false;
+      }
+    },
+
+    async changePassword() {
+      this.isChangingPassword = true;
+      this.clearSettingsMessages();
+
+      try {
+        // Validate passwords match
+        if (
+          this.passwordForm.newPassword !== this.passwordForm.confirmPassword
+        ) {
+          throw new Error("New passwords do not match");
+        }
+
+        // Mock password change - would use Ghost Members API
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        this.settingsSuccessMessage = "Password changed successfully!";
+        this.passwordForm = {
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        };
+      } catch (error) {
+        this.settingsErrorMessage =
+          error.message || "Failed to change password. Please try again.";
+      } finally {
+        this.isChangingPassword = false;
+      }
+    },
+
+    async updatePreferences() {
+      this.isUpdatingPreferences = true;
+      this.clearSettingsMessages();
+
+      try {
+        // Mock preferences update - would use Ghost Members API
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        this.settingsSuccessMessage = "Preferences saved successfully!";
+      } catch (error) {
+        this.settingsErrorMessage =
+          "Failed to save preferences. Please try again.";
+      } finally {
+        this.isUpdatingPreferences = false;
+      }
+    },
+
+    upgradeToTier(tier) {
+      if (window.ghost && window.ghost.portal) {
+        window.ghost.portal.open("upgrade");
+      } else {
+        window.location.hash = "#/portal/upgrade";
+      }
+    },
+
+    openCustomerPortal() {
+      if (window.ghost && window.ghost.portal) {
+        window.ghost.portal.open("account");
+      } else {
+        window.location.hash = "#/portal/account";
+      }
+    },
+
+    async cancelSubscription() {
+      if (
+        confirm(
+          "Are you sure you want to cancel your subscription? You will lose access to premium content."
+        )
+      ) {
+        // Would trigger Ghost portal cancellation flow
+        this.openCustomerPortal();
+      }
+    },
+
+    clearSettingsMessages() {
+      this.settingsSuccessMessage = "";
+      this.settingsErrorMessage = "";
+    },
+  }));
+
   // Member content gating component
   Alpine.data("memberGate", (requiredTier = "paid") => ({
     requiredTier,
