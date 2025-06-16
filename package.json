@@ -67,7 +67,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-zip": "^6.1.0",
-    "postcss": "^8.4.31",
+    "postcss": "^8.5.5",
     "tailwindcss": "^4.1.10"
   },
   "browserslist": [
