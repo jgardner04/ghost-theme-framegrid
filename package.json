@@ -68,7 +68,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-zip": "^6.1.0",
     "postcss": "^8.4.31",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.11"
   },
   "browserslist": [
     "> 1%",
